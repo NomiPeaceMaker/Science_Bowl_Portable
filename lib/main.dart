@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:science_bowl_portable/screens/onboarding.dart';
-import 'screens/edit_account.dart';
-import "package:science_bowl_portable/globals.dart";
 
 
 void main() => runApp(MyApp());

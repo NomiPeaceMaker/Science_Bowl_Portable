@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:science_bowl_portable/screens/edit_account.dart';
 import 'package:science_bowl_portable/screens/home.dart';
 
 // Code inspired by https://github.com/MarcusNg/flutter_onboarding_ui/blob/master/lib/screens/onboarding_screen.dart

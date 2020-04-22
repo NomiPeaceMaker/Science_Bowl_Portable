@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:science_bowl_portable/globals.dart';
 import 'package:science_bowl_portable/screens/edit_account.dart';
+import 'package:science_bowl_portable/screens/join.dart';
 
 enum settings {
   help, report
@@ -109,14 +109,33 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("HOST GAME",style: TextStyle(color: Colors.white,),),
                   ),
                 ),
-                Center(
-                  child: Container(
-                    width: 250.0,
-                    padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
-                    color: Color(0xFF20BABA),
-                    child: Text("JOIN GAME",style: TextStyle(color: Colors.white,),),
-                  ),
+
+                RaisedButton(
+                  child: Text('JOIN GAME'),
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => 
+                        MaterialApp(
+                          home: Pin(),
+                          routes: <String, WidgetBuilder>{
+                              "/_WaitingRoom": (BuildContext context) => new _WaitingRoom(),
+                              "/Game": (BuildContext context) => new Game()
+                          }
+                        )
+                      ),
+                    );
+                  },
                 ),
+                // Center(
+                //   child: Container(
+                //     width: 250.0,
+                //     padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
+                //     color: Color(0xFF20BABA),
+                //     child: Text("JOIN GAME",style: TextStyle(color: Colors.white,),),
+                    
+                //   ),
+                // ),
                 Center(
                   child: Container(
                     width: 250.0,
@@ -131,4 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+class _WaitingRoom {
 }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:async'; //for timer
 import "dart:math"; //for random
 
-void main() {
+void join() {
   runApp(MaterialApp(
     home: Pin(),
     routes: <String, WidgetBuilder>{
