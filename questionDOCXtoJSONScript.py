@@ -59,13 +59,13 @@ def outjson(question, QuestionNumber):
 
     jsonQuestion['tossup_question']     = question.tossUp.qbody
     jsonQuestion['tossup_isShortAns']   = True if (question.tossUp.form == 'Short Answer') else False 
-    jsonQuestion['tossup_MCQoptions']   = question.tossUp.ansOption
+    jsonQuestion['tossup_MCQoptions']   = None if (question.tossUp.ansOption == 'none') else question.tossUp.ansOption 
     jsonQuestion['tossup_answer']       = question.tossUp.answer
     jsonQuestion['tossup_imageURL']     = None
     
     jsonQuestion['bonus_question']      = question.bonus.qbody
     jsonQuestion['bonus_isShortAns']    = True if (question.bonus.form == 'Short Answer') else False 
-    jsonQuestion['bonus_MCQoptions']    = question.bonus.ansOption
+    jsonQuestion['bonus_MCQoptions']    = None if (question.tossUp.ansOption == 'none') else question.tossUp.ansOption
     jsonQuestion['bonus_answer']        = question.bonus.answer
     jsonQuestion['bonus_image']         = None
 
