@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+<<<<<<< HEAD
 void Host1() {
   runApp(MaterialApp(
     home: Host(),
@@ -12,6 +13,20 @@ class Host extends StatefulWidget {
 }
 
 class _HostState extends State<Host> {
+=======
+void main() {
+  runApp(MaterialApp(
+    home: Home(),
+  ));
+}
+
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+>>>>>>> f7397492c734294e3f7f4750595f069f0a333e71
   bool paused = true;
   double timeLeft = 3.444;
   int redScore = 24;
@@ -236,4 +251,8 @@ class _HostState extends State<Host> {
       ),
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f7397492c734294e3f7f4750595f069f0a333e71
