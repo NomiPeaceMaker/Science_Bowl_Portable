@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-void main() {
+void Host1() {
   runApp(MaterialApp(
-    home: Home(),
+    home: Host(),
   ));
 }
 
-class Home extends StatefulWidget {
+class Host extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _HostState createState() => _HostState();
 }
 
-class _HomeState extends State<Home> {
+class _HostState extends State<Host> {
   bool paused = true;
   double timeLeft = 3.444;
   int redScore = 24;
