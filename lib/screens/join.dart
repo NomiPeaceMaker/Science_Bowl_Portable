@@ -331,7 +331,10 @@ class _PinState extends State<Pin> {
               FlatButton(
                 child: Text('Confirm'),
                 onPressed: () {
-                  Navigator.of(context).pushNamed("/_WaitingRoom");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => _WaitingRoom()),
+                  );
                 }
               ),
             ],
