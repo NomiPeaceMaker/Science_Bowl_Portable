@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:science_bowl_portable/screens/onboarding.dart';
+import 'package:sciencebowlportable/screens/onboarding.dart';
 
 
 void main() => runApp(MyApp());

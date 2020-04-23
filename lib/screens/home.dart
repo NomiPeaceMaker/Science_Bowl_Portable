@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:science_bowl_portable/screens/edit_account.dart';
-import 'package:science_bowl_portable/screens/join.dart';
+import 'package:sciencebowlportable/screens/edit_account.dart';
+import 'package:sciencebowlportable/screens/join.dart';
+import 'package:sciencebowlportable/screens/moderator.dart';
 
 enum settings {
   help, report
 }
 
 var name1 = 'NomiPeaceMaker';
+
+// void MyHomePage1() => runApp(MyHomePage());
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -39,13 +42,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ListTile(
               leading:Image(
-              image: AssetImage('a.png'),
+                image: AssetImage(
+                  'assets/a.png'
+                ),
+                // height: 250,
+                // width: 250,
               ),
               title: GestureDetector(
                 onTap: (){
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => edit_account()),
+                    MaterialPageRoute(builder: (context) => Edit_account()),
                   );
                 },
                 child: Container(
@@ -102,29 +109,28 @@ class _MyHomePageState extends State<MyHomePage> {
                   ]
                 ),
                 Center(
-                  child: Container(
-                    width: 250.0,
-                    padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
-                    color: Color(0xFF20BABA),
-                    child: Text("HOST GAME",style: TextStyle(color: Colors.white,),),
-                  ),
+                  child: RaisedButton(
+                  child: Text('HOST GAME',style: TextStyle(color: Colors.white,fontSize: 30.0)),
+                  color: Color(0xFF20BABA),
+                  padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
+                  onPressed: (){
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Host()),
+                  );
+                  },
+                ),
                 ),
 
                 RaisedButton(
-                  child: Text('JOIN GAME'),
+                  child: Text('JOIN GAME',style: TextStyle(color: Colors.white,fontSize: 30.0)),
+                  color: Color(0xFF20BABA),
+                  padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
                   onPressed: (){
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => 
-                        MaterialApp(
-                          home: Pin(),
-                          routes: <String, WidgetBuilder>{
-                              "/_WaitingRoom": (BuildContext context) => new _WaitingRoom(),
-                              "/Game": (BuildContext context) => new Game()
-                          }
-                        )
-                      ),
-                    );
+                    context,
+                    MaterialPageRoute(builder: (context) => Pin()),
+                  );
                   },
                 ),
                 // Center(
@@ -132,17 +138,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 //     width: 250.0,
                 //     padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
                 //     color: Color(0xFF20BABA),
-                //     child: Text("JOIN GAME",style: TextStyle(color: Colors.white,),),
+                //     child: Text("JOIN GAME",style: TextStyle(color: Colors.white,),
+                // ),
                     
                 //   ),
                 // ),
                 Center(
-                  child: Container(
-                    width: 250.0,
-                    padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
-                    color: Color(0xFF20BABA),
-                    child: Text("HOW TO PLAY",style: TextStyle(color: Colors.white,),),
-                  ),
+                  child: RaisedButton(
+                  child: Text('HOW TO PLAY',style: TextStyle(color: Colors.white,fontSize: 30.0)),
+                  color: Color(0xFF20BABA),
+                  padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
+                  onPressed: (){
+                    // HOW TO PLAY SCREEN GOES HERE!
+                    //NAVIGATION WAALI CHEEZ KARO
+                  },
+                ),
                 ),
               ]
             )

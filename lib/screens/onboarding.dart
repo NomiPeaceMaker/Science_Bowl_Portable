@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:science_bowl_portable/screens/home.dart';
+import 'package:sciencebowlportable/screens/login.dart';
 
 // Code inspired by https://github.com/MarcusNg/flutter_onboarding_ui/blob/master/lib/screens/onboarding_screen.dart
 
@@ -77,7 +77,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     onPressed: () =>
                       Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()),
+                      MaterialPageRoute(builder: (context) => Login()),
                     ),
                     child: Text(
                       'Skip',
@@ -107,7 +107,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             Center(
                               child: Image(
                                 image: AssetImage(
-                                  'assets/Group 115.png'
+                                  'assets/onboarding0.png'
                                 ),
                                 height: 250,
                                 width: 250,
@@ -141,7 +141,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             Center(
                               child: Image(
                                 image: AssetImage(
-                                  'assets/profits.png'
+                                  'assets/onboarding1.png'
                                 ),
                                 height: 250,
                                 width: 250,
@@ -175,7 +175,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             Center(
                               child: Image(
                                 image: AssetImage(
-                                  'assets/MathPhysicsEarth&SpaceChemistryBiologyEnergy.png'
+                                  'assets/onboarding2.png'
                                 ),
                                 height: 250,
                                 width: 250,

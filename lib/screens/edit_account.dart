@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:science_bowl_portable/globals.dart';
+import 'package:sciencebowlportable/globals.dart';
 
-class edit_account extends StatelessWidget {
+class Edit_account extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

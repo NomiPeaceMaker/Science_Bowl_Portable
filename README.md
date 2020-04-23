@@ -1,4 +1,4 @@
-# science_bowl_portable
+# sciencebowlportable
 
 A new Flutter application.
 

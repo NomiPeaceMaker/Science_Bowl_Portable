@@ -3,18 +3,10 @@
 //Timer should start when moderator is done reading
 import 'package:flutter/material.dart';
 import 'dart:async'; //for timer
-import "dart:math"; //for random
+import "dart:math";
 
-void join() {
-  runApp(MaterialApp(
-    home: Pin(),
-    routes: <String, WidgetBuilder>{
-        "/_WaitingRoom": (BuildContext context) => new _WaitingRoom(),
-        "/Game": (BuildContext context) => new Game()
-    }
-  ));
-}
-
+import 'package:sciencebowlportable/screens/home.dart'; //for random
+void join() => Pin();
 //Might need to tweak the colour scheme a bit + Red Team or Team A?
 class _WaitingRoom extends StatefulWidget {
   @override
@@ -29,7 +21,10 @@ class _WaitingRoomState extends State<_WaitingRoom> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Pin()),
+                  ),
         ),
         backgroundColor: Color(0xffF8B400),
         title: Text("Waiting Room"),
@@ -273,7 +268,10 @@ class _WaitingRoomState extends State<_WaitingRoom> {
                   color: Color(0xffF8B400),
                   textColor: Colors.white,
                   onPressed: () => {
-                    Navigator.of(context).pushNamed("/Game")
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Game()),
+                  ),
                   },
                 ),
               ),
@@ -325,7 +323,9 @@ class _PinState extends State<Pin> {
             actions: <Widget>[
               FlatButton(
                   child: Text('Cancel'),
-                  onPressed: () {} //should go back to home page
+                  onPressed: () {
+                    Navigator.pop(context);
+                  } //should go back to home page
 //                  Navigator.of(context).pop(teamName);
               ),
               FlatButton(

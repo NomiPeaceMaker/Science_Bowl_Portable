@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Science Bowl Portable</string>
+    <string name="facebook_app_id">906028803160999</string>
+    <string name="fb_login_protocol_scheme">fb906028803160999</string>
+</resources>
