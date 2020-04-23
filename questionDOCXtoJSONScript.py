@@ -67,11 +67,16 @@ def outjson(question, QuestionNumber):
     
     jsonQuestion['bonus_question']      = question.bonus.qbody
     jsonQuestion['bonus_isShortAns']    = True if (question.bonus.form == 'Short Answer') else False 
-    jsonQuestion['bonus_MCQoptions']    = None if (question.tossUp.ansOption == 'none') else question.tossUp.ansOption
+    jsonQuestion['bonus_MCQoptions']    = None if (question.bonus.ansOption == 'none') else question.bonus.ansOption
     jsonQuestion['bonus_answer']        = question.bonus.answer
     jsonQuestion['bonus_image']         = None
 
     dir = './jsonQuestions/'
+
+    if not os.path.isdir(dir):
+        print('Making directory ', dir)
+        os.makedirs(dir)
+
     filename = question.tossUp.subtype + '_' + str(QuestionNumber) + '.json'
     with open(dir + filename,'w') as json_file:
         json.dump(jsonQuestion, json_file)
@@ -313,29 +318,7 @@ def main():
     print("EnS:\t", len(EnSList_easy), "\t",len(EnSList_hard))
     
 
-    # Randomize Questions
-    print("\n(~'^')~ Shuffling Questions...", end =" ")
-    
-    shuffle(phyList_easy)
-    shuffle(phyList_hard)
-    
-    shuffle(chemList_easy)
-    shuffle(chemList_hard)
-
-    shuffle(bioList_easy)
-    shuffle(bioList_hard)
-    
-    shuffle(mathList_easy)
-    shuffle(mathList_hard)
-    
-    shuffle(EnSList_easy)
-    shuffle(EnSList_hard)
-    
-    time.sleep(1)
-    print("done\n")
-    
-
-    os.system('cls')
+    # os.system('cls')
     
     out_count = 0
         
@@ -362,7 +345,6 @@ def main():
             obj = phyList.pop(0)
             Qlist.remove(obj)
             outjson(obj,phy_count)
-            print(obj)
             out_count += 1
         
         if len(chemList):
