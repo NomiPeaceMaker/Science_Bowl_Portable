@@ -3,8 +3,6 @@ import os
 import time
 import math
 import json
-from docx.shared import Pt
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from random import shuffle
 
 # to make this file run make sure to download the file dependencies (the imports)
@@ -55,6 +53,10 @@ def outjson(question, QuestionNumber):
     
     jsonQuestion['id']                  = QuestionNumber
     jsonQuestion['difficultyLevel']     = question.tossUp.level
+    
+    if question.tossUp.subtype == 'Earth and Space':
+        question.tossUp.subtype = 'Earth_and_Space'
+
     jsonQuestion['subjectType']         = question.tossUp.subtype
 
     jsonQuestion['tossup_question']     = question.tossUp.qbody
@@ -98,22 +100,12 @@ def putLevel(level, demo, easyList, hardList):
     elif level == 1:
         hardList.append(demo)
 
-def askDifficulty(sub,easy, hard) :
-    print("for", sub)
-
-    while True:
-        try:
-            level_sel = int(input("How difficult do you want questions to be? (input 0 for easy, 1 for hard):"))
-        except ValueError:
-            print("ERROR: Please input integers only.")
-            continue
-
-        if level_sel == 0:
-            return easy
-        elif level_sel == 1:
-            return hard                
-        else:
-            print("Please try again")
+def askDifficulty(sub,easy, hard,level) :
+    if level == 0:
+        return easy
+    else:
+        return hard                
+    
 
 def chicken():
     print("      __//")
@@ -348,11 +340,11 @@ def main():
     out_count = 0
         
     # difficulty level
-    phyList     = askDifficulty("PHYSICS", phyList_easy,phyList_hard)
-    chemList    = askDifficulty("CHEMISTRY", chemList_easy,chemList_hard)
-    bioList     = askDifficulty("BIOLOGY", bioList_easy,bioList_hard)
-    mathList    = askDifficulty("MATH",mathList_easy,mathList_hard)
-    EnSList     = askDifficulty("EARTH AND SPACE",EnSList_easy,EnSList_hard)
+    phyList     = askDifficulty("PHYSICS", phyList_easy,phyList_hard,level)
+    chemList    = askDifficulty("CHEMISTRY", chemList_easy,chemList_hard,level)
+    bioList     = askDifficulty("BIOLOGY", bioList_easy,bioList_hard,level)
+    mathList    = askDifficulty("MATH",mathList_easy,mathList_hard,level)
+    EnSList     = askDifficulty("EARTH AND SPACE",EnSList_easy,EnSList_hard,level)
     
         
     # Count of questions
@@ -370,6 +362,7 @@ def main():
             obj = phyList.pop(0)
             Qlist.remove(obj)
             outjson(obj,phy_count)
+            print(obj)
             out_count += 1
         
         if len(chemList):
@@ -400,7 +393,7 @@ def main():
             outjson(obj,EnS_count)
             out_count += 1
 
-    print("",bio_count,"bio quesitons\n",chem_count,"chem quesitons\n",phy_count,"phy quesitons\n",math_count,"math quesitons\n",EnS_count,"EnS quesitons",)         
+    print("Outputting\n",bio_count,"bio quesitons\n",chem_count,"chem quesitons\n",phy_count,"phy quesitons\n",math_count,"math quesitons\n",EnS_count,"EnS quesitons",)         
 
         
           
