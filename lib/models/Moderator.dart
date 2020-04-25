@@ -1,4 +1,5 @@
 import 'package:sciencebowlportable/models/User.dart';
+import 'package:sciencebowlportable/globals.dart';
 
 class Moderator extends User {
   String userName, email;
@@ -6,7 +7,11 @@ class Moderator extends User {
   int gamePin, numberOfQuestion;
   double gameTime, tossUpTime, bonusTime;
   var subjects;
-  Moderator(this.userName, this.email) : super(userName, email);
+
+  Moderator() {
+    this.userName = user.userName;
+    this.email = user.email;
+  }
 }
 
 //
