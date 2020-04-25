@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/onboarding.dart';
-import 'package:sciencebowlportable/screens/matchSettings.dart';
+import 'package:sciencebowlportable/screens/result.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -12,16 +13,11 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       home: OnboardingScreen(),
+      // home: Result()
     );
   }
 }
 
-
-//void main() {
-//  runApp(MaterialApp(
-//    home: MatchSettings(),
-//  ));
-//}
 
 // void main() => runApp(MyApp());
 
@@ -34,7 +30,7 @@ class MyApp extends StatelessWidget {
 //       theme: ThemeData(
 //         appBarTheme: AppBarTheme(
 //           color: Color.fromARGB(200, 255, 255, 255),
-        
+
 //       ),
 //         brightness: Brightness.light,
 //         primaryColor: Color(0xFFF8B400),
@@ -46,5 +42,3 @@ class MyApp extends StatelessWidget {
 //     );
 //   }
 // }
-
-
