@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-
-void Host1() {
-  runApp(MaterialApp(
-    home: Host(),
-  ));
-}
+import 'package:sciencebowlportable/globals.dart';
+import 'package:sciencebowlportable/models/Moderator.dart';
 
 class Host extends StatefulWidget {
   @override
@@ -23,6 +19,8 @@ class _HostState extends State<Host> {
   String A = "PHENOTYPE";
   bool BuzzerOpen = true;
   double timeToAnswer = 2.113;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/onboarding.dart';
-
+import 'package:sciencebowlportable/screens/matchSettings.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,6 +16,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+//void main() {
+//  runApp(MaterialApp(
+//    home: MatchSettings(),
+//  ));
+//}
 
 // void main() => runApp(MyApp());
 

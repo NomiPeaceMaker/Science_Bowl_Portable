@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/join.dart';
 import 'package:sciencebowlportable/screens/moderator.dart';
+import 'package:sciencebowlportable/screens/matchSettings.dart';
+import 'package:sciencebowlportable/globals.dart';
 
 enum settings {
   help, report
@@ -116,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: (){
                     Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Host()),
+                    MaterialPageRoute(builder: (context) => MatchSettings()),
                   );
                   },
                 ),

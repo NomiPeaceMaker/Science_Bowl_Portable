@@ -16,7 +16,7 @@ class Edit_account extends StatelessWidget {
           Row(children: <Widget>[
             Text("Username: "), Text("$name1"),
             Container(alignment: Alignment.centerRight,
-            child: Text("                           edit",style: TextStyle(color: Colors.red,),)
+            child: Text("edit",style: TextStyle(color: Colors.red,),)
             ),
           ],
           )
