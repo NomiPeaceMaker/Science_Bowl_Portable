@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 // import 'package:science_bowl_portable/globals.dart';
 // import 'package:science_bowl_portable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/home.dart';
+import 'package:sciencebowlportable/globals.dart';
 
 void firstusername() => runApp(Username());
+
+String temp_username="";
 
 class Username extends StatefulWidget {
   @override
@@ -65,6 +68,8 @@ class _usernameState extends State<Username> {
             child: Container(
                 width: 230,
                 child: TextField(
+                  onChanged: (String text)
+                  {temp_username=text;},
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF66CCCC),
@@ -94,6 +99,7 @@ class _usernameState extends State<Username> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold)),
                 onPressed: (){
+                  user.userName=temp_username;
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => MyHomePage()),
