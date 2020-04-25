@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/onboarding.dart';
+import 'package:sciencebowlportable/screens/result.dart';
 
 
 void main() => runApp(MyApp());
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       home: OnboardingScreen(),
+      // home: Result()
     );
   }
 }
