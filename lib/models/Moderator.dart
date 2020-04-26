@@ -3,8 +3,7 @@ import 'package:sciencebowlportable/globals.dart';
 
 class Moderator extends User {
   String gameDifficulty;
-  int gamePin, numberOfQuestion;
-  double gameTime, tossUpTime, bonusTime;
+  int gamePin, numberOfQuestion, tossUpTime, bonusTime, gameTime;
   var subjects;
 }
 
