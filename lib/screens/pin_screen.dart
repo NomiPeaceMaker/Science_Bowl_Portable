@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Client.dart';
+import 'package:sciencebowlportable/models/Player.dart';
+
 import 'package:sciencebowlportable/screens/player_waiting_room.dart';
 
 //void join() => Pin();
@@ -14,13 +16,17 @@ class Pin extends StatefulWidget {
 
 class _PinState extends State<Pin> {
   String gamePin;
-
+  Player player = Player("");
   Client client;
+
   List<String> serverLogs = [];
   TextEditingController controller = TextEditingController();
 
   onData(Uint8List data) {
-    print(String.fromCharCodes(data));
+    String msg = String.fromCharCodes(data);
+    if (msg == "sendPlayerID") {
+      client.write(player.playerID);
+    }
     setState(() {});
   }
 
@@ -91,7 +97,7 @@ class _PinState extends State<Pin> {
                   }
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => WaitingRoom(this.client)),
+                    MaterialPageRoute(builder: (context) => WaitingRoom(this.client, this.player)),
                   );
                 }
               ),

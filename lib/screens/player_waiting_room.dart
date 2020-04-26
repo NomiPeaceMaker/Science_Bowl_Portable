@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/player_buzzer.dart';
 import 'package:sciencebowlportable/models/Client.dart';
+import 'package:sciencebowlportable/models/Player.dart';
 
 class WaitingRoom extends StatefulWidget {
   Client client;
+  Player player;
 
-  WaitingRoom(this.client);
+  WaitingRoom(this.client, this.player);
   @override
   _WaitingRoomState createState() {
-    return _WaitingRoomState(this.client);
+    return _WaitingRoomState(this.client, this.player);
   }
 }
 
 class _WaitingRoomState extends State<WaitingRoom> {
   Client client;
-  _WaitingRoomState(this.client);
+  Player player;
+  _WaitingRoomState(this.client, this.player);
 
   @override
   Widget build(BuildContext context) {
