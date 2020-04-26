@@ -8,7 +8,6 @@ part 'package:sciencebowlportable/screens/player_waiting_room.dart';
 
 //void join() => Pin();
 //Might need to tweak the colour scheme a bit + Red Team or Team A?
-
 //Needs validation based on valid pins + better styling possible
 
 
