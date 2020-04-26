@@ -1,4 +1,4 @@
-# Referenced at /home/lappy/GitCleanDirectory/Science_Bowl_Portable/build/app/intermediates/merged_manifests/debug/AndroidManifest.xml:26
+# Referenced at C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\app\intermediates\merged_manifests\debug\AndroidManifest.xml:26
 -keep class androidx.core.app.CoreComponentFactory { <init>(); }
-# Referenced at /home/lappy/GitCleanDirectory/Science_Bowl_Portable/build/app/intermediates/merged_manifests/debug/AndroidManifest.xml:26
+# Referenced at C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\app\intermediates\merged_manifests\debug\AndroidManifest.xml:26
 -keep class io.flutter.app.FlutterApplication { <init>(); }
