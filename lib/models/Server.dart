@@ -21,9 +21,9 @@ class Server {
       this.running = true;
       server.listen(onRequest);
       this.onData(Uint8List.fromList('Server listening on port 4040'.codeUnits));
-    }, onError: (e) {
-      this.onError(e);
-    });
+      }, onError: (e) {
+        this.onError(e);
+      });
   }
 
   stop() async {
@@ -47,4 +47,5 @@ class Server {
       this.onData(data);
     });
   }
+
 }

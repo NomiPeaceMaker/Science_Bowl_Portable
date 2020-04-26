@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/result.dart';
+import 'package:sciencebowlportable/models/Server.dart';
 
 class Host extends StatefulWidget {
+  Server server;
+  Host(this.server);
   @override
-  _HostState createState() => _HostState();
+  _HostState createState() {
+    return _HostState(this.server);
+  }
 }
 
 class _HostState extends State<Host> {
+  Server server;
+  _HostState(this.server);
+
   bool paused = true;
   double timeLeft = 3.444;
   int redScore = 24;
@@ -20,7 +28,6 @@ class _HostState extends State<Host> {
   String A = "PHENOTYPE";
   bool BuzzerOpen = true;
   double timeToAnswer = 2.113;
-
 
   @override
   Widget build(BuildContext context) {

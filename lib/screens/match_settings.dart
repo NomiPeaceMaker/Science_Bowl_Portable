@@ -4,6 +4,8 @@ import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/moderator.dart';
+import 'package:sciencebowlportable/models/Server.dart';
+import 'dart:typed_data';
 
 class MatchSettings extends StatefulWidget {
   @override
@@ -15,6 +17,33 @@ List<bool> isSelectedSubject_1 = List.generate(3, (_) => false);
 List<bool> isSelectedSubject_2 = List.generate(3, (_) => false);
 
 class _MatchSettingState extends State<MatchSettings> {
+  Server server;
+  Moderator moderator = Moderator();
+
+  List<String> serverLogs = [];
+  TextEditingController controller = TextEditingController();
+
+  initState() {
+    super.initState();
+    print("INITIALIZING STATE");
+    server = Server(
+      onData: this.onData,
+      onError: this.onError,
+    );
+    moderator.userName = name1;
+    moderator.email = user.email;
+  }
+
+  onData(Uint8List data) {
+    print(String.fromCharCodes(data));
+    setState(() {});
+  }
+
+  onError(dynamic error) {
+    print("error");
+    print(error);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -333,7 +362,7 @@ class _MatchSettingState extends State<MatchSettings> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Host()),
+                        MaterialPageRoute(builder: (context) => Host(this.server)),
                       );
                     }
                   )
