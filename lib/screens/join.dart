@@ -531,7 +531,7 @@ class _GameState extends State<Game> {
                   )
               ),
               Padding(
-                  padding: EdgeInsets.all(15),
+                  padding: EdgeInsets.all(13),
                   child: Text(
                     "Green\n"+greenScore.toString(),
                     textAlign: TextAlign.center,
