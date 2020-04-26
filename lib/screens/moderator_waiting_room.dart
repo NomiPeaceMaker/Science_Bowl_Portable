@@ -32,7 +32,10 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Color(0xffF8B400),
-        title: Text("Waiting Room"),
+        title: Text(
+          "HOST",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
+        ),
         centerTitle: true,
       ),
       body: Column(
