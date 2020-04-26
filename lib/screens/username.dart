@@ -109,9 +109,9 @@ class _usernameState extends State<Username> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold)),
                 onPressed: (){
-                  name1 = myController.text;
-                  user.userName=temp_username;
-                  print(name1);
+                  user.userName = myController.text;
+                  user.userName = temp_username;
+                  print(user.userName);
                   Navigator.pushNamed(context, '/home');
                       
                 }

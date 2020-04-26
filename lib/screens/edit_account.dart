@@ -27,7 +27,7 @@ class _Edit_account extends State<Edit_account> {
           Row(children: <Widget>[
             Padding(padding: const EdgeInsets.all(20),
             child:
-            Text("Username: "),), Text("$name1"),
+            Text("Username: "),), Text("${user.userName}"),
             Container(alignment: Alignment.centerRight,
             child:GestureDetector(
                 onTap: (){

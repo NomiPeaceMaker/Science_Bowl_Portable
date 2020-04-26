@@ -2,8 +2,8 @@ import 'package:sciencebowlportable/models/User.dart';
 import 'package:sciencebowlportable/globals.dart';
 
 class Moderator extends User {
-  String gameDifficulty;
-  int gamePin, numberOfQuestion, tossUpTime, bonusTime, gameTime;
+  String gameDifficulty, gamePin;
+  int numberOfQuestion, tossUpTime, bonusTime, gameTime;
   var subjects;
 }
 
