@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sciencebowlportable/globals.dart';
+import 'package:sciencebowlportable/main.dart';
 
 class Result extends StatefulWidget {
   @override
@@ -111,7 +113,10 @@ class _ResultState extends State<Result> {
               minWidth: 200.0,
               child: RaisedButton(
                 elevation: 2.0,
-                onPressed: () => {print('Take Me Home')},
+                onPressed: () => {
+                  Navigator.popUntil(context, ModalRoute.withName('/home'))
+                
+                },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),

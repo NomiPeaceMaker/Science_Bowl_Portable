@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-// import 'package:science_bowl_portable/globals.dart';
+import 'package:sciencebowlportable/globals.dart';
 // import 'package:science_bowl_portable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/home.dart';
 
 void firstusername() => runApp(Username());
+
+
 
 class Username extends StatefulWidget {
   @override
@@ -24,6 +26,15 @@ class Username extends StatefulWidget {
 
 class _usernameState extends State<Username> {
   @override
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -65,6 +76,7 @@ class _usernameState extends State<Username> {
             child: Container(
                 width: 230,
                 child: TextField(
+                  controller: myController,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF66CCCC),
@@ -94,10 +106,9 @@ class _usernameState extends State<Username> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold)),
                 onPressed: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()),
-                    );
+                  name1 = myController.text;
+                  print(name1);
+                  Navigator.pushNamed(context, '/home');
                       
                 }
                 )),
@@ -116,10 +127,7 @@ class _usernameState extends State<Username> {
                 )
               ),
             onPressed: (){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyHomePage()),
-                  );
+                Navigator.pushNamed(context, '/home');
                   
               },
             )

@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/screens/onboarding.dart';
 import 'package:sciencebowlportable/screens/result.dart';
 
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyApp createState() => _MyApp();
+}
+
+
+class _MyApp extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: OnboardingScreen(),
-      // home: Result()
+      initialRoute: '/',
+        routes: {
+          // When navigating to the "/" route, build the FirstScreen widget.
+          '/': (context) => OnboardingScreen(),
+          // When navigating to the "/second" route, build the SecondScreen widget.
+          '/home': (context) => MyHomePage(),
+        },
+        // home: OnboardingScreen(),
+          // home: Result()
     );
   }
 }

@@ -9,7 +9,7 @@ enum settings {
   help, report
 }
 
-var name1 = 'NomiPeaceMaker';
+// var name1 = 'NomiPeaceMaker';
 
 // void MyHomePage1() => runApp(MyHomePage());
 
@@ -24,7 +24,15 @@ class _MyHomePageState extends State<MyHomePage> {
   settings _selection;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Scaffold(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/homeBG.png"), fit: BoxFit.cover)),
+
+       child: Scaffold(
+
       drawer: Drawer(
         child: ListView(
           children: [
@@ -93,6 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
           ],
         ),
+        
         // THIS IS WHERE THE MAIN PAGE OF THE APP STARTS
         backgroundColor: Colors.white,
         body: Align( alignment: Alignment.center,
@@ -100,18 +109,28 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Row(
                   children: [
-                    Column(children: [Text(
-                      "Welcome $name1!"
+                    Column(children: [
+                      Padding(padding: const EdgeInsets.all(20),
+                      child: Text(
+                      "Welcome, $name1!",style: TextStyle(fontSize: 20.0)),
                     )]
                     ),
-                    Column(children: [Text(
-                      "View Reports"
-                    )]
+                    
+                    Column(
+                    //   children: [Text(
+                    //   "View Reports"
+                    // )]
                     ),
+
+                    
                   ]
                 ),
                 Center(
+                  child: Padding(padding: const EdgeInsets.all(80),
                   child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(500.0),
+                  ),
                   child: Text('HOST GAME',style: TextStyle(color: Colors.white,fontSize: 30.0)),
                   color: Color(0xFF20BABA),
                   padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
@@ -121,13 +140,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     MaterialPageRoute(builder: (context) => MatchSettings()),
                   );
                   },
+                )
+                  ),
                 ),
-                ),
-
+                
                 RaisedButton(
                   child: Text('JOIN GAME',style: TextStyle(color: Colors.white,fontSize: 30.0)),
                   color: Color(0xFF20BABA),
-                  padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
+                  padding: new EdgeInsets.fromLTRB(30.0, 40.0, 30.0, 40.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(500.0),
+                  ),
+                  
                   onPressed: (){
                     Navigator.push(
                     context,
@@ -145,19 +169,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     
                 //   ),
                 // ),
-                Center(
-                  child: RaisedButton(
-                  child: Text('HOW TO PLAY',style: TextStyle(color: Colors.white,fontSize: 30.0)),
-                  color: Color(0xFF20BABA),
-                  padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
-                  onPressed: (){
-                    // HOW TO PLAY SCREEN GOES HERE!
-                    //NAVIGATION WAALI CHEEZ KARO
-                  },
-                ),
-                ),
+                // Center(
+                //   child: RaisedButton(
+                //   child: Text('HOW TO PLAY',style: TextStyle(color: Colors.white,fontSize: 30.0)),
+                //   color: Color(0xFF20BABA),
+                //   padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
+                //   onPressed: (){
+                //     // HOW TO PLAY SCREEN GOES HERE!
+                //     //NAVIGATION WAALI CHEEZ KARO
+                //   },
+                // ),
+                // ),
               ]
             )
+        ),
         ),
       ),
     );

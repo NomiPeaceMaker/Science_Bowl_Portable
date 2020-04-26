@@ -46,7 +46,7 @@ class _MatchSettingState extends State<MatchSettings> {
             Center(
               child: Image(
                 image: AssetImage(
-                    'assets/settings.png'
+                    'assets/cogwheel@2x.png'
                 ),
                 height: 150,
                 width: 150,

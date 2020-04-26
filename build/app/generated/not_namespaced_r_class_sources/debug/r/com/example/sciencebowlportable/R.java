@@ -3551,10 +3551,18 @@ public final class R {
     public static final int common_open_on_phone=0x7f0b004e;
     public static final int common_signin_button_text=0x7f0b004f;
     public static final int common_signin_button_text_long=0x7f0b0050;
-    public static final int facebook_app_id=0x7f0b0051;
-    public static final int fb_login_protocol_scheme=0x7f0b0052;
-    public static final int search_menu_title=0x7f0b0053;
-    public static final int status_bar_notification_info_overflow=0x7f0b0054;
+    public static final int default_web_client_id=0x7f0b0051;
+    public static final int facebook_app_id=0x7f0b0052;
+    public static final int fb_login_protocol_scheme=0x7f0b0053;
+    public static final int firebase_database_url=0x7f0b0054;
+    public static final int gcm_defaultSenderId=0x7f0b0055;
+    public static final int google_api_key=0x7f0b0056;
+    public static final int google_app_id=0x7f0b0057;
+    public static final int google_crash_reporting_api_key=0x7f0b0058;
+    public static final int google_storage_bucket=0x7f0b0059;
+    public static final int project_id=0x7f0b005a;
+    public static final int search_menu_title=0x7f0b005b;
+    public static final int status_bar_notification_info_overflow=0x7f0b005c;
   }
   public static final class style {
     public static final int AlertDialog_AppCompat=0x7f0c0000;

@@ -121,7 +121,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                            SizedBox(height: 110.0),
+                            SizedBox(height: 109.0),
                             Center(
                               child: Text(
                                 'Play Anywhere!',
@@ -155,7 +155,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                            SizedBox(height: 110.0),
+                            SizedBox(height: 109.0),
                             Center(
                               child: Text(
                                 'Improve Your Game!',
@@ -189,7 +189,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                            SizedBox(height: 110.0),
+                            SizedBox(height: 109.0),
                             Center(
                               child: Text(
                                 'Lets Get Started!',

@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sciencebowlportable/screens/username.dart';
+import 'package:sciencebowlportable/globals.dart';
 
 // void main() => runApp(Login());
 
@@ -21,7 +22,9 @@ class _LoginState extends State<Login> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: _buildSocialLogin());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: _buildSocialLogin());
   }
 
   _buildSocialLogin() {
@@ -124,6 +127,8 @@ class _LoginState extends State<Login> {
 
   void initiateSignIn(String type) {
     _handleSignIn(type).then((result) {
+      print("THE HASJKHCGDHGAJSGKHKCJAHGNAKFJ IS = ");
+      print(result);
       if (result == 1) {
         setState(() {
           loggedIn = true;  
@@ -132,7 +137,7 @@ class _LoginState extends State<Login> {
                     context,
                     MaterialPageRoute(builder: (context) => Username()),
                   );
-      } else { //CHANGE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      } else { //Filed to log in
         Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Username()),

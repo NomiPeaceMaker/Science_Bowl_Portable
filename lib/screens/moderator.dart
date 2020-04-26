@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
+import 'package:sciencebowlportable/screens/result.dart';
 
 class Host extends StatefulWidget {
   @override
@@ -24,7 +25,41 @@ class _HostState extends State<Host> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(),
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            Container(
+              height: 55.0,
+              color: Color(0xffF8B400),
+              child: Center(
+                child: Text("Settings",
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.offline_pin, color: Color(0xffF8B400)),
+              title: Text("Game PIN:\n $pin",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
+              ),
+            ),
+            ListTile(
+              title: GestureDetector(
+                child: Text("Exit Game",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
+              ),
+                onTap: (){
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
+                }
+              ),
+
+                
+              leading: Icon(Icons.exit_to_app, color: Color(0xffF8B400),),
+              
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: Text(
@@ -199,7 +234,12 @@ class _HostState extends State<Host> {
                   padding: EdgeInsets.all(20.0),
                   color: Colors.lightGreen,
                   textColor: Colors.white,
-                  onPressed: () => {},
+                  onPressed: () => {
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Result()),
+                  )
+                  },
                 ),
                 FlatButton(
                   shape: RoundedRectangleBorder(

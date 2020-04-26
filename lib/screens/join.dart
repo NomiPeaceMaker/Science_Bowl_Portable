@@ -4,8 +4,11 @@
 import 'package:flutter/material.dart';
 import 'dart:async'; //for timer
 import "dart:math";
+import 'package:sciencebowlportable/screens/result.dart';
+import 'package:sciencebowlportable/screens/home.dart';
+import 'package:sciencebowlportable/globals.dart';
 
-import 'package:sciencebowlportable/screens/home.dart'; //for random
+ //for random
 void join() => Pin();
 //Might need to tweak the colour scheme a bit + Red Team or Team A?
 class _WaitingRoom extends StatefulWidget {
@@ -291,11 +294,20 @@ class Pin extends StatefulWidget {
 }
 
 class _PinState extends State<Pin> {
-  String pin;
+  // String pin;
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xffF8B400),
@@ -310,6 +322,7 @@ class _PinState extends State<Pin> {
               children: <Widget>[
                 new Expanded(
                     child: new TextField(
+                      controller: myController,
                       autofocus: true,
                       decoration: new InputDecoration(
                           labelText: 'Match PIN',
@@ -331,6 +344,7 @@ class _PinState extends State<Pin> {
               FlatButton(
                 child: Text('Confirm'),
                 onPressed: () {
+                  pin = myController.text;
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => _WaitingRoom()),
@@ -355,7 +369,7 @@ class _GameState extends State<Game> {
   double timeLeft = 3.444;
   Color txtClr = Colors.white;
   int redScore = 0;
-  String gamePin="NP5629";
+  String gamePin= pin;
   int greenScore = 0;
   Color bzrBorder=Colors.white;
   Color buzzerClr=Color(0xFFf84b4b);
@@ -450,24 +464,29 @@ class _GameState extends State<Game> {
               color: Color(0xffF8B400),
               child: Center(
                 child: Text("Settings",
-//                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 25),
                 ),
               ),
             ),
             ListTile(
               leading: Icon(Icons.offline_pin, color: Color(0xffF8B400)),
               title: Text("Game PIN:\n $gamePin",
-//              textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
               ),
             ),
             ListTile(
-              leading: Icon(Icons.exit_to_app, color: Color(0xffF8B400),),
-              title: Text("Exit Game",
-//              textAlign: TextAlign.center,
+              title: GestureDetector(
+                child: Text("Exit Game",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
               ),
+                onTap: (){
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
+                }
+              ),
+
+                
+              leading: Icon(Icons.exit_to_app, color: Color(0xffF8B400),),
+              
             ),
           ],
         ),
@@ -493,7 +512,7 @@ class _GameState extends State<Game> {
                   child: Text(
                     "Red\n"+redScore.toString(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 25),
                   )
               ),
               Card(
@@ -507,7 +526,7 @@ class _GameState extends State<Game> {
                       child: Text(
                         "Time Left\n"+timeLeft.toStringAsFixed(2),
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold, color:Colors.purple , fontSize: 18),
+                        style: TextStyle(fontWeight: FontWeight.bold, color:Colors.purple , fontSize: 25),
                       )
                   )
               ),
@@ -516,7 +535,7 @@ class _GameState extends State<Game> {
                   child: Text(
                     "Green\n"+greenScore.toString(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightGreen, fontSize: 18),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightGreen, fontSize: 25),
                   )
               )
             ],
@@ -601,6 +620,10 @@ class _GameState extends State<Game> {
 //                                  animation: ,
                                   duration: Duration(seconds: 2),
                                 ),
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => Result()),
                               );
                             }
                         }
