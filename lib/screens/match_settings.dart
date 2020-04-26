@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'dart:io';
 import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
-import 'package:sciencebowlportable/screens/moderator.dart';
+import 'package:sciencebowlportable/screens/moderator_waiting_room.dart';
 import 'package:sciencebowlportable/models/Server.dart';
+
 import 'dart:typed_data';
 
 class MatchSettings extends StatefulWidget {
@@ -30,9 +32,23 @@ class _MatchSettingState extends State<MatchSettings> {
       onData: this.onData,
       onError: this.onError,
     );
-    moderator.userName = name1;
+    Future printIps() async {
+      for (var interface in await NetworkInterface.list()) {
+        print('== Interface: ${interface.name} ==');
+        for (var addr in interface.addresses) {
+          moderator.gamePin = '${addr.address}';
+        }
+      }
+    }
+    printIps().then((value) {
+      print(moderator.gamePin);
+      pin = moderator.gamePin;
+    }, onError: (error) {
+      print(error);
+    });
+
+    moderator.userName = user.userName;
     moderator.email = user.email;
-    moderator.gamePin;
     moderator.gameDifficulty = "HighSchool";
     moderator.gameTime = 20;
     moderator.numberOfQuestion = 25;
@@ -60,7 +76,7 @@ class _MatchSettingState extends State<MatchSettings> {
         elevation: 0.00,
         title: Text(
           "HOST",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
         ),
         centerTitle: true,
         leading: Builder(
@@ -388,12 +404,14 @@ class _MatchSettingState extends State<MatchSettings> {
                     icon: Icon(Icons.navigate_next),
                     color: Colors.red,
                     iconSize: 30,
-                    onPressed: () {
+                    onPressed: () async {
+                      await server.start();
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),
+                        MaterialPageRoute(builder: (context) => ModeratorWaitingRoom(this.server, this.moderator)),
                       );
-                    }
+                      setState(() {});
+                    },
                   )
                 ],
               ),

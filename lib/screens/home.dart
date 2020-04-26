@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/edit_account.dart';
-import 'package:sciencebowlportable/screens/join.dart';
+import 'package:sciencebowlportable/screens/pin_screen.dart';
 import 'package:sciencebowlportable/screens/moderator.dart';
 import 'package:sciencebowlportable/screens/match_settings.dart';
 import 'package:sciencebowlportable/globals.dart';
@@ -10,7 +10,6 @@ enum settings {
 }
 
 // var name1 = 'NomiPeaceMaker';
-
 // void MyHomePage1() => runApp(MyHomePage());
 
 class MyHomePage extends StatefulWidget {
@@ -43,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   TextSpan(
                     children: <TextSpan>[
                       TextSpan(text: "Welcome,\n",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 44)),
-                      TextSpan(text: "$name1",style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20)),
+                      TextSpan(text: "${user.userName}",style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20)),
                     ],
                     
                   )
@@ -112,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Column(children: [
                       Padding(padding: const EdgeInsets.all(20),
                       child: Text(
-                      "Welcome, $name1!",style: TextStyle(fontSize: 20.0)),
+                      "Welcome, ${user.userName}!",style: TextStyle(fontSize: 20.0)),
                     )]
                     ),
                     
