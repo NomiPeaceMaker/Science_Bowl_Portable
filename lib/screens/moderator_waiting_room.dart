@@ -22,6 +22,8 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 
   _ModeratorWaitingRoomState(this.server, this.moderator);
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

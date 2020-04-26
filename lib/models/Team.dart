@@ -4,4 +4,5 @@ class Team {
   String teamName;
   int score;
   List<Player> players;
+  Team(this.teamName);
 }
