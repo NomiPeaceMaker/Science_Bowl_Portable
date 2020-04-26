@@ -181,21 +181,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 width: 250,
                               ),
                             ),
-                            SizedBox(height: 30.0),
+                            SizedBox(height: 78.0),
                             Center(
                               child: Text(
-                                'Play the science bowl\nanywhere from your phone!',
+                                'Lets get Started!',
                                 style: subtitleStyle,
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                            SizedBox(height: 109.0),
+                            SizedBox(height: 40), // CHANGE THIS
                             Center(
-                              child: Text(
-                                'Lets Get Started!',
-                                style: titleStyle,
-                                textAlign: TextAlign.center,
-                              ),
+                              child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(500.0),
+                  ),
+                  child: Text('▷',style: TextStyle(color: const Color(0xFFF8B400),fontSize: 30.0, fontWeight: FontWeight.bold)),
+                  color: Colors.white,
+                  padding: new EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
+                  onPressed: (){
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Login()),
+                  );
+                  },
+                ),
                             ),
                           ],
                         )
