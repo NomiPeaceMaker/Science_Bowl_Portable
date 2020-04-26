@@ -12,7 +12,7 @@ class MatchSettings extends StatefulWidget {
   _MatchSettingState createState() => _MatchSettingState();
 }
 
-List<bool> isSelectedDifficulty = List.generate(2, (_) => false);
+List<bool> isSelectedDifficulty = [false, true];
 List<bool> isSelectedSubject_1 = List.generate(3, (_) => false);
 List<bool> isSelectedSubject_2 = List.generate(3, (_) => false);
 
@@ -118,6 +118,8 @@ class _MatchSettingState extends State<MatchSettings> {
                       onChanged: (text) {
                         moderator.gameTime = int.parse(text);
                       },
+                      controller: TextEditingController()..text = '20',
+//                      initialValue: "20",
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
@@ -155,6 +157,7 @@ class _MatchSettingState extends State<MatchSettings> {
                             onChanged: (text) {
                               moderator.numberOfQuestion = int.parse(text);
                             },
+                            controller: TextEditingController()..text = '25',
                             decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -305,6 +308,10 @@ class _MatchSettingState extends State<MatchSettings> {
                           width: 65,
                           height: 40,
                           child: TextField(
+                            onChanged: (text) {
+                              moderator.tossUpTime = int.parse(text);
+                            },
+                            controller: TextEditingController()..text = '05',
                             decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -339,6 +346,10 @@ class _MatchSettingState extends State<MatchSettings> {
                           width: 65,
                           height: 40,
                           child: TextField(
+                            onChanged: (text) {
+                              moderator.bonusTime = int.parse(text);
+                            },
+                            controller: TextEditingController()..text = '20',
                             decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -366,7 +377,12 @@ class _MatchSettingState extends State<MatchSettings> {
                     ),
                     color: Colors.transparent,
                     textColor: Colors.red,
-                    onPressed: () => {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MatchSettings()),
+                      );
+                    },
                   ),
                   IconButton(
                     icon: Icon(Icons.navigate_next),
