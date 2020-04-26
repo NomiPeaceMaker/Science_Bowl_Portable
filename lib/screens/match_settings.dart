@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
-import 'package:sciencebowlportable/screens/moderator.dart';
+import 'package:sciencebowlportable/screens/moderator_waiting_room.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 
 import 'dart:typed_data';
@@ -408,7 +408,7 @@ class _MatchSettingState extends State<MatchSettings> {
                       await server.start();
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),
+                        MaterialPageRoute(builder: (context) => ModeratorWaitingRoom(this.server, this.moderator)),
                       );
                       setState(() {});
                     },

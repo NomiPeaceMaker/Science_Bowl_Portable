@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:sciencebowlportable/screens/player_buzzer.dart';
-import 'package:sciencebowlportable/models/Client.dart';
+import 'package:sciencebowlportable/globals.dart';
+import 'package:sciencebowlportable/models/Moderator.dart';
+import 'package:sciencebowlportable/screens/moderator.dart';
+import 'package:sciencebowlportable/models/Server.dart';
 
-class WaitingRoom extends StatefulWidget {
-  Client client;
+class ModeratorWaitingRoom extends StatefulWidget {
+  Server server;
+  Moderator moderator;
 
-  WaitingRoom(this.client);
   @override
-  _WaitingRoomState createState() {
-    return _WaitingRoomState(this.client);
+  ModeratorWaitingRoom(this.server, this.moderator);
+
+  _ModeratorWaitingRoomState createState() {
+    return _ModeratorWaitingRoomState(this.server, this.moderator);
   }
 }
 
-class _WaitingRoomState extends State<WaitingRoom> {
-  Client client;
-  _WaitingRoomState(this.client);
+class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
+  Server server;
+  Moderator moderator;
+
+  _ModeratorWaitingRoomState(this.server, this.moderator);
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +32,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Color(0xffF8B400),
-        title: Text(
-          "JOIN",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
-        ),
+        title: Text("Waiting Room"),
         centerTitle: true,
       ),
       body: Column(
@@ -39,13 +42,19 @@ class _WaitingRoomState extends State<WaitingRoom> {
             margin: EdgeInsets.only(top: 20.0),
             child: Align(
               alignment: Alignment.topCenter,
-              child: Text(
-                "Slots Available",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Color(0xffCC0066), fontSize: 22
-                ),
-              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Text(
+                      "You're hosting,\n${user.userName}",
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber, fontSize: 18),
+                  ),
+                  Text(
+                      "Game Pin\n${moderator.gamePin}:",
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber, fontSize: 18),
+                  ),
+                ],
+              )
             ),
           ),
           Row(
@@ -272,7 +281,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
                   onPressed: () => {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Game()),
+                      MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),
                     ),
                   },
                 ),
