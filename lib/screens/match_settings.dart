@@ -40,7 +40,6 @@ class _MatchSettingState extends State<MatchSettings> {
   }
 
   onError(dynamic error) {
-    print("error");
     print(error);
   }
 
@@ -362,7 +361,7 @@ class _MatchSettingState extends State<MatchSettings> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Host(this.server)),
+                        MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),
                       );
                     }
                   )

@@ -6,16 +6,20 @@ import 'package:sciencebowlportable/models/Server.dart';
 
 class Host extends StatefulWidget {
   Server server;
-  Host(this.server);
+  Moderator moderator;
+
+  Host(this.server, this.moderator);
   @override
   _HostState createState() {
-    return _HostState(this.server);
+    return _HostState(this.server, this.moderator);
   }
 }
 
 class _HostState extends State<Host> {
   Server server;
-  _HostState(this.server);
+  Moderator moderator;
+
+  _HostState(this.server, this.moderator);
 
   bool paused = true;
   double timeLeft = 3.444;
