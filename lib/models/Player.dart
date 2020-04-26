@@ -1,7 +1,12 @@
 import 'package:sciencebowlportable/models/User.dart';
+import 'package:sciencebowlportable/globals.dart';
 
 class Player extends User {
   String userName, email;
   int playerID;
-  Player(this.userName, this.email) : super(userName, email);
+
+  Player() {
+    this.email = user.email;
+    this.userName = user.userName;
+  }
 }

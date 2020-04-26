@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/globals.dart';
 // import 'package:science_bowl_portable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/home.dart';
+import 'package:sciencebowlportable/globals.dart';
 
 void firstusername() => runApp(Username());
 
-
+String temp_username="";
 
 class Username extends StatefulWidget {
   @override
@@ -77,6 +78,8 @@ class _usernameState extends State<Username> {
                 width: 230,
                 child: TextField(
                   controller: myController,
+                  onChanged: (String text)
+                  {temp_username=text;},
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF66CCCC),
@@ -107,6 +110,7 @@ class _usernameState extends State<Username> {
                       fontWeight: FontWeight.bold)),
                 onPressed: (){
                   name1 = myController.text;
+                  user.userName=temp_username;
                   print(name1);
                   Navigator.pushNamed(context, '/home');
                       
