@@ -404,12 +404,14 @@ class _MatchSettingState extends State<MatchSettings> {
                     icon: Icon(Icons.navigate_next),
                     color: Colors.red,
                     iconSize: 30,
-                    onPressed: () {
+                    onPressed: () async {
+                      await server.start();
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),
                       );
-                    }
+                      setState(() {});
+                    },
                   )
                 ],
               ),

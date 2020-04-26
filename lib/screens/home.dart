@@ -10,7 +10,6 @@ enum settings {
 }
 
 // var name1 = 'NomiPeaceMaker';
-
 // void MyHomePage1() => runApp(MyHomePage());
 
 class MyHomePage extends StatefulWidget {

@@ -1,4 +1,4 @@
-library join;
+library pin_screen;
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Client.dart';
@@ -10,7 +10,6 @@ part 'package:sciencebowlportable/screens/player_waiting_room.dart';
 //Might need to tweak the colour scheme a bit + Red Team or Team A?
 //Needs validation based on valid pins + better styling possible
 
-
 class Pin extends StatefulWidget {
   @override
   _PinState createState() => _PinState();
@@ -18,10 +17,23 @@ class Pin extends StatefulWidget {
 
 class _PinState extends State<Pin> {
   String gamePin;
+
+  Client client;
+  List<String> serverLogs = [];
+  TextEditingController controller = TextEditingController();
+
+  onData(Uint8List data) {
+    print(String.fromCharCodes(data));
+    setState(() {});
+  }
+
+  onError(dynamic error) {
+    print(error);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xffF8B400),
@@ -56,11 +68,25 @@ class _PinState extends State<Pin> {
               ),
               FlatButton(
                 child: Text('Confirm'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => _WaitingRoom()),
-                  );
+                onPressed: () async {
+                  setState(() async {
+                    client = Client(
+                      hostname: "0.0.0.0",
+                      port: 4040,
+                      onData: this.onData,
+                      onError: this.onError,
+                    );
+                    if (client.connected) {
+                      print("connected");
+                    } else {
+                      print("waiting for connection");
+                      await client.connect();
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => _WaitingRoom(client)),
+                    );
+                  });
                 }
               ),
             ],

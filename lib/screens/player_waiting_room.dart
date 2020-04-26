@@ -1,37 +1,20 @@
-part of join;
+part of pin_screen;
 
 class _WaitingRoom extends StatefulWidget {
   @override
-  _WaitingRoomState createState() => _WaitingRoomState();
+  Client client;
+  _WaitingRoom(this.client);
+
+  _WaitingRoomState createState() {
+    return _WaitingRoomState(this.client);
+  }
 }
 
 class _WaitingRoomState extends State<_WaitingRoom> {
-  @override
   Client client;
-  List<String> serverLogs = [];
-  TextEditingController controller = TextEditingController();
+  _WaitingRoomState(this.client);
 
-  initState() {
-    super.initState();
-
-    client = Client(
-      hostname: "0.0.0.0",
-      port: 4040,
-      onData: this.onData,
-      onError: this.onError,
-    );
-
-  }
-
-  onData(Uint8List data) {
-    print(String.fromCharCodes(data));
-    setState(() {});
-  }
-
-  onError(dynamic error) {
-    print(error);
-  }
-
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,

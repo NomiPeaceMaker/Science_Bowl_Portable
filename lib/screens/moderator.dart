@@ -18,7 +18,7 @@ class Host extends StatefulWidget {
 class _HostState extends State<Host> {
   Server server;
   Moderator moderator;
-    _HostState(this.server, this.moderator);
+  _HostState(this.server, this.moderator);
 
   bool paused = true;
   double timeLeft = 3.444;
@@ -62,8 +62,6 @@ class _HostState extends State<Host> {
                   Navigator.popUntil(context, ModalRoute.withName('/home'));
                 }
               ),
-
-                
               leading: Icon(Icons.exit_to_app, color: Color(0xffF8B400),),
               
             ),
