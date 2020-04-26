@@ -126,7 +126,7 @@ class _LoginState extends State<Login> {
 
   void initiateSignIn(String type) {
     _handleSignIn(type).then((result) {
-      print("THE HASJKHCGDHGAJSGKHKCJAHGNAKFJ IS = ");
+      print("If there is a 0 in the next line then login was unsucessful = ");
       print(result);
       if (result == 1) {
         setState(() {

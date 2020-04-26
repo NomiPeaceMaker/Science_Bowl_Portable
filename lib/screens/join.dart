@@ -504,9 +504,13 @@ class _GameState extends State<Game> {
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app, color: Color(0xffF8B400),),
-              title: Text("Exit Game",
-//              textAlign: TextAlign.center,
+              title: GestureDetector(
+                child: Text("Exit Game",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
+              ),
+                onTap: (){
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
+                }
               ),
             ),
           ],
