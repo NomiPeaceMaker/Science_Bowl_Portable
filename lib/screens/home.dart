@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/join.dart';
 import 'package:sciencebowlportable/screens/moderator.dart';
-import 'package:sciencebowlportable/screens/matchSettings.dart';
+import 'package:sciencebowlportable/screens/match_settings.dart';
 import 'package:sciencebowlportable/globals.dart';
 
 enum settings {
