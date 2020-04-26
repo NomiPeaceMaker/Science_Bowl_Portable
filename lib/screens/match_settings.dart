@@ -32,6 +32,13 @@ class _MatchSettingState extends State<MatchSettings> {
     );
     moderator.userName = name1;
     moderator.email = user.email;
+    moderator.gamePin;
+    moderator.gameDifficulty = "HighSchool";
+    moderator.gameTime = 20;
+    moderator.numberOfQuestion = 25;
+    moderator.subjects = ["Math", "Physics"];
+    moderator.tossUpTime = 5;
+    moderator.bonusTime = 20;
   }
 
   onData(Uint8List data) {
@@ -108,6 +115,9 @@ class _MatchSettingState extends State<MatchSettings> {
                     width: 65,
                     height: 40,
                     child: TextField(
+                      onChanged: (text) {
+                        moderator.gameTime = int.parse(text);
+                      },
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
@@ -142,6 +152,9 @@ class _MatchSettingState extends State<MatchSettings> {
                           width: 65,
                           height: 40,
                           child: TextField(
+                            onChanged: (text) {
+                              moderator.numberOfQuestion = int.parse(text);
+                            },
                             decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -186,6 +199,7 @@ class _MatchSettingState extends State<MatchSettings> {
                             setState(() {
                               isSelectedDifficulty[index] = !isSelectedDifficulty[index];
                               isSelectedDifficulty[1-index] = false;
+                              moderator.gameDifficulty = isSelectedDifficulty[0] ? "MiddleSchool" : "HighSchool";
                             });
                           },
                         isSelected: isSelectedDifficulty,
