@@ -36,7 +36,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
         centerTitle: true,
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(top: 20.0),
@@ -47,11 +47,11 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                 children: <Widget>[
                   Text(
                       "You're hosting,\n${user.userName}",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber, fontSize: 18),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 18),
                   ),
                   Text(
-                      "Game Pin\n${moderator.gamePin}:",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber, fontSize: 18),
+                      "Game Pin:\n${moderator.gamePin}",
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 18),
                   ),
                 ],
               )
@@ -273,10 +273,10 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                   child: Text(
-                      "Confirm",
+                      "Start Game",
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
                   ),
-                  color: Color(0xffF8B400),
+                  color: Colors.pink,
                   textColor: Colors.white,
                   onPressed: () => {
                     Navigator.push(

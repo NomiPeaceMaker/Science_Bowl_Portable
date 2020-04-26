@@ -76,7 +76,7 @@ class _MatchSettingState extends State<MatchSettings> {
         elevation: 0.00,
         title: Text(
           "HOST",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
         ),
         centerTitle: true,
         leading: Builder(
