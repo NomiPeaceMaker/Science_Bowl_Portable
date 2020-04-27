@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Models.dart';
+import "package:hex/hex.dart";
 
 class Client {
   Client({
@@ -46,4 +47,18 @@ class Client {
       connected = false;
     }
   }
+}
+
+String key2ip(String input)
+{
+  String ip;
+  String first;
+  String second;
+  if (input[0] == 'G')
+  {
+    first = (HEX.decode(input[1]+input[2]))[0].toString();
+    second = (HEX.decode(input[3]+input[4]))[0].toString();
+    ip = '192.168.' + first + '.' + second;
+  }
+  return ip;
 }
