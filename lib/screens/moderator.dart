@@ -5,6 +5,10 @@ import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/result.dart';
 import 'package:sciencebowlportable/models/Server.dart';
+import 'package:sciencebowlportable/models/Questions.dart';
+import "package:path/path.dart" show dirname;
+import 'dart:io' show Platform;
+import 'package:path_provider/path_provider.dart';
 
 class Host extends StatefulWidget {
   Server server;
@@ -20,19 +24,21 @@ class Host extends StatefulWidget {
 class _HostState extends State<Host> {
   Server server;
   Moderator moderator;
-
+  _HostState(this.server, this.moderator);
 
   bool paused = true;
-  double timeLeft = 3.444;
-  int redScore = 24;
-  int greenScore = 14;
+  int redScore = 0;
+  int greenScore = 0;
+
   String roundName = "Toss-Up";
   String Qsubject = "Biology";
   String Qtype = "Short Answer";
   String Q = "What is the most common term used in genetics to decribe the observable physical charactersitics of an organism casued by the expression of a gene or a set of genes?";
   String A = "PHENOTYPE";
-  bool BuzzerOpen = true;
+  bool BuzzerOpen = false;
   double timeToAnswer = 2.113;
+
+  String reading_txt="Done Reading";
 
 //timer variables
   bool unavailable=false;
@@ -44,6 +50,7 @@ class _HostState extends State<Host> {
   Timer _buzzTimer;
   Timer _gameTimer;
 
+  Future<List<Question>> questionSet;
   void _startBuzzTimer() {
     _counter = 5;
     if (_buzzTimer != null) {
@@ -97,12 +104,10 @@ class _HostState extends State<Host> {
     });
   }
 
-  _HostState(this.server, this.moderator);
-
   initState()
   {
-    print("Init worked");
     _startGameTimer();
+
   }
 
 
@@ -166,7 +171,8 @@ class _HostState extends State<Host> {
                   setState(() {
                     paused = false;
                   });
-                } else {
+                }
+                else {
                   setState(() {
                     paused = true;
                   });
@@ -176,183 +182,233 @@ class _HostState extends State<Host> {
           )
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(15),
-                child: Text(
-                    "Red\n"+redScore.toString(),
-                    textAlign: TextAlign.right,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                      "Red\n"+redScore.toString(),
+                      textAlign: TextAlign.right,
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
+                  )
+                ),
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  margin: EdgeInsets.all(15),
+                  elevation: 10.0,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 10.0),
+                    child: Text(
+                      "Time Left\n"+_minutes.toString()+":"+buf+_seconds.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold, color:Colors.purple , fontSize: 18),
+                    )
+                  )
+                ),
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                    "Green\n"+greenScore.toString(),
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightGreen, fontSize: 18),
+                  )
                 )
+              ],
+            ),
+            Card(
+              color: Colors.yellow[50],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
-              Card(
+              margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+              elevation: 10.0,
+              child: Column(
+  //              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      roundName,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Text(
+                        Qsubject,
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      Text(
+                        Qtype,
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Text(
+                      "Q: "+Q,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      "A: "+A,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                   children: <Widget>[
+                     Text("Skip Question"),
+                     IconButton(
+                      icon: new Icon(Icons.navigate_next),
+                      alignment: Alignment.bottomRight,
+                      iconSize: 32,
+                      onPressed: () {}, //next qs
+                    ),
+                   ],
+                  ),
+                ],
+              )
+            ),
+  //          Card(
+  //            margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+  //            color: BuzzerOpen ? Colors.grey : Colors.lightGreen,
+  //            shape: RoundedRectangleBorder(
+  //              borderRadius: BorderRadius.circular(10.0),
+  //            ),
+  //            child: BuzzerOpen ?
+  //              Row(
+  //                mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //                children: <Widget>[
+  //                  new Icon(Icons.fiber_manual_record, color: Colors.white, size: 50),
+  //                  Text("Buzzer Open", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
+  //                  Text(timeToAnswer.toStringAsFixed(2), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
+  //                ]):
+  //              new Icon(Icons.check, color: Colors.white, size: 50)
+  //          ),
+            Card(
+              margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+              color: BuzzerOpen ? Colors.grey : Colors.lightGreen,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: FlatButton(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                margin: EdgeInsets.all(15),
-                elevation: 10.0,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 10.0),
-                  child: Text(
-                    "Time Left\n"+_minutes.toString()+":"+buf+_seconds.toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.bold, color:Colors.purple , fontSize: 18),
-                  )
-                )
-              ),
-              Padding(
-                padding: EdgeInsets.all(15),
                 child: Text(
-                  "Green\n"+greenScore.toString(),
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightGreen, fontSize: 18),
-                )
-              )
-            ],
-          ),
-          Card(
-            color: Colors.yellow[50],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-            elevation: 10.0,
-            child: Column(
-//              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                  child: Text(
-                    roundName,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  ),
+                  BuzzerOpen ? "Buzzer Open: "+_counter.toString() : "Done Reading",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Text(
-                      Qsubject,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                    Text(
-                      Qtype,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.all(30),
-                  child: Text(
-                    "Q: "+Q,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                  child: Text(
-                    "A: "+A,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-                IconButton(
-                  icon: new Icon(Icons.navigate_next),
-                  alignment: Alignment.bottomRight,
-                  iconSize: 32,
-                  onPressed: () {},
-                )
-              ],
-            )
-          ),
-//          Card(
-//            margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-//            color: BuzzerOpen ? Colors.grey : Colors.lightGreen,
-//            shape: RoundedRectangleBorder(
-//              borderRadius: BorderRadius.circular(10.0),
-//            ),
-//            child: BuzzerOpen ?
+                padding: EdgeInsets.all(20.0),
+                color: BuzzerOpen ? Colors.grey : Colors.lightGreen,
+                textColor: Colors.white,
+                onPressed: () {
+                  setState(() {
+                    if (!BuzzerOpen)
+                    {
+                      BuzzerOpen=true;
+                      _startBuzzTimer();
+                    }
+                  }
+                  );
+                },
+              ),
 //              Row(
-//                mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                children: <Widget>[
-//                  new Icon(Icons.fiber_manual_record, color: Colors.white, size: 50),
-//                  Text("Buzzer Open", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
-//                  Text(timeToAnswer.toStringAsFixed(2), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
-//                ]):
-//              new Icon(Icons.check, color: Colors.white, size: 50)
-//          ),
-          Card(
-            margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-            color: BuzzerOpen ? Colors.lightBlue : Colors.lightGreen,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+//                mainAxisSize: MainAxisSize.min,
+//                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                  crossAxisAlignment: CrossAxisAlignment.start,
+//                  children: <Widget>[
+//                    new IconButton(
+//                      icon: new Icon(Icons.fiber_manual_record, color: Colors.white, size: 50,),
+//                      alignment: Alignment.bottomRight,
+//                      onPressed: () {
+//                        setState(() {
+//                              if (!BuzzerOpen)
+//                                {
+//                                  BuzzerOpen=true;
+//                                  _startBuzzTimer();
+//                                }
+//                            }
+//                            );
+//                          }
+//                    ),
+//                    Text(BuzzerOpen ? "Buzzer Open: "+_counter.toString() : "Done Reading", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
+////                    new Icon(Icons.cancel, color: Colors.white, size: 25)
+//                  ],
+//              ),
             ),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  new Icon(Icons.fiber_manual_record, color: Colors.white, size: 50),
-                  Text("B Captain (Interrupt)", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
-                  new Icon(Icons.cancel, color: Colors.white, size: 25)
-                ]
-            )
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                  FlatButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Text(
+                        "Correct",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    padding: EdgeInsets.all(20.0),
+                    color: Colors.lightBlue,
+                    textColor: Colors.white,
+                    onPressed: () {
+                    setState(() {
+                          redScore+=4;
+                        }
+                     );
+                    },
                   ),
-                  child: Text(
-                      "Correct",
+                  FlatButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Text(
+                        "Incorrect",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)
+                    ),
+                    padding: EdgeInsets.all(20.0),
+                    color: Colors.amber,
+                    textColor: Colors.white,
+                    onPressed: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Result()),
+                      )
+                    },
+                  ),
+                  FlatButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Text(
+                      "Penalty",
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    padding: EdgeInsets.all(20.0),
+                    color: Colors.red,
+                    textColor: Colors.white,
+                    onPressed: () => {},
                   ),
-                  padding: EdgeInsets.all(20.0),
-                  color: Colors.lightGreen,
-                  textColor: Colors.white,
-                  onPressed: () => {
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Result()),
-                  )
-                  },
-                ),
-                FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      "Incorrect",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)
-                  ),
-                  padding: EdgeInsets.all(20.0),
-                  color: Colors.amber,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-                FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                    "Penalty",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  ),
-                  padding: EdgeInsets.all(20.0),
-                  color: Colors.red,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-              ],
-            ),
-          )
-        ],
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
