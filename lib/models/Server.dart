@@ -32,6 +32,14 @@ class Server {
     this.running = false;
   }
 
+  sendAll(String message) {
+    for (Socket socket in sockets) {
+      print(message);
+      print(socket.address);
+      socket.write( message );
+    }
+  }
+
   broadCast(String message) {
     this.onData(Uint8List.fromList('Broadcasting : $message'.codeUnits));
     for (Socket socket in sockets) {
