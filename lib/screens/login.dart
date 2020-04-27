@@ -5,8 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sciencebowlportable/screens/username.dart';
 import 'package:sciencebowlportable/globals.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // void main() => runApp(Login());
+final databaseReference = Firestore.instance;
 
 class Login extends StatefulWidget {
   @override
@@ -23,39 +25,39 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: _buildSocialLogin());
+        debugShowCheckedModeBanner: false,
+        home: _buildSocialLogin());
   }
 
   _buildSocialLogin() {
     return Scaffold(
       body: Container(
           child: Center(
-        child: loggedIn
-            ? Text("Logged in")
-            : Stack(
-                children: <Widget>[
-                  SizedBox.expand(
-                    child: _buildSignUpText(),
-                  ),
-                  Container(
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        // wrap height
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        // stretch across width of screen
-                        children: <Widget>[
-                          _buildFacebookLoginButton(),
-                          SizedBox(height: 50),
-                          _buildGoogleLoginButton(),
-                        ],
-                      ),
+            child: loggedIn
+                ? Text("Logged in")
+                : Stack(
+              children: <Widget>[
+                SizedBox.expand(
+                  child: _buildSignUpText(),
+                ),
+                Container(
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      // wrap height
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      // stretch across width of screen
+                      children: <Widget>[
+                        _buildFacebookLoginButton(),
+                        SizedBox(height: 50),
+                        _buildGoogleLoginButton(),
+                      ],
                     ),
-                  )
-                ],
-              ),
-      )),
+                  ),
+                )
+              ],
+            ),
+          )),
     );
   }
 
@@ -72,7 +74,7 @@ class _LoginState extends State<Login> {
             icon: FaIcon(FontAwesomeIcons.google),
             color: Color(0xFFEA4335),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             textColor: Colors.white,
             label: Text("   Connect with Google",
                 style: TextStyle(
@@ -97,7 +99,7 @@ class _LoginState extends State<Login> {
             icon: FaIcon(FontAwesomeIcons.facebookF),
             color: Color(0xff1977F3),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             textColor: Colors.white,
             label: Text(
               "   Connect with Facebook",
@@ -154,10 +156,11 @@ class _LoginState extends State<Login> {
         final accessToken = facebookLoginResult.accessToken.token;
         if (facebookLoginResult.status == FacebookLoginStatus.loggedIn) {
           final facebookAuthCred =
-              FacebookAuthProvider.getCredential(accessToken: accessToken);
+          FacebookAuthProvider.getCredential(accessToken: accessToken);
           final FirebaseUser Fire_user =
               (await firebaseAuth.signInWithCredential(facebookAuthCred)).user;
           user.email = Fire_user.email;
+
           return 1;
         } else
           return 0;
@@ -172,6 +175,11 @@ class _LoginState extends State<Login> {
               (await firebaseAuth.signInWithCredential(googleAuthCred)).user;
           user.email = Fire_user.email;
           print(user.email);
+          final snapShot = await Firestore.instance.collection('User').document(user.email).get();
+          if (!snapShot.exists){
+            print("creating user");
+            createUser();
+          }
           return 1;
         } catch (error) {
           return 0;
@@ -183,7 +191,7 @@ class _LoginState extends State<Login> {
   Future<FacebookLoginResult> _handleFBSignIn() async {
     FacebookLogin facebookLogin = FacebookLogin();
     FacebookLoginResult facebookLoginResult =
-        await facebookLogin.logInWithReadPermissions(['email']);
+    await facebookLogin.logInWithReadPermissions(['email']);
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.cancelledByUser:
         print("Cancelled");
@@ -203,5 +211,13 @@ class _LoginState extends State<Login> {
         scopes: ['email', 'https://www.googleapis.com/auth/contacts.readonly']);
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     return googleSignInAccount;
+  }
+
+  void createUser() async {
+    await databaseReference.collection("User").document(user.email).setData({
+      "Username": null,
+      'IsModerator': false,
+      'IsCaptain': false,
+    });
   }
 }
