@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:async'; //for timer
+import "dart:math";
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/result.dart';
@@ -31,6 +33,27 @@ class _HostState extends State<Host> {
   String A = "PHENOTYPE";
   bool BuzzerOpen = true;
   double timeToAnswer = 2.113;
+
+
+  Timer buzzTimer;
+  Timer gameTimer;
+
+  Text startTimer(int time, Timer myTimer) {
+    myTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (time > 0) {
+        time--;
+      } else {
+        myTimer.cancel();
+        setState(() {
+          Text(
+            "Time Left\n"+time.toStringAsFixed(2),
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold, color:Colors.purple , fontSize: 18),
+          );
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

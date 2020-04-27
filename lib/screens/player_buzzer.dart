@@ -1,6 +1,3 @@
-// Timer code taken from https://github.com/immacoder/flutter_tutorials/blob/master/timer_app/lib/main.dart
-
-//Timer should start when moderator is done reading
 
 import 'package:flutter/material.dart';
 import 'dart:async'; //for timer
@@ -42,7 +39,6 @@ class _GameState extends State<Game> {
     setState(() {
       var pathOptions = new List();
       if (roundName=="Toss-up"){
-
         pathOptions=["Correct", "Incorrect", "Blurt", "Consultation", "Interrupt"];
       }
       else //bonus
@@ -348,4 +344,3 @@ class _GameState extends State<Game> {
     );
   }
 }
-

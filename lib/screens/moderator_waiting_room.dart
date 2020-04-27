@@ -22,8 +22,6 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 
   _ModeratorWaitingRoomState(this.server, this.moderator);
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -284,6 +282,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                   color: Colors.pink,
                   textColor: Colors.white,
                   onPressed: () => {
+                    server.broadCast("sendPlayerID"),
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),
