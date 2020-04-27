@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
-
+import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/screens/player_waiting_room.dart';
 
 //void join() => Pin();
@@ -24,9 +24,10 @@ class _PinState extends State<Pin> {
 
   onData(Uint8List data) {
     String msg = String.fromCharCodes(data);
-    if (msg == "sendPlayerID") {
-      client.write(player.playerID);
-    }
+    socketDataStreamController.add(msg);
+//    if (msg == "sendPlayerID") {
+//      client.write(player.playerID);
+//    }
     setState(() {});
   }
 
@@ -97,7 +98,7 @@ class _PinState extends State<Pin> {
                   }
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => WaitingRoom(this.client, this.player)),
+                    MaterialPageRoute(builder: (context) => PlayerWaitingRoom(this.client, this.player)),
                   );
                 }
               ),

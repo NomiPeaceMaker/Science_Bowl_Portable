@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/moderator.dart';
 import 'package:sciencebowlportable/models/Server.dart';
+import 'package:sciencebowlportable/models/Player.dart';
 
 class ModeratorWaitingRoom extends StatefulWidget {
   Server server;
@@ -20,7 +23,26 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   Server server;
   Moderator moderator;
 
+  List<bool> redActive = List.generate(5, (_) => false);
   _ModeratorWaitingRoomState(this.server, this.moderator);
+
+  StreamSubscription socketDataStreamSubscription;
+  initState() {
+    Stream socketDataStream = socketDataStreamController.stream;
+    socketDataStreamSubscription = socketDataStream.listen((data){
+      Player player = Player(data);
+      print("AT WAITING SCREEN");
+      print(data);
+      if (data[0] == "R") {
+        moderator.redTeam.players.add(player);
+      } else if (data[0] == "G") {
+        moderator.redTeam.players.add(player);
+      }
+    });
+//    R1controller = new StreamController();
+//    R1stream = R1controller.stream;
+//    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +113,15 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                       "Red 1",
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
                   ),
-                  color: Colors.red,
+                  color: redActive[0] ? Colors.red:Colors.grey,
                   textColor: Colors.white,
-                  onPressed: () => {},
+                  onPressed: () => {
+                    setState(() {
+//                      R1stream.listen((data){
+//                        redActive[0] = !redActive[0];
+//                      });
+                    })
+                  },
                 ),
               ),
               SizedBox(
@@ -282,7 +310,9 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                   color: Colors.pink,
                   textColor: Colors.white,
                   onPressed: () => {
-                    server.broadCast("sendPlayerID"),
+                    socketDataStreamSubscription.cancel(),
+//                    server.broadCast("sendPlayerID"),
+                    server.broadCast("StartGame"),
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),

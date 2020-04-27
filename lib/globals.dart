@@ -1,4 +1,5 @@
 library science_bowl_portable.globals;
+import 'dart:async';
 
 import 'package:sciencebowlportable/models/User.dart';
 
@@ -8,3 +9,4 @@ String pin = "0000";
 //User user = User('nomipeacemaker', 'nomipeacemaker@gmail.com');
 User user = new User();
 bool isLoggedIn = false;
+StreamController<String> socketDataStreamController = StreamController.broadcast();

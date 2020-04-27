@@ -35,7 +35,7 @@ class Server {
   broadCast(String message) {
     this.onData(Uint8List.fromList('Broadcasting : $message'.codeUnits));
     for (Socket socket in sockets) {
-      socket.write( message + '\n' );
+      socket.write( message );
     }
   }
 

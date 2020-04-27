@@ -6,8 +6,6 @@ import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/moderator_waiting_room.dart';
 import 'package:sciencebowlportable/models/Server.dart';
-import 'package:sciencebowlportable/models/Team.dart';
-import 'package:sciencebowlportable/models/Player.dart';
 
 import 'dart:typed_data';
 
@@ -57,18 +55,11 @@ class _MatchSettingState extends State<MatchSettings> {
     moderator.subjects = ["Math", "Physics"];
     moderator.tossUpTime = 5;
     moderator.bonusTime = 20;
-    moderator.redTeam = Team("red");
-    moderator.greenTeam = Team("green");
   }
 
   onData(Uint8List data) {
     String msg = String.fromCharCodes(data);
-    Player player = Player(msg);
-    if (msg[0] == "R") {
-      moderator.redTeam.players.add(player);
-    } else {
-      moderator.redTeam.players.add(player);
-    }
+    socketDataStreamController.add(msg);
     setState(() {});
   }
 

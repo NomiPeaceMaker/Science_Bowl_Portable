@@ -1,24 +1,54 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:sciencebowlportable/screens/player_buzzer.dart';
+import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
 
-class WaitingRoom extends StatefulWidget {
+class PlayerWaitingRoom extends StatefulWidget {
   Client client;
   Player player;
 
-  WaitingRoom(this.client, this.player);
+  PlayerWaitingRoom(this.client, this.player);
   @override
-  _WaitingRoomState createState() {
-    return _WaitingRoomState(this.client, this.player);
+  _PlayerWaitingRoomState createState() {
+    return _PlayerWaitingRoomState(this.client, this.player);
   }
 }
 
-class _WaitingRoomState extends State<WaitingRoom> {
+class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   Client client;
   Player player;
-  _WaitingRoomState(this.client, this.player);
+  _PlayerWaitingRoomState(this.client, this.player);
 
+  StreamSubscription socketDataStreamSubscription;
+  @override
+  void initState() {
+    super.initState();
+    Stream socketDataStream = socketDataStreamController.stream;
+    socketDataStreamSubscription = socketDataStream.listen((data){
+      String A = "A";
+      String B = "B";
+      print(data);
+      String C = '$A$data$B';
+      print(C);
+      if (data[0] == "R") {
+        print("R joined");
+      } else if (data[0] == "G") {
+        print("G joined");
+      }
+      if (data=="StartGame") {
+        print("Moving on to game");
+        socketDataStreamSubscription.cancel();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Game()),
+        );
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +66,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
         centerTitle: true,
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(top: 20.0),
@@ -84,7 +114,12 @@ class _WaitingRoomState extends State<WaitingRoom> {
                   ),
                   color: Colors.red,
                   textColor: Colors.white,
-                  onPressed: () => client.write("R1"),
+                  onPressed: () => {
+                    setState((){
+                      player.playerID = "R1";
+                    }),
+                    client.write("R1")
+                  },
                 ),
               ),
               SizedBox(
@@ -100,7 +135,12 @@ class _WaitingRoomState extends State<WaitingRoom> {
                   ),
                   color: Colors.green,
                   textColor: Colors.white,
-                  onPressed: () => client.write("G1"),
+                  onPressed: () => {
+                    setState(() {
+                      player.playerID = "G1";
+                    }),
+                    client.write("${player.playerID}"),
+                  }
                 ),
               ),
             ],
@@ -259,27 +299,14 @@ class _WaitingRoomState extends State<WaitingRoom> {
             margin: EdgeInsets.only(bottom: 20.0),
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                width: 140.0,
-                height: 60.0,
-                child: FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  child: Text(
-                      "Confirm",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: Color(0xffF8B400),
-                  textColor: Colors.white,
-                  onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Game()),
-                    ),
-                  },
+              child: Text(
+                "Please wait for the Moderator\nto Start the Game",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold,
+                  color: Colors.blueGrey,
+                  fontSize: 18
                 ),
-              ),
+               ),
             ),
           ),
         ],
