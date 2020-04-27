@@ -40,6 +40,8 @@ class Server {
   }
 
   onRequest(Socket socket) {
+    print("New User");
+    print(socket);
     if (!sockets.contains(socket)) {
       sockets.add(socket);
     }

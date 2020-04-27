@@ -24,17 +24,15 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   Player player;
   _PlayerWaitingRoomState(this.client, this.player);
 
+
   StreamSubscription socketDataStreamSubscription;
   @override
   void initState() {
     super.initState();
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data){
-      String A = "A";
-      String B = "B";
+      print("DATTTA");
       print(data);
-      String C = '$A$data$B';
-      print(C);
       if (data[0] == "R") {
         print("R joined");
       } else if (data[0] == "G") {
@@ -50,6 +48,73 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
       }
     });
   }
+
+
+  List<bool> redActive = List.generate(5, (_) => true);
+  List<bool> greenActive = List.generate(5, (_) => true);
+
+  var teamNumber = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
+
+  Row playerRowWidget(String rNum, String gNum) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          SizedBox(
+              width: 140.0,
+              height: 50,
+              child: FlatButton (
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                    'Red $rNum',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                ),
+                color: greenActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
+                textColor: Colors.white,
+                onPressed: () {
+                  setState(() {
+                    int playerNumber = teamNumber[rNum];
+                    Stream s = redPlayerJoinStreamController[playerNumber].stream;
+                    redPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
+                      redActive[playerNumber] = !redActive[playerNumber];
+                    });
+                    client.write("R$rNum");
+                    redPlayerJoinStreamController[playerNumber].add("R$rNum");
+                  });
+                },
+              )
+          ),
+          SizedBox(
+              width: 140.0,
+              height: 50,
+              child: FlatButton (
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                    'Green $rNum',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                ),
+                color: greenActive[teamNumber[gNum]] ? Colors.green : Colors.grey,
+                textColor: Colors.white,
+                onPressed: () {
+                  setState(() {
+                    int playerNumber = teamNumber[gNum];
+                    Stream s = greenPlayerJoinStreamController[playerNumber].stream;
+                    greenPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
+                      greenActive[playerNumber] = !greenActive[playerNumber];
+                    });
+                    client.write("G$gNum");
+                    greenPlayerJoinStreamController[playerNumber].add("G$gNum");
+                  });
+                },
+              )
+          ),
+        ]
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

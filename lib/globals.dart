@@ -3,6 +3,12 @@ import 'dart:async';
 
 import 'package:sciencebowlportable/models/User.dart';
 
+List<StreamController<String>> redPlayerJoinStreamController = new List.filled(5, StreamController());
+List<StreamController<String>> greenPlayerJoinStreamController = new List.filled(5, StreamController());
+
+List<StreamSubscription> redPlayerJoinStreamSubscription;
+List<StreamSubscription> greenPlayerJoinStreamSubscription;
+
 bool isModerator = false;
 String pin = "0000";
 //String name1 = 'nomi';

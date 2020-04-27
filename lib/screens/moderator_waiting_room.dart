@@ -22,8 +22,8 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   Server server;
   Moderator moderator;
 
-//  List<bool> redActive = List.generate(5, (_) => true);
-//  List<bool> greenActive = List.generate(5, (_) => true);
+  List<bool> redActive = List.generate(5, (_) => true);
+  List<bool> greenActive = List.generate(5, (_) => true);
 
   _ModeratorWaitingRoomState(this.server, this.moderator);
 
@@ -45,6 +45,54 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 //    R1controller = new StreamController();
 //    R1stream = R1controller.stream;
 //    super.initState();
+  }
+
+  Row playerRowWidget(String rNum, String gNum) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        SizedBox(
+            width: 140.0,
+            height: 50,
+            child: FlatButton (
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Text(
+                  'Red $rNum',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+              ),
+              color: Colors.red,
+              textColor: Colors.white,
+              onPressed: () {
+                setState(() {
+
+                });
+              },
+          )
+        ),
+        SizedBox(
+            width: 140.0,
+            height: 50,
+            child: FlatButton (
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Text(
+                  'Green $rNum',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+              ),
+              color: Colors.green,
+              textColor: Colors.white,
+              onPressed: () {
+                setState(() {
+
+                });
+              },
+            )
+        ),
+      ]
+    );
   }
 
   @override
