@@ -6,14 +6,13 @@ import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/moderator.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Player.dart';
+import 'package:sciencebowlportable/screens/widgets.dart';
 
 class ModeratorWaitingRoom extends StatefulWidget {
   Server server;
   Moderator moderator;
-
   @override
   ModeratorWaitingRoom(this.server, this.moderator);
-
   _ModeratorWaitingRoomState createState() {
     return _ModeratorWaitingRoomState(this.server, this.moderator);
   }
@@ -23,7 +22,9 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   Server server;
   Moderator moderator;
 
-  List<bool> redActive = List.generate(5, (_) => false);
+//  List<bool> redActive = List.generate(5, (_) => true);
+//  List<bool> greenActive = List.generate(5, (_) => true);
+
   _ModeratorWaitingRoomState(this.server, this.moderator);
 
   StreamSubscription socketDataStreamSubscription;
@@ -34,6 +35,8 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
       print("AT WAITING SCREEN");
       print(data);
       if (data[0] == "R") {
+        int playerNumber = int.parse(data[1]);
+        print(data.substring(2));
         moderator.redTeam.players.add(player);
       } else if (data[0] == "G") {
         moderator.redTeam.players.add(player);
@@ -99,199 +102,11 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              SizedBox(
-                width: 140.0,
-                height: 50,
-                child:FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      "Red 1",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: redActive[0] ? Colors.red:Colors.grey,
-                  textColor: Colors.white,
-                  onPressed: () => {
-                    setState(() {
-//                      R1stream.listen((data){
-//                        redActive[0] = !redActive[0];
-//                      });
-                    })
-                  },
-                ),
-              ),
-              SizedBox(
-                width: 140.0,
-                height: 50.0,
-                child: FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      "Green 1",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: Colors.green,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              SizedBox(
-                width: 140.0,
-                height: 50,
-                child:FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      "Red 2",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: Colors.red,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-              ),
-              SizedBox(
-                width: 140.0,
-                height: 50.0,
-                child: FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      "Green 2",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: Colors.green,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              SizedBox(
-                width: 140.0,
-                height: 50,
-                child:FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                        "Red Captain",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
-                    ),
-                  ),
-                  color: Colors.red,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-              ),
-              SizedBox(
-                width: 140.0,
-                height: 50.0,
-                child: FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      "Green Captain",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
-                  ),
-                  color: Colors.green,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              SizedBox(
-                width: 140.0,
-                height: 50,
-                child:FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      "Red 3",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: Colors.red,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-              ),
-              SizedBox(
-                width: 140.0,
-                height: 50.0,
-                child: FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      "Green 3",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: Colors.green,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              SizedBox(
-                width: 140.0,
-                height: 50,
-                child:FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      "Red 4",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: Colors.red,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-              ),
-              SizedBox(
-                width: 140.0,
-                height: 50.0,
-                child: FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      "Green 4",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: Colors.green,
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                ),
-              ),
-            ],
-          ),
+          playerRowWidget("1", "1"),
+          playerRowWidget("2", "2"),
+          playerRowWidget("Captain", "Captain"),
+          playerRowWidget("3", "3"),
+          playerRowWidget("4", "4"),
           Container(
             margin: EdgeInsets.only(bottom: 20.0),
             child: Align(
@@ -311,12 +126,11 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                   textColor: Colors.white,
                   onPressed: () => {
                     socketDataStreamSubscription.cancel(),
-//                    server.broadCast("sendPlayerID"),
-                    server.broadCast("StartGame"),
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),
-                    ),
+                      server.broadCast("StartGame"),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),
+                      ),
                   },
                 ),
               ),
