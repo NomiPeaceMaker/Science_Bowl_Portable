@@ -66,7 +66,6 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
               textColor: Colors.white,
               onPressed: () {
                 setState(() {
-
                 });
               },
           )
@@ -86,7 +85,6 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
               textColor: Colors.white,
               onPressed: () {
                 setState(() {
-
                 });
               },
             )
