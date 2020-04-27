@@ -20,7 +20,7 @@ class Host extends StatefulWidget {
 class _HostState extends State<Host> {
   Server server;
   Moderator moderator;
-  _HostState(this.server, this.moderator);
+
 
   bool paused = true;
   double timeLeft = 3.444;
@@ -34,26 +34,77 @@ class _HostState extends State<Host> {
   bool BuzzerOpen = true;
   double timeToAnswer = 2.113;
 
+//timer variables
+  bool unavailable=false;
+  bool flip=false;
+  int _counter = 5; //5 secs for buzzer timer
+  int _minutes=5; //customize match say aaye ga
+  int _seconds=0;
+  String buf="0";
+  Timer _buzzTimer;
+  Timer _gameTimer;
 
-  Timer buzzTimer;
-  Timer gameTimer;
-
-  Text startTimer(int time, Timer myTimer) {
-    myTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (time > 0) {
-        time--;
-      } else {
-        myTimer.cancel();
-        setState(() {
-          Text(
-            "Time Left\n"+time.toStringAsFixed(2),
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold, color:Colors.purple , fontSize: 18),
-          );
-        });
-      }
+  void _startBuzzTimer() {
+    _counter = 5;
+    if (_buzzTimer != null) {
+      _buzzTimer.cancel();
+    }
+    _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_counter > 0) {
+          _counter--;
+        } else {
+          _buzzTimer.cancel();
+          setState(() {
+            if (flip){
+              unavailable=true;
+//              txtClr=Color(0xffAEAEAE);
+//              buzzerTxt="Unavailable";
+//              buzzerClr=Colors.white;
+//              bzrBorder=Color(0xffAEAEAE);
+            }});
+        }
+      });
     });
   }
+  void _startGameTimer() {
+    if (_gameTimer != null) {
+      _gameTimer.cancel();
+    }
+    _gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_minutes<0)
+        {
+          _gameTimer.cancel();
+        }
+        if (_seconds > 0) {
+          _seconds--;
+          if(_seconds<10)
+          {
+            buf="0";
+          }
+          else
+          {
+            buf="";
+          }
+        }
+        else {
+          buf="";
+          _seconds=59;
+          _minutes-=1;
+        }
+      });
+    });
+  }
+
+  _HostState(this.server, this.moderator);
+
+  initState()
+  {
+    print("Init worked");
+    _startGameTimer();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -144,11 +195,11 @@ class _HostState extends State<Host> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 margin: EdgeInsets.all(15),
-                elevation: 2.0,
+                elevation: 10.0,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 10.0),
                   child: Text(
-                      "Time Left\n"+timeLeft.toStringAsFixed(2),
+                    "Time Left\n"+_minutes.toString()+":"+buf+_seconds.toString(),
                       textAlign: TextAlign.center,
                       style: TextStyle(fontWeight: FontWeight.bold, color:Colors.purple , fontSize: 18),
                   )
@@ -170,7 +221,7 @@ class _HostState extends State<Host> {
               borderRadius: BorderRadius.circular(10.0),
             ),
             margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-            elevation: 2.0,
+            elevation: 10.0,
             child: Column(
 //              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
@@ -178,7 +229,7 @@ class _HostState extends State<Host> {
                   padding: EdgeInsets.symmetric(vertical: 10.0),
                   child: Text(
                     roundName,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                 ),
                 Row(
@@ -186,11 +237,11 @@ class _HostState extends State<Host> {
                   children: <Widget>[
                     Text(
                       Qsubject,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                     Text(
                       Qtype,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                   ],
                 ),
