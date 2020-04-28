@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Models.dart';
+import "package:hex/hex.dart";
 
 class Server {
 
@@ -32,6 +33,14 @@ class Server {
     this.running = false;
   }
 
+  sendAll(String message) {
+    for (Socket socket in sockets) {
+      print(message);
+      print(socket.address);
+      socket.write( message );
+    }
+  }
+
   broadCast(String message) {
     this.onData(Uint8List.fromList('Broadcasting : $message'.codeUnits));
     for (Socket socket in sockets) {
@@ -48,6 +57,61 @@ class Server {
     socket.listen((Uint8List data) {
       this.onData(data);
     });
+  }
+
+
+  String ip2key(String input)
+  {
+    input = fixip(input);
+    String key;
+    if (input[1] == '9')
+    {
+      key = ('G' + HEX.encode([int.parse(input[8] + input[9] + input[10])]) + HEX.encode([int.parse(input[12] + input[13] + input[14])]));
+    }
+    return key;
+  }
+
+  String fixip(String input)
+  {
+    int i = 8;
+    String a = '';
+    // int a1;
+    String b = '';
+    // int b1;
+
+    while(input[i]!= '.')
+    {
+      a = a + input[i];
+      i++;
+    }
+
+    if(a.length ==1)
+    {
+      a = '00' + a;
+    }
+    if(a.length ==2)
+    {
+      a = '0' + a;
+    }
+
+    i++;
+
+    while(i< input.length)
+    {
+      b = b + input[i];
+      i++;
+    }
+
+    if(b.length ==1)
+    {
+      b = '00' + b;
+    }
+    if(b.length ==2)
+    {
+      b = '0' + b;
+    }
+    return '192.168.'+a+'.'+b;
+
   }
 
 }

@@ -8,7 +8,7 @@ import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
 import "package:path/path.dart" show dirname;
 import 'dart:io' show Platform;
-import 'package:path_provider/path_provider.dart';
+//import 'package:path_provider/path_provider.dart';
 
 class Host extends StatefulWidget {
   Server server;
@@ -103,13 +103,33 @@ class _HostState extends State<Host> {
       });
     });
   }
-
-  initState()
-  {
+//
+  StreamSubscription socketDataStreamSubscription;
+  initState() {
     _startGameTimer();
+    super.initState();
+    Stream socketDataStream = socketDataStreamController.stream;
+//    _startGameTimer();
+    socketDataStreamSubscription = socketDataStream.listen((data) {
+      print("d-'$data'-d");
+      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+      print("d-'$data'-d");
 
+      if (data[0] == "R") {
+        print("BUZZ IN R");
+        print("Recognized");
+        server.sendAll(data);
+      } else if (data[0] == "G") {
+        print("BUZZ IN G");
+        print("Recognized");
+        server.sendAll(data);
+      }
+      if (data == "BuzzIn") {
+        print("Recongizing");
+        server.sendAll("Recognized");
+      }
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -319,6 +339,7 @@ class _HostState extends State<Host> {
                   setState(() {
                     if (!BuzzerOpen)
                     {
+                      server.sendAll("BuzzerAvailable");
                       BuzzerOpen=true;
                       _startBuzzTimer();
                     }
@@ -367,9 +388,10 @@ class _HostState extends State<Host> {
                     color: Colors.lightBlue,
                     textColor: Colors.white,
                     onPressed: () {
-                    setState(() {
-                          redScore+=4;
-                        }
+                      setState(() {
+                        server.sendAll("Correct");
+                        redScore+=4;
+                      }
                      );
                     },
                   ),
@@ -385,6 +407,10 @@ class _HostState extends State<Host> {
                     color: Colors.amber,
                     textColor: Colors.white,
                     onPressed: () => {
+                        setState(() {
+                          server.sendAll("Incorrect");
+                        }
+                      ),
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Result()),
@@ -402,7 +428,11 @@ class _HostState extends State<Host> {
                     padding: EdgeInsets.all(20.0),
                     color: Colors.red,
                     textColor: Colors.white,
-                    onPressed: () => {},
+                    onPressed: () => {
+                      setState(() {
+                        server.sendAll("Penalty");
+                      }),
+                    },
                   ),
                 ],
               ),

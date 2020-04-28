@@ -43,7 +43,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
         socketDataStreamSubscription.cancel();
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Game()),
+          MaterialPageRoute(builder: (context) => Game(client, player)),
         );
       }
     });
@@ -70,17 +70,18 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                     'Red $rNum',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
                 ),
-                color: greenActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
+                color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
                 textColor: Colors.white,
                 onPressed: () {
                   setState(() {
-                    int playerNumber = teamNumber[rNum];
-                    Stream s = redPlayerJoinStreamController[playerNumber].stream;
-                    redPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
-                      redActive[playerNumber] = !redActive[playerNumber];
-                    });
+                    redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
+//                    int playerNumber = teamNumber[rNum];
+//                    Stream s = redPlayerJoinStreamController[playerNumber].stream;
+//                    redPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
+//                      redActive[playerNumber] = !redActive[playerNumber];
+//                    });
                     client.write("R$rNum");
-                    redPlayerJoinStreamController[playerNumber].add("R$rNum");
+//                    redPlayerJoinStreamController[playerNumber].add("R$rNum");
                   });
                 },
               )
@@ -100,13 +101,14 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                 textColor: Colors.white,
                 onPressed: () {
                   setState(() {
-                    int playerNumber = teamNumber[gNum];
-                    Stream s = greenPlayerJoinStreamController[playerNumber].stream;
-                    greenPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
-                      greenActive[playerNumber] = !greenActive[playerNumber];
-                    });
+                    greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
+//                    int playerNumber = teamNumber[gNum];
+//                    Stream s = greenPlayerJoinStreamController[playerNumber].stream;
+//                    greenPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
+//                      greenActive[playerNumber] = !greenActive[playerNumber];
+//                    });
                     client.write("G$gNum");
-                    greenPlayerJoinStreamController[playerNumber].add("G$gNum");
+//                    greenPlayerJoinStreamController[playerNumber].add("G$gNum");
                   });
                 },
               )

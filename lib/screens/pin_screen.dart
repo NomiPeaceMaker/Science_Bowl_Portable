@@ -83,8 +83,10 @@ class _PinState extends State<Pin> {
                   textColor: Colors.green,
                 onPressed: () async {
                   setState(() {
+                    print(gamePin);
+                    print(key2ip(gamePin));
                     client = Client(
-                      hostname: gamePin,
+                      hostname: key2ip(gamePin),
                       port: 4040,
                       onData: this.onData,
                       onError: this.onError,

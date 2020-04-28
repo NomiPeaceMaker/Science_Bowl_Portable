@@ -36,7 +36,9 @@ class _MatchSettingState extends State<MatchSettings> {
       for (var interface in await NetworkInterface.list()) {
         print('== Interface: ${interface.name} ==');
         for (var addr in interface.addresses) {
-          moderator.gamePin = '${addr.address}';
+          print('${addr.address}');
+          print(server.ip2key('${addr.address}'));
+          moderator.gamePin = server.ip2key('${addr.address}');
         }
       }
     }
