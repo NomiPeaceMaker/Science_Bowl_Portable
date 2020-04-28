@@ -7,8 +7,10 @@ class Moderator extends User {
   String gameDifficulty, gamePin;
   int numberOfQuestion, tossUpTime, bonusTime, gameTime;
   var subjects;
+
   //change directory to wherever json files are:
-  Future<List<Question>> questionSet=parser("C:/Users/Zohair/Desktop/Anusheh's Documents/Software Engineering/Development/Science_Bowl_Portable/jsonQuestions/");
+//  Future<List<Question>> questionSet=parser("C:/Users/Zohair/Desktop/Anusheh's Documents/Software Engineering/Development/Science_Bowl_Portable/jsonQuestions/");
+  Future<List<Question>> questionSet = retrieveQuestions();
   Team redTeam = Team("red");
   Team greenTeam = Team("green");
 }
