@@ -34,7 +34,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
     super.initState();
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data){
-      print("DATTTA");
+      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
       print(data);
       if (data[0] == "R") {
         print("R joined");

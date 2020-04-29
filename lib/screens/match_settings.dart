@@ -397,10 +397,11 @@ class _MatchSettingState extends State<MatchSettings> {
                     color: Colors.transparent,
                     textColor: Colors.red,
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MatchSettings()),
-                      );
+                      (context as Element).reassemble();
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(builder: (context) => MatchSettings()),
+//                      );
                     },
                   ),
                   IconButton(
@@ -409,12 +410,12 @@ class _MatchSettingState extends State<MatchSettings> {
                     iconSize: 30,
                     onPressed: () async {
                       await server.start();
-                      (context as Element).reassemble();
+//                      (context as Element).reassemble();
 //                      Navigator.pop(context);
-//                      Navigator.push(
-//                        context,
-//                        MaterialPageRoute(builder: (context) => ModeratorWaitingRoom(this.server, this.moderator)),
-//                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ModeratorWaitingRoom(this.server, this.moderator)),
+                      );
                       setState(() {});
                     },
                   )

@@ -36,14 +36,17 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   initState() {
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data){
+      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+      print(data);
       Player player = Player(data);
       print("AT WAITING SCREEN");
-      print(data);
+      int playerNumber = teamNumber[data.substring(1)];
+      print(playerNumber);
       if (data[0] == "R") {
-        int playerNumber = int.parse(data[1]);
-        print(data.substring(2));
+        redPlayerJoinStreamController[teamNumber[playerNumber]].add("jj");
         moderator.redTeam.players.add(player);
       } else if (data[0] == "G") {
+        greenPlayerJoinStreamController[teamNumber[playerNumber]].add("jj");
         moderator.redTeam.players.add(player);
       }
     });
@@ -60,53 +63,54 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        StreamBuilder(
-
+        SizedBox(
+          width: 140.0,
+          height: 50,
+          child:
+          StreamBuilder(
           stream: redPlayerJoinStreamController[teamNumber[rNum]].stream,
-          builder: (context, snapshot) { SizedBox(
-              width: 140.0,
-              height: 50,
-              child: FlatButton (
+          builder: (context, snapshot) {
+          redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
+          return FlatButton (
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Text(
+                'Red $rNum',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+            ),
+            color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
+            textColor: Colors.white,
+            onPressed: () {
+              setState(() {
+              });
+            },
+           );
+          })
+        ),
+        SizedBox(
+          width: 140.0,
+          height: 50,
+          child: StreamBuilder(
+            stream: greenPlayerJoinStreamController[teamNumber[gNum]].stream,
+            builder: (context, snapshot) {
+              greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
+              return FlatButton(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Text(
-                    'Red $rNum',
+                    'Green $gNum',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
                 ),
-                color: Colors.red,
+                color: greenActive[teamNumber[gNum]] ? Colors.green : Colors.grey,
                 textColor: Colors.white,
                 onPressed: () {
-                  setState(() {
-                  });
+                  setState(() {});
                 },
-              )
-            );
-          }
+              );
+            })
         ),
-    StreamBuilder(
-        stream: greenPlayerJoinStreamController[teamNumber[gNum]].stream,
-        builder: (context, snapshot) {
-          SizedBox(
-            width: 140.0,
-            height: 50,
-            child: FlatButton (
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Text(
-                  'Green $gNum',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-              ),
-              color: Colors.green,
-              textColor: Colors.white,
-              onPressed: () {
-                setState(() {
-                });
-              },
-            )
-          );
-        }),
       ]
     );
   }

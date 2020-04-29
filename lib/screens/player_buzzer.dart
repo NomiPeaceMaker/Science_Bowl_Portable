@@ -361,87 +361,84 @@ class _GameState extends State<Game> {
                   buzzerClr = Colors.grey[900];
                   buzzerTxt = "Penalty!";
                 }
-
-
-
-                return RaisedButton(
+              return RaisedButton(
                 shape: CircleBorder(side: BorderSide(color: bzrBorder, width: 8.0)),
                 child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          buzzerTxt,
-                          style: TextStyle(fontSize: 20.0, color: txtClr),
-                          textAlign: TextAlign.center,
-                        ),
-                        (_counter > 0 && isBuzzerActive)
-                            ? Text('$_counter',
-                          style: TextStyle(fontSize: 15.0, color: Colors.white),
-                          textAlign: TextAlign.center,
-                        )
-                            : Text(
-                          '',
-                        )
-                      ],
-                    ),
-                    onPressed: (){
-                      setState(() {
-                        client.write("BuzzIn");
-                        print("I'm Buzzing in");
-                        print("YOU BEEN RECOGNIZED!");
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        buzzerTxt,
+                        style: TextStyle(fontSize: 20.0, color: txtClr),
+                        textAlign: TextAlign.center,
+                      ),
+                      (_counter > 0 && isBuzzerActive)
+                          ? Text('$_counter',
+                        style: TextStyle(fontSize: 15.0, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      )
+                          : Text(
+                        '',
+                      )
+                    ],
+                  ),
+                  onPressed: (){
+                    setState(() {
+                      client.write("BuzzIn");
+                      print("I'm Buzzing in");
+                      print("YOU BEEN RECOGNIZED!");
 
-                        if (!unavailable)
+                      if (!unavailable)
+                      {
+                        if (element=="Recognized") {
+                          buzzerTxt = "Recognized!";
+                          buzzerClr = Colors.green;
+                          evaluate();
+                        }
+                        if (element=="Correct")
                         {
-                          if (element=="Recognized") {
-                            buzzerTxt = "Recognized!";
-                            buzzerClr = Colors.green;
-                            evaluate();
+                          Scaffold.of(context).showSnackBar(
+                            SnackBar(
+                              content: Icon(Icons.done),
+                              backgroundColor: Colors.lightGreen,
+//                                  animation: ,
+                              duration: Duration(seconds: 2),
+                            ),
+                            );
                           }
-                          if (element=="Correct")
+                          else if (element=="Incorrect")
                           {
                             Scaffold.of(context).showSnackBar(
                               SnackBar(
-                                content: Icon(Icons.done),
-                                backgroundColor: Colors.lightGreen,
+                                content: Icon(Icons.not_interested),
+                                backgroundColor: Colors.red,
   //                                  animation: ,
                                 duration: Duration(seconds: 2),
                               ),
-                              );
-                            }
-                            else if (element=="Incorrect")
-                            {
-                              Scaffold.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Icon(Icons.not_interested),
-                                  backgroundColor: Colors.red,
-    //                                  animation: ,
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            }
-                            else //penalty
-                            {
-                              Scaffold.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Icon(Icons.pan_tool),
-                                  backgroundColor: Colors.grey[900],
-    //                                  animation: ,
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            }
-                        }
-                        else
-                        {
-                          buzzerTxt="Buzz In!";
-                          buzzerClr=Color(0xFFf84b4b);
-                          _startBuzzTimer();
-                        }
+                            );
+                          }
+                          else //penalty
+                          {
+                            Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                content: Icon(Icons.pan_tool),
+                                backgroundColor: Colors.grey[900],
+  //                                  animation: ,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
                       }
-                      );
-                    },
-                    color: buzzerClr,
+                      else
+                      {
+                        buzzerTxt="Buzz In!";
+                        buzzerClr=Color(0xFFf84b4b);
+                        _startBuzzTimer();
+                      }
+                    }
+                    );
+                  },
+                  color: buzzerClr,
                 );
               },
             ),
