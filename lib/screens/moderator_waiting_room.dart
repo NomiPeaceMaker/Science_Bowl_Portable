@@ -53,7 +53,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 //    R1controller = new StreamController();
 //    R1stream = R1controller.stream;
 //    super.initState();
-    moderator.questionSet.then((list){
+      moderator.questionSet.then((list){
       questionSet=list;
       print("Retrieved questions");
     });
@@ -67,26 +67,26 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
           width: 140.0,
           height: 50,
           child:
-          StreamBuilder(
-          stream: redPlayerJoinStreamController[teamNumber[rNum]].stream,
-          builder: (context, snapshot) {
-          redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
-          return FlatButton (
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Text(
-                'Red $rNum',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-            ),
-            color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
-            textColor: Colors.white,
-            onPressed: () {
-              setState(() {
-              });
-            },
-           );
-          })
+            StreamBuilder(
+              stream: redPlayerJoinStreamController[teamNumber[rNum]].stream,
+              builder: (context, snapshot) {
+              redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
+              return FlatButton (
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                    'Red $rNum',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                ),
+                color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
+                textColor: Colors.white,
+                onPressed: () {
+                  setState(() {
+                  });
+                },
+               );
+              })
         ),
         SizedBox(
           width: 140.0,
