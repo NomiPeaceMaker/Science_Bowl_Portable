@@ -94,6 +94,7 @@ androidx/core/app/NotificationCompat$BadgeIconType.class
 androidx/core/app/NotificationCompat$GroupAlertBehavior.class
 androidx/core/app/NotificationCompat$NotificationVisibility.class
 androidx/core/app/NotificationCompat$StreamType.class
+androidx/core/app/RemoteInput$Source.class
 androidx/core/app/ServiceCompat$StopForegroundFlags.class
 androidx/core/content/PermissionChecker$PermissionResult.class
 androidx/core/content/pm/PermissionInfoCompat$Protection.class
@@ -134,6 +135,15 @@ androidx/versionedparcelable/NonParcelField.class
 androidx/versionedparcelable/ParcelField.class
 androidx/versionedparcelable/VersionedParcelize.class
 androidx/viewpager/widget/ViewPager$DecorView.class
+androidx/webkit/ProxyConfig$ProxyScheme.class
+androidx/webkit/ServiceWorkerWebSettingsCompat$CacheMode.class
+androidx/webkit/TracingConfig$PredefinedCategories.class
+androidx/webkit/TracingConfig$TracingMode.class
+androidx/webkit/WebResourceErrorCompat$NetErrorCode.class
+androidx/webkit/WebSettingsCompat$ForceDark.class
+androidx/webkit/WebSettingsCompat$MenuItemFlags.class
+androidx/webkit/WebViewClientCompat$SafeBrowsingThreat.class
+androidx/webkit/WebViewFeature$WebViewSupportFeature.class
 com/google/android/gms/auth/api/accounttransfer/AuthenticatorTransferCompletionStatus.class
 com/google/android/gms/auth/api/credentials/Credential.class
 com/google/android/gms/auth/api/credentials/CredentialPickerConfig$Prompt.class

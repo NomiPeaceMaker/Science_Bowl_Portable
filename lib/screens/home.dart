@@ -6,6 +6,7 @@ import 'package:sciencebowlportable/screens/match_settings.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
+import 'package:sciencebowlportable/screens/howtoplay.dart';
 
 enum settings { help, report }
 
@@ -198,17 +199,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   //   ),
                   // ),
-                  // Center(
-                  //   child: RaisedButton(
-                  //   child: Text('HOW TO PLAY',style: TextStyle(color: Colors.white,fontSize: 30.0)),
-                  //   color: Color(0xFF20BABA),
-                  //   padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
-                  //   onPressed: (){
-                  //     // HOW TO PLAY SCREEN GOES HERE!
-                  //     //NAVIGATION WAALI CHEEZ KARO
-                  //   },
-                  // ),
-                  // ),
+//                   Center(
+//                     child: RaisedButton(
+//                     child: Text('HOW TO PLAY',style: TextStyle(color: Colors.white,fontSize: 30.0)),
+//                     color: Color(0xFF20BABA),
+//                     padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
+//                     onPressed: (){
+//                       // HOW TO PLAY SCREEN GOES HERE!
+//                       //NAVIGATION WAALI CHEEZ KARO
+//                     },
+//                   ),
+//                   ),
+            Center(
+              child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: SizeConfig.safeBlockVertical * 6,
+                      horizontal: SizeConfig.safeBlockHorizontal * 5),
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(45.0),
+                    ),
+                    child: Text('HOW TO PLAY',
+                        style:
+                        TextStyle(color: Colors.white, fontSize: 22.0)),
+                    color: Color(0xFF20BABA),
+                    padding: new EdgeInsets.symmetric(
+                        vertical: SizeConfig.safeBlockVertical * 4.5,
+                        horizontal: SizeConfig.safeBlockHorizontal * 13),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HowToPlay()),
+                      );
+                    },
+                  )),
+            ),
+
                 ])),
           ),
         ),
