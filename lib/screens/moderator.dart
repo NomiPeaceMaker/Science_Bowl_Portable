@@ -11,7 +11,7 @@ import 'package:sciencebowlportable/screens/login.dart';
 import 'package:sciencebowlportable/screens/result.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
-import 'package:after_layout/after_layout.dart';
+//import 'package:after_layout/after_layout.dart';
 //import "package:path/path.dart" show dirname;
 //import 'dart:io' show Platform;
 
@@ -28,49 +28,88 @@ class Host extends StatefulWidget {
   }
 }
 
-class _HostState extends State<Host> with AfterLayoutMixin<Host> {
+class _HostState extends State<Host> {
   Server server;
   Moderator moderator;
   List<Question> questionSet;
 
   _HostState(this.server, this.moderator,this.questionSet);
-
   bool paused = true;
-  int redScore = 0;
-  int greenScore = 0;
-
+  int aScore = 0;
+  int bScore = 0;
   String roundName = "Toss-Up";
-  String Qsubject = "Biology";
-  String Qtype = "Short Answer";
-  String Q =
-      "What is the most common term used in genetics to decribe the observable physical charactersitics of an organism casued by the expression of a gene or a set of genes?";
-  String A = "PHENOTYPE";
+//  String Qsubject = "Biology";
+//  String Qtype = "Short Answer";
+//  String Q =
+//      "What is the most common term used in genetics to decribe the observable physical charactersitics of an organism casued by the expression of a gene or a set of genes?";
+//  String A = "PHENOTYPE";
   bool BuzzerOpen = false;
   double timeToAnswer = 2.113;
-
-  String reading_txt = "Done Reading";
-
+  String team ="A"; //depends on who buzzed in
+//  String reading_txt = "Done Reading";
+  int index=0;
 //timer variables
   bool unavailable = false;
   bool isBuzzerActive = false;
-  int _counter = 5; //5 secs for buzzer timer
-  int _minutes = 5; //customize match say aaye ga
-  int _seconds = 0;
-  String buf = "0";
   Timer _buzzTimer;
   Timer _gameTimer;
 
+
+  int bonusTimer;
+  int tossUpTimer; //5 secs for buzzer timer
+  int _minutes; //customize match say aaye ga
+  int _seconds = 0;
+  String buf = "0";
+//  moderator.userName = user.userName; //user info store
+//  moderator.email = user.email; //user info store
+//  moderator.gameDifficulty = "HighSchool"; //will be used for querying not for display
+//  moderator.gameTime = 20; //display
+//  moderator.numberOfQuestion = 25; //querying
+//  moderator.subjects = ["Math", "Physics"]; //querying
+//  moderator.tossUpTime = 5; //display
+//  moderator.bonusTime = 20; //display
+
 //  Future<List<Question>> questionSet=moderator.questionSet;
+  initState() {
+    bonusTimer=moderator.bonusTime;
+    tossUpTimer = moderator.tossUpTime; //5 secs for buzzer timer
+    _minutes = this.moderator.gameTime; //customize match say aaye ga
+
+//    print(questionSet);
+    _startGameTimer();
+    super.initState();
+    Stream socketDataStream = socketDataStreamController.stream;
+//    _startGameTimer();
+    socketDataStreamSubscription = socketDataStream.listen((data) {
+      print("d-'$data'-d");
+      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+      print("d-'$data'-d");
+
+      if (data[0] == "R") {
+        print("BUZZ IN R");
+        print("Recognized");
+        server.sendAll(data);
+      } else if (data[0] == "G") {
+        print("BUZZ IN G");
+        print("Recognized");
+        server.sendAll(data);
+      }
+      if (data == "BuzzIn") {
+        print("Recongizing");
+        server.sendAll("Recognized");
+      }
+    });
+  }
 
   void _startBuzzTimer() {
-    _counter = 5;
+    tossUpTimer = this.moderator.tossUpTime;
     if (_buzzTimer != null) {
       _buzzTimer.cancel();
     }
     _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        if (_counter > 0) {
-          _counter--;
+        if (tossUpTimer > 0) {
+          tossUpTimer--;
         } else {
           _buzzTimer.cancel();
           setState(() {
@@ -113,31 +152,7 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
   }
 //
   StreamSubscription socketDataStreamSubscription;
-  initState() {
-    _startGameTimer();
-    super.initState();
-    Stream socketDataStream = socketDataStreamController.stream;
-//    _startGameTimer();
-    socketDataStreamSubscription = socketDataStream.listen((data) {
-      print("d-'$data'-d");
-      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
-      print("d-'$data'-d");
 
-      if (data[0] == "R") {
-        print("BUZZ IN R");
-        print("Recognized");
-        server.sendAll(data);
-      } else if (data[0] == "G") {
-        print("BUZZ IN G");
-        print("Recognized");
-        server.sendAll(data);
-      }
-      if (data == "BuzzIn") {
-        print("Recongizing");
-        server.sendAll("Recognized");
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -214,12 +229,12 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                   setState(() {
                     paused = false;
                   });
-                } else {
+                }
+                else {
                   setState(() {
                     paused = true;
                   });
                 }
-                ;
               },
             ),
           )
@@ -235,7 +250,7 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                 Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
-                      "Red\n" + redScore.toString(),
+                      "Team A\n" + aScore.toString(),
                       textAlign: TextAlign.right,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -266,7 +281,7 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                 Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
-                      "Green\n" + greenScore.toString(),
+                      "Team B\n" + bScore.toString(),
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -297,28 +312,59 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Text(
-                    questionSet[1].subjectType,
+                        questionSet[index].subjectType,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         Text(
-                          Qtype,
+                          (roundName=="Toss-Up" && questionSet[index].tossupIsShortAns) ? "Short Answer" : (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns)? "MCQ"
+                          : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.all(30),
+                      padding: EdgeInsets.all(20),
                       child: Text(
-                        "Q: " + Q,
+                        "Q"+(index+1).toString()+"."+questionSet[index].tossupQuestion,
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
                     Padding(
+                      padding: EdgeInsets.all(5),
+                      child:
+                      (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns) ?
+                      Text(
+                        questionSet[index].tossupMCQOptions[0]+"\n"+questionSet[index].tossupMCQOptions[1]+"\n"+questionSet[index].tossupMCQOptions[2]+"\n"+questionSet[index].tossupMCQOptions[3],
+                        style: TextStyle(fontSize: 16),
+                      )
+                        : (roundName=="Bonus" && !questionSet[index].bonusIsShortAns) ?
+                      Text(
+                        questionSet[index].bonusMCQOptions[0]+"\n"+questionSet[index].bonusMCQOptions[1]+"\n"+questionSet[index].bonusMCQOptions[2]+"\n"+questionSet[index].bonusMCQOptions[3],
+                        style: TextStyle(fontSize: 16),
+                      ):
+                          Container(width: 0.0, height: 0.0,),
+                    ),
+//                    ((roundName=="Toss-Up") && !questionSet[index].tossupIsShortAns) || ((roundName=="Bonus") && !questionSet[index].bonusIsShortAns) ?
+//                    ListView(
+//                      children: ((roundName=="Toss-Up") && !questionSet[index].tossupIsShortAns)? <Widget>[
+//                        Text(questionSet[index].tossupMCQOptions[0]),
+//                        Text(questionSet[index].tossupMCQOptions[1]),
+//                        Text(questionSet[index].tossupMCQOptions[2]),
+//                        Text(questionSet[index].tossupMCQOptions[3])
+//                      ] : <Widget>[
+//
+//                        Text(questionSet[index].bonusMCQOptions[0]),
+//                        Text(questionSet[index].bonusMCQOptions[1]),
+//                        Text(questionSet[index].bonusMCQOptions[2]),
+//                        Text(questionSet[index].bonusMCQOptions[3])
+//                      ]
+//                    ) : Container(width: 0, height: 0),
+                    Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                       child: Text(
-                        "A: " + A,
+                        "Ans. " + questionSet[index].tossupAnswer,
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
@@ -341,7 +387,22 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                             alignment: Alignment.bottomRight,
                             iconSize: 32,
                             color: Colors.green,
-                            onPressed: () {}, //next qs
+                            onPressed: () {
+                              setState(() {
+                                if (index==questionSet.length-1)
+                                  {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => Result()),
+                                    );
+                                  }
+                                else
+                                  {
+                                    index+=1;
+                                    roundName = "Toss-Up";
+                                  }
+                              });
+                            }, //next qs
                           ),
                         ],
                       ),
@@ -376,7 +437,7 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                 ),
                 child: Text(
                   BuzzerOpen
-                      ? "Buzzer Open: " + _counter.toString()
+                      ? "Buzzer Open: " + tossUpTimer.toString()
                       : "Done Reading",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
@@ -438,7 +499,30 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                     onPressed: () {
                       setState(() {
                         server.sendAll("Correct");
-                        redScore+=4;
+                        if (roundName=="Toss-Up")
+                          {
+                            roundName="Bonus";
+                            if(team=="A")
+                              {
+                                aScore+=4;
+                              }
+                            else
+                              {
+                                bScore+=4;
+                              }
+                          }
+                        else
+                          {
+                            roundName="Toss-Up";
+                            if(team=="A")
+                            {
+                              aScore+=10;
+                            }
+                            else
+                            {
+                              bScore+=10;
+                            }
+                          }
                       }
                      );
                     },
@@ -456,12 +540,21 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                     onPressed: () => {
                         setState(() {
                           server.sendAll("Incorrect");
+                          if (index==questionSet.length-1)
+                            {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => Result()),
+                              );
+                            }
+                          else
+                          {
+                            index+=1;
+                            roundName = "Toss-Up";
+                          }
+
                         }
                       ),
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Result()),
-                      )
                     },
                   ),
                   FlatButton(
@@ -479,6 +572,15 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                     onPressed: () => {
                       setState(() {
                         server.sendAll("Penalty");
+                        //need to do more work here
+                        if(team=="A")
+                        {
+                          bScore+=4;
+                        }
+                        else
+                        {
+                          aScore+=4;
+                        }
                       }),
                     },
                   ),
@@ -490,19 +592,4 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
       ),
     );
   }
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    _startGameTimer();
-//    moderator.questionSet.then((list){
-//      questionSet=list;
-//      print("Retrieved questions");
-//    });
-  }
-//  Future getlist()async{
-//    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-//    var allquestions=await moderator.questionSet;
-//    print(allquestions);
-//  }
-
 }
