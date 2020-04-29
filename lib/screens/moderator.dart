@@ -18,12 +18,13 @@ import 'package:after_layout/after_layout.dart';
 class Host extends StatefulWidget {
   Server server;
   Moderator moderator;
+  List<Question> questionSet;
 
-  Host(this.server, this.moderator);
+  Host(this.server, this.moderator,this.questionSet);
 
   @override
   _HostState createState() {
-    return _HostState(this.server, this.moderator);
+    return _HostState(this.server, this.moderator,this.questionSet);
   }
 }
 
@@ -32,7 +33,7 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
   Moderator moderator;
   List<Question> questionSet;
 
-  _HostState(this.server, this.moderator);
+  _HostState(this.server, this.moderator,this.questionSet);
 
   bool paused = true;
   int redScore = 0;
@@ -296,7 +297,7 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Text(
-                          Qsubject,
+                    questionSet[1].subjectType,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
@@ -493,10 +494,10 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
   @override
   void afterFirstLayout(BuildContext context) {
     _startGameTimer();
-    moderator.questionSet.then((list){
-      questionSet=list;
-      print("Retrieved questions");
-    });
+//    moderator.questionSet.then((list){
+//      questionSet=list;
+//      print("Retrieved questions");
+//    });
   }
 //  Future getlist()async{
 //    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
