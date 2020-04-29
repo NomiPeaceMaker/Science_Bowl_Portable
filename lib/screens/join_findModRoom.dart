@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:ping_discover_network/ping_discover_network.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:wifi/wifi.dart';
+import 'dart:typed_data';
+import 'package:sciencebowlportable/models/Client.dart';
+import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/globals.dart';
+import 'package:sciencebowlportable/screens/player_waiting_room.dart';
 
 // Goal: Get device to recognize moderator join
 // PLAN
@@ -18,10 +22,29 @@ class JoinStart extends StatefulWidget {
 }
 
 class _JoinStartState extends State<JoinStart> {
-List<String> devices = [];
+  List<String> devices = [];
+  String gamePin;
+  Player player = Player("");
+  Client client;
+
+  List<String> serverLogs = [];
+  TextEditingController controller = TextEditingController();
+
+  onData(Uint8List data) {
+    String msg = String.fromCharCodes(data);
+    socketDataStreamController.add(msg);
+//    if (msg == "sendPlayerID") {
+//      client.write(player.playerID);
+//    }
+    setState(() {});
+  }
+
+  onError(dynamic error) {
+    print(error);
+  }
+
 
   Future<void> _scanDevices(context) async {
-    
     final String ip = await Wifi.ip;
     final String subnet = ip.substring(0, ip.lastIndexOf('.'));
 
@@ -33,7 +56,6 @@ List<String> devices = [];
         // _joinCardTemplate(context, addr.ip);
       }
     });
-
   }
 
   // Template for all the available hosts on network
@@ -46,7 +68,69 @@ List<String> devices = [];
             vertical: SizeConfig.safeBlockVertical * 2,
             horizontal: SizeConfig.safeBlockHorizontal * 2),
         child: RaisedButton(
-          onPressed: () {},
+          onPressed: () {
+            showDialog(
+              context: context,
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                title: Text('Enter Match PIN to join'),
+                content: new Row(
+                  children: <Widget>[
+                    new Expanded(
+                        child: new TextField(
+                      autofocus: true,
+                      decoration: new InputDecoration(
+                        labelText: 'Match PIN',
+                        hintText: 'eg. AB123',
+                      ),
+                      onChanged: (value) {
+                        gamePin = value;
+                      },
+                    ))
+                  ],
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                      child: Text('Cancel'),
+                      textColor: Colors.red,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      } //should go back to home page
+//                  Navigator.of(context).pop(teamName);
+                      ),
+                  FlatButton(
+                      child: Text('Confirm'),
+                      textColor: Colors.green,
+                      onPressed: () async {
+                        setState(() {
+                          print(gamePin);
+                          print(key2ip(gamePin));
+                          client = Client(
+                            hostname: ip,
+                            port: 4040,
+                            onData: this.onData,
+                            onError: this.onError,
+                          );
+                        });
+                        if (client.connected) {
+                          print("connected");
+                        } else {
+                          print("waiting for connection");
+//                    await client.connect();
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PlayerWaitingRoom(this.client, this.player)),
+                        );
+                      }),
+                ],
+              ),
+            );
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
@@ -54,7 +138,9 @@ List<String> devices = [];
                 padding: EdgeInsets.symmetric(
                     vertical: SizeConfig.safeBlockVertical * 2),
                 child: Text(username,
-                    style: TextStyle(color: Colors.black, fontSize: SizeConfig.safeBlockHorizontal * 4)),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: SizeConfig.safeBlockHorizontal * 4)),
               ),
               SizedBox(width: SizeConfig.safeBlockHorizontal * 80)
             ],
@@ -76,34 +162,33 @@ List<String> devices = [];
         centerTitle: true,
       ),
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(
-                'assets/home_back.png',
-              ),
-              alignment: Alignment.bottomLeft,
-              fit: BoxFit.scaleDown),
-        ),
-        child: RefreshIndicator(
-          onRefresh: () {},
-          child: Flex(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            direction: Axis.vertical,
-            children: <Widget>[
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: devices.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _joinCardTemplate(context, devices[index]);
-                  },
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage(
+                  'assets/home_back.png',
                 ),
-                )
-            ],
-          )
-        )
-        // Column(children: for(final game in (await _scanDevices())) _joinCardTemplate(context, )),
-      ),
+                alignment: Alignment.bottomLeft,
+                fit: BoxFit.scaleDown),
+          ),
+          child: RefreshIndicator(
+              onRefresh: () {},
+              child: Flex(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                direction: Axis.vertical,
+                children: <Widget>[
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: devices.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _joinCardTemplate(context, devices[index]);
+                      },
+                    ),
+                  )
+                ],
+              ))
+          // Column(children: for(final game in (await _scanDevices())) _joinCardTemplate(context, )),
+          ),
     );
   }
 }
