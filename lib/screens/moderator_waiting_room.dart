@@ -7,25 +7,29 @@ import 'package:sciencebowlportable/screens/moderator.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/screens/widgets.dart';
+import 'package:sciencebowlportable/models/Questions.dart';
 
 class ModeratorWaitingRoom extends StatefulWidget {
   Server server;
   Moderator moderator;
+  List<Question> questionSet;
+
   @override
   ModeratorWaitingRoom(this.server, this.moderator);
   _ModeratorWaitingRoomState createState() {
-    return _ModeratorWaitingRoomState(this.server, this.moderator);
+    return _ModeratorWaitingRoomState(this.server, this.moderator,this.questionSet);
   }
 }
 
 class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   Server server;
   Moderator moderator;
+  List<Question> questionSet;
 
   List<bool> redActive = List.generate(5, (_) => true);
   List<bool> greenActive = List.generate(5, (_) => true);
 
-  _ModeratorWaitingRoomState(this.server, this.moderator);
+  _ModeratorWaitingRoomState(this.server, this.moderator,this.questionSet);
 
   StreamSubscription socketDataStreamSubscription;
   initState() {
@@ -45,6 +49,10 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 //    R1controller = new StreamController();
 //    R1stream = R1controller.stream;
 //    super.initState();
+    moderator.questionSet.then((list){
+      questionSet=list;
+      print("Retrieved questions");
+    });
   }
 
   Row playerRowWidget(String rNum, String gNum) {
@@ -175,7 +183,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                       server.broadCast("StartGame"),
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),
+                        MaterialPageRoute(builder: (context) => Host(this.server, this.moderator,this.questionSet)),
                       ),
                   },
                 ),
