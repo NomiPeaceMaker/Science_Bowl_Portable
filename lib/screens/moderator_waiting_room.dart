@@ -172,7 +172,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                   textColor: Colors.white,
                   onPressed: () => {
                     socketDataStreamSubscription.cancel(),
-                      server.broadCast("StartGame"),
+                      server.sendAll("StartGame"),
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Host(this.server, this.moderator)),
