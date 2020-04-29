@@ -39,9 +39,9 @@ class _HostState extends State<Host> {
   int bScore = 0;
   String roundName = "Toss-Up";
 //  String Qsubject = "Biology";
-  String Qtype = "Short Answer";
-  String Q =
-      "What is the most common term used in genetics to decribe the observable physical charactersitics of an organism casued by the expression of a gene or a set of genes?";
+//  String Qtype = "Short Answer";
+//  String Q =
+//      "What is the most common term used in genetics to decribe the observable physical charactersitics of an organism casued by the expression of a gene or a set of genes?";
 //  String A = "PHENOTYPE";
   bool BuzzerOpen = false;
   double timeToAnswer = 2.113;
@@ -229,12 +229,12 @@ class _HostState extends State<Host> {
                   setState(() {
                     paused = false;
                   });
-                } else {
+                }
+                else {
                   setState(() {
                     paused = true;
                   });
                 }
-                ;
               },
             ),
           )
@@ -317,23 +317,54 @@ class _HostState extends State<Host> {
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         Text(
-                          Qtype,
+                          (roundName=="Toss-Up" && questionSet[index].tossupIsShortAns) ? "Short Answer" : (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns)? "MCQ"
+                          : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.all(30),
+                      padding: EdgeInsets.all(20),
                       child: Text(
-                        "Q."+(index+1).toString()+ " "+questionSet[index].tossupQuestion,
+                        "Q"+(index+1).toString()+"."+questionSet[index].tossupQuestion,
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
                     Padding(
+                      padding: EdgeInsets.all(5),
+                      child:
+                      (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns) ?
+                      Text(
+                        questionSet[index].tossupMCQOptions[0]+"\n"+questionSet[index].tossupMCQOptions[1]+"\n"+questionSet[index].tossupMCQOptions[2]+"\n"+questionSet[index].tossupMCQOptions[3],
+                        style: TextStyle(fontSize: 16),
+                      )
+                        : (roundName=="Bonus" && !questionSet[index].bonusIsShortAns) ?
+                      Text(
+                        questionSet[index].bonusMCQOptions[0]+"\n"+questionSet[index].bonusMCQOptions[1]+"\n"+questionSet[index].bonusMCQOptions[2]+"\n"+questionSet[index].bonusMCQOptions[3],
+                        style: TextStyle(fontSize: 16),
+                      ):
+                          Container(width: 0.0, height: 0.0,),
+                    ),
+//                    ((roundName=="Toss-Up") && !questionSet[index].tossupIsShortAns) || ((roundName=="Bonus") && !questionSet[index].bonusIsShortAns) ?
+//                    ListView(
+//                      children: ((roundName=="Toss-Up") && !questionSet[index].tossupIsShortAns)? <Widget>[
+//                        Text(questionSet[index].tossupMCQOptions[0]),
+//                        Text(questionSet[index].tossupMCQOptions[1]),
+//                        Text(questionSet[index].tossupMCQOptions[2]),
+//                        Text(questionSet[index].tossupMCQOptions[3])
+//                      ] : <Widget>[
+//
+//                        Text(questionSet[index].bonusMCQOptions[0]),
+//                        Text(questionSet[index].bonusMCQOptions[1]),
+//                        Text(questionSet[index].bonusMCQOptions[2]),
+//                        Text(questionSet[index].bonusMCQOptions[3])
+//                      ]
+//                    ) : Container(width: 0, height: 0),
+                    Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                       child: Text(
-                        "A: " + questionSet[index].tossupAnswer,
+                        "Ans. " + questionSet[index].tossupAnswer,
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
@@ -469,6 +500,7 @@ class _HostState extends State<Host> {
                       setState(() {
                         server.sendAll("Correct");
                         aScore+=4;
+                        roundName="Bonus";
                       }
                      );
                     },
@@ -486,12 +518,21 @@ class _HostState extends State<Host> {
                     onPressed: () => {
                         setState(() {
                           server.sendAll("Incorrect");
+                          if (index==questionSet.length-1)
+                            {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => Result()),
+                              );
+                            }
+                          else
+                          {
+                            index+=1;
+                            roundName = "Toss-Up";
+                          }
+
                         }
                       ),
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Result()),
-                      )
                     },
                   ),
                   FlatButton(
