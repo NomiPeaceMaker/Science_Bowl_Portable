@@ -1,4 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'dart:async'; //for timer
 //import "dart:math";
 import 'package:sciencebowlportable/globals.dart';
@@ -319,18 +323,28 @@ class _HostState extends State<Host> with AfterLayoutMixin<Host> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text("Skip Question"),
-                        IconButton(
-                          icon: new Icon(Icons.navigate_next),
-                          alignment: Alignment.bottomRight,
-                          iconSize: 32,
-                          onPressed: () {}, //next qs
-                        ),
-                      ],
-                    ),
+                     Padding(
+                       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              "Skip Question:",
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                            ),
+                          ),
+                          IconButton(
+                            icon: new Icon(Icons.navigate_next),
+                            alignment: Alignment.bottomRight,
+                            iconSize: 32,
+                            color: Colors.green,
+                            onPressed: () {}, //next qs
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 )),
             //          Card(
