@@ -45,7 +45,7 @@ class _HostState extends State<Host> {
 //  String A = "PHENOTYPE";
   bool BuzzerOpen = false;
   double timeToAnswer = 2.113;
-
+  String team ="A"; //depends on who buzzed in
 //  String reading_txt = "Done Reading";
   int index=0;
 //timer variables
@@ -499,8 +499,30 @@ class _HostState extends State<Host> {
                     onPressed: () {
                       setState(() {
                         server.sendAll("Correct");
-                        aScore+=4;
-                        roundName="Bonus";
+                        if (roundName=="Toss-Up")
+                          {
+                            roundName="Bonus";
+                            if(team=="A")
+                              {
+                                aScore+=4;
+                              }
+                            else
+                              {
+                                bScore+=4;
+                              }
+                          }
+                        else
+                          {
+                            roundName="Toss-Up";
+                            if(team=="A")
+                            {
+                              aScore+=10;
+                            }
+                            else
+                            {
+                              bScore+=10;
+                            }
+                          }
                       }
                      );
                     },
@@ -550,6 +572,15 @@ class _HostState extends State<Host> {
                     onPressed: () => {
                       setState(() {
                         server.sendAll("Penalty");
+                        //need to do more work here
+                        if(team=="A")
+                        {
+                          bScore+=4;
+                        }
+                        else
+                        {
+                          aScore+=4;
+                        }
                       }),
                     },
                   ),
