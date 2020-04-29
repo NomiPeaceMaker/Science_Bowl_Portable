@@ -60,18 +60,18 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   }
 
   Row playerRowWidget(String rNum, String gNum) {
-    return Row(
+    return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        SizedBox(
+       new SizedBox(
           width: 140.0,
           height: 50,
           child:
-            StreamBuilder(
+            new StreamBuilder(
               stream: redPlayerJoinStreamController[teamNumber[rNum]].stream,
               builder: (context, snapshot) {
               redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
-              return FlatButton (
+              return new FlatButton (
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -88,14 +88,14 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                );
               })
         ),
-        SizedBox(
+        new SizedBox(
           width: 140.0,
           height: 50,
-          child: StreamBuilder(
+          child: new StreamBuilder(
             stream: greenPlayerJoinStreamController[teamNumber[gNum]].stream,
             builder: (context, snapshot) {
               greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
-              return FlatButton(
+              return new FlatButton(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
