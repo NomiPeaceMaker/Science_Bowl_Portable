@@ -111,149 +111,14 @@ def sanitize_answer(ans):
     else:
         return ans
 
+def readDOCX(subjectArrays, input_filename,level):
 
-def chicken():
-    print("      __//")
-    print("    /.__.\\")
-    print("    \\ \\/ /")
-    print(" '__/    \\")
-    print("  \\-      )")
-    print("   \\_____/")
-    print("_____|_|____")
-    print('     " "')
-
-def byeChicken():
-    print("\t\t      __// Bye Bye")
-    print("\t\t    /.__.\\")
-    print("\t\t    \\ \\/ /")
-    print("\t\t '__/    \\")
-    print("\t\t  \\-      )")
-    print("\t\t   \\_____/")
-    print("\t\t_____|_|____")
-    print('\t\t     " "')
-
-def main():
-    
-    print("Please make sure any docx file that will be written to is closed before using this program.")
-    chicken()
-    # Question list contains all the question objects
-
-    # lists that help categorise questions
     global subjectList
     global questionType
 
-
-    print("\n============Input Sequence============\n")
-    incorrectAns = True
-    while incorrectAns:
-        try:
-            level_sel = int(input("What level are these questions? (input 0 for middleSchool, 1 for highSchool):"))
-        except ValueError:
-            print("ERROR: Please input integers only.")
-            continue
-
-        if level_sel == 0:
-            level = 0
-            incorrectAns = False
-        elif level_sel == 1:
-            level = 1
-            incorrectAns = False
-        else:
-            print("Please try again")
-
-
-    # Array to append all subjects questions
-    subjectArrays = {}
-    for subject in subjectList:
-        subjectArrays[subject] = []
-    
-    Cache = {}
-    directory = './jsonQuestions/' 
-
-    if (level == 0):
-        directory += 'middleSchoolQuestions'
-    elif (level == 1):
-        directory += 'highSchoolQuestions'
-
-    Cache['directory'] = directory
-
-    if os.path.exists(directory+'/0cache.json'):
-        with open(directory+'/0cache.json') as f:
-            Cache = json.load(f)
-    else:
-        print("Creating cache...")
-        Cache['filesRead'] = []
-        for subject in subjectList:
-            Cache[subject] = 5 
-
-    if not os.path.exists(directory):
-        print("Creating directory", directory)
-        os.makedirs(directory)
-    
-    if not os.path.exists('./questionRepo'):
-        print('ERROR: Folder "questionRepo" NOT FOUND.\nCreating folder... please try again after populating the folder with docx files with your questions')
-        os.makedirs('./questionRepo')
-        return
-        
-
-    print("Gobble gobble. Here's what I've found in folder questionRepo:")
-    filesInDirectory = []
-
-
-    for file in listdir('./questionRepo'):
-        _, e = os.path.splitext(file)
-        if e == ".docx" and file not in Cache['filesRead']:
-            filesInDirectory.append(file)
-    
-    if (len(filesInDirectory) == 0):
-        print("No new questions found, files already read include:",Cache['filesRead'])
-        print("If you think this is an error, please delete 0Cache.json")
-        print("WARNING: Action will reset indexes")
-        return
-    
-    for i, file in enumerate(filesInDirectory):
-        print(i,": ", file)
-    
-        incorrectAns = True
-        while incorrectAns:
-            try:
-                ch_dir = int(input("Please input the number of the file you want me to eat (select index) OR input -1 to move to next sequnce: "))
-                if ch_dir == -1:
-                    break
-
-                input_filename = filesInDirectory[ch_dir]
-
-                if input_filename in Cache['filesRead']:
-                    print("WARNING: You've already read this file.")
-                    ch = input("Are you sure you want to continue? Input 'y' if you really want to do this:")
-                    if ch == 'y' or ch == 'Y':
-                        print("That's not weird at all.")
-                        incorrectAns = False
-                    else:
-                        print("trying again")
-                else:
-                    incorrectAns = False
-                        
-            except IndexError:
-                print("ERROR: Please select the an in range index.")
-                continue
-            except ValueError:
-                print("ERROR: Please input integers only.")
-                continue
-            
-            if ch_dir == -1:
-                break
-            
-            Cache['filesRead'].append(input_filename)
-        
-    
-
-
     inDoc = docx.Document('./questionRepo/' + input_filename)
-    
+        
     tossUpEncounter = False
-    
-    # mcqflag = False
 
     for _, para in enumerate(inDoc.paragraphs):
         txt = para.text
@@ -303,7 +168,11 @@ def main():
                 demo.bonus.answer = sanitize_answer(txt)
                 
                 #add question to appropriate Array
-                subjectArrays[demo.tossUp.subtype].append(demo)
+                if (demo.tossUp.subtype != 'none'):
+                    subjectArrays[demo.tossUp.subtype].append(demo)
+                else:
+                    print("ERROR: Cannot determine subject in file:", input_filename)
+                    print("Skipping Question")
 
                 #continue
             for _, sub in enumerate(subjectList):
@@ -323,7 +192,123 @@ def main():
                     demo.bonus.qbody = body
                     #print("body found", body)
                     break
+
+
+def chicken():
+    print("      __//")
+    print("    /.__.\\")
+    print("    \\ \\/ /")
+    print(" '__/    \\")
+    print("  \\-      )")
+    print("   \\_____/")
+    print("_____|_|____")
+    print('     " "')
+
+def byeChicken():
+    print("\t\t      __// Bye Bye")
+    print("\t\t    /.__.\\")
+    print("\t\t    \\ \\/ /")
+    print("\t\t '__/    \\")
+    print("\t\t  \\-      )")
+    print("\t\t   \\_____/")
+    print("\t\t_____|_|____")
+    print('\t\t     " "')
+
+def main():
+    os.system('cls')
+    print("Please make sure any docx file that will be written to is closed before using this program.")
+    chicken()
+    # Question list contains all the question objects
+
+    # lists that help categorise questions
+
+    global subjectList
+    global questionType
+
+    print("\n============Input Sequence============\n")
+    incorrectAns = True
+    while incorrectAns:
+        try:
+            level_sel = int(input("What level are these questions? (input 0 for middleSchool, 1 for highSchool):"))
+        except ValueError:
+            print("ERROR: Please input integers only.")
+            continue
+
+        if level_sel == 0:
+            level = 0
+            incorrectAns = False
+        elif level_sel == 1:
+            level = 1
+            incorrectAns = False
+        else:
+            print("Please try again")
+
+
+    if not os.path.exists('./questionRepo'):
+        print('ERROR: Folder "questionRepo" NOT FOUND.\nCreating folder... please try again after populating the folder with docx files with your questions')
+        os.makedirs('./questionRepo')
+        return
+        
+    # Array to append all subjects questions
+
+    subjectArrays = {}
+    for subject in subjectList:
+        subjectArrays[subject] = []
     
+    Cache = {}
+    directory = './jsonQuestions/' 
+
+    if (level == 0):
+        directory += 'middleSchoolQuestions'
+    elif (level == 1):
+        directory += 'highSchoolQuestions'
+
+    Cache['directory'] = directory
+    
+
+    if os.path.exists(directory+'/0cache.json'):
+        with open(directory+'/0cache.json') as f:
+            Cache = json.load(f)
+    else:
+        print("Creating cache...")
+        Cache['filesRead'] = []
+        for subject in subjectList:
+            Cache[subject] = 0
+
+    if not os.path.exists(directory):
+        print("Creating directory", directory)
+        os.makedirs(directory)
+    
+
+
+    print("Gobble gobble. Here's what I've found in folder questionRepo:")
+    filesInDirectory = []
+
+
+    for file in listdir('./questionRepo'):
+        _, e = os.path.splitext(file)
+        if e == ".docx" and file not in Cache['filesRead']:
+            filesInDirectory.append(file)
+    
+    
+    if (len(filesInDirectory) == 0):
+        print("No new questions found, files already read include:",Cache['filesRead'])
+        print("If you think this is an error, please delete 0Cache.json")
+        print("WARNING: Action will reset indexes")
+        return
+    
+    for i, file in enumerate(filesInDirectory):
+        print(i,": ", file)
+    
+    allchoice = input('INPUT: Press A if you want to read all of these files\nIf NO, press any other key. Add only those files you want to read into "questionsRepo" and try again:') 
+    if (allchoice.lower() == 'a'):
+        for file in filesInDirectory:
+            readDOCX(subjectArrays, file,level)
+            Cache['filesRead'].append(file)
+    else:
+        return
+
+        
     print("Before Output")
     total = 0
     afterCount = {}
@@ -334,8 +319,6 @@ def main():
         total += numberofquestions
 
     print("Total found ", total)
-    
-
 
     #output to JSON while any question remain
     
