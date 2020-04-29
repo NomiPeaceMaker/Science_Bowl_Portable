@@ -75,16 +75,26 @@ Future<List<Question>> retrieveQuestions() async {
     decoder = documents[i].data;
     temp.id = decoder["id"];
     temp.difficultyLevel = decoder["difficultyLevel"];
-    temp.subjectType = decoder["subjectType"];
-    temp.tossupQuestion = decoder["tossup_question"];
+    if (decoder["subjectType"]=="Earth_and_Space")
+      {
+        List splits=decoder["tossup_question"].split(" ");
+        temp.tossupQuestion = splits.sublist(4).join(" ");
+        temp.subjectType = "Earth and Space";
+      }
+    else
+      {
+        List splits=decoder["tossup_question"].split(" ");
+        temp.tossupQuestion = splits.sublist(2).join(" ");
+        temp.subjectType = decoder["subjectType"];
+      }
     temp.tossupIsShortAns = decoder["tossup_isShortAns"];
     if (decoder["tossup_MCQoptions"] != null) {
-      List tossupOptions = decoder["tossup_MCQoptions"].split("\n");
+      List<String> tossupOptions = decoder["tossup_MCQoptions"].split("\n");
       for (int j = 0; j < tossupOptions.length; j++) {
         temp.tossupMCQOptions[j] = tossupOptions[j];
       }
     }
-    temp.tossupAnswer = decoder["tossup_answer"];
+    temp.tossupAnswer = decoder["tossup_answer"].substring(8); //removed answer
     temp.tossupImageURL = decoder["tossup_imageURL"];
     temp.bonusQuestion = decoder["bonus_question"];
     temp.bonusIsShortAns = decoder["bonus_isShortAns"];
@@ -94,7 +104,7 @@ Future<List<Question>> retrieveQuestions() async {
         temp.bonusMCQOptions[j] = bonusOptions[j];
       }
     }
-    temp.bonusAnswer = decoder["bonus_answer"];
+    temp.bonusAnswer = decoder["bonus_answer"].substring(8); //removed ANSWER: from start
     temp.bonusImageURL = decoder["bonus_image"];
 
 //    print("PRINTING QUESTIONSSSS");
@@ -103,5 +113,10 @@ Future<List<Question>> retrieveQuestions() async {
     temp = new Question();
   }
 
+  for (int i =0; i<questions.length; i++)
+    {
+      print(questions[i].bonusAnswer);
+      print(questions[i].tossupAnswer);
+    }
   return questions;
 }
