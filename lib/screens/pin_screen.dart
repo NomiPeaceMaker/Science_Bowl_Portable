@@ -96,7 +96,7 @@ class _PinState extends State<Pin> {
                     print("connected");
                   } else {
                     print("waiting for connection");
-                    await client.connect();
+//                    await client.connect();
                   }
                   Navigator.push(
                     context,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'dart:async'; //for timer
 import "dart:math";
 import 'package:sciencebowlportable/globals.dart';
@@ -279,40 +280,59 @@ class _GameState extends State<Game> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: SizedBox(
-              width: 300.0,
-              height: 200.0,
+
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 5.0),
+            child: Container(
+                margin: EdgeInsets.only(left: 20.0, right: 20.0),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.height*0.25,
+                  height: MediaQuery.of(context).size.height*0.25,
+                  child: Card(
+                    elevation: 10.0,
+                    color: Colors.yellow[50],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        "Question pictures will be displayed here.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    )
+                  ),
+                ),
+              ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 20.0),
+            child: Container(
+//              height: 30.0,
+              width: MediaQuery.of(context).size.height*0.25,
+              //            color: Colors.
               child: Card(
+                child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
+                    child: Text(
+                    '$playerName',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
+                  ),
+                ),
                 elevation: 10.0,
                 color: Colors.yellow[50],
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(10.0)
                 ),
               ),
             ),
           ),
-          Container(
-            height: 30.0,
-            width: 300.0,
-//            color: Colors.
-            child: Card(
-              child: Text(
-                '$playerName',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
-              ),
-              elevation: 10.0,
-              color: Colors.yellow[50],
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)
-              ),
-            ),
-          ),
+
           SizedBox(
-            width:150.0,
-            height:150.0,
+            width:MediaQuery.of(context).size.width*0.6,
+            height:MediaQuery.of(context).size.width*0.6,
             child:  StreamBuilder(
             stream: BuzzerStreamController.stream,
             builder: (context, snapshot) {
@@ -344,7 +364,7 @@ class _GameState extends State<Game> {
 
 
 
-                return RaisedButton(
+              return RaisedButton(
               shape: CircleBorder(side: BorderSide(color: bzrBorder, width: 8.0)),
               child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

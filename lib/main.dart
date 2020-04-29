@@ -22,7 +22,7 @@ class _MyApp extends State<MyApp> {
       initialRoute: '/',
         routes: {
           // When navigating to the "/" route, build the FirstScreen widget.
-          '/': (context) => MyHomePage(),
+          '/': (context) => OnboardingScreen(),
           // When navigating to the "/second" route, build the SecondScreen widget.
           '/home': (context) => MyHomePage(),
         },
