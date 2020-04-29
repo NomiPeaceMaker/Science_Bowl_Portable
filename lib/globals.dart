@@ -16,3 +16,4 @@ String pin = "0000";
 User user = new User();
 bool isLoggedIn = false;
 StreamController<String> socketDataStreamController = StreamController.broadcast();
+final int port = 4040;
