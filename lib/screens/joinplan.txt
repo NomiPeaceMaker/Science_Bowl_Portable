@@ -11,3 +11,10 @@ Q: If this is a stream then I should use stream https://api.flutter.dev/flutter/
 
 
 Some help: https://medium.com/@felixseip01/discovering-devices-in-your-local-network-in-a-mobile-application-81785eec7093
+
+
+New Plan:
+
+1. Get ips in function
+2. Get a future thing
+3. With the future, call future builder 

@@ -19,14 +19,14 @@ class _MyApp extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-        routes: {
-          // When navigating to the "/" route, build the FirstScreen widget.
-          '/': (context) => OnboardingScreen(),
-          // When navigating to the "/second" route, build the SecondScreen widget.
-          '/home': (context) => MyHomePage(),
-        },
-        // home: OnboardingScreen(),
+      // initialRoute: '/',
+      //   routes: {
+      //     // When navigating to the "/" route, build the FirstScreen widget.
+      //     '/': (context) => OnboardingScreen(),
+      //     // When navigating to the "/second" route, build the SecondScreen widget.
+      //     '/home': (context) => MyHomePage(),
+      //   },
+        home: MyHomePage(),
           // home: Result()
     );
   }

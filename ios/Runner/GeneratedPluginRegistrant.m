@@ -40,6 +40,12 @@
 @import google_sign_in;
 #endif
 
+#if __has_include(<wifi/WifiPlugin.h>)
+#import <wifi/WifiPlugin.h>
+#else
+@import wifi;
+#endif
+
 @implementation GeneratedPluginRegistrant
 
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
@@ -49,6 +55,7 @@
   [FLTFirebaseCorePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseCorePlugin"]];
   [FacebookLoginPlugin registerWithRegistrar:[registry registrarForPlugin:@"FacebookLoginPlugin"]];
   [FLTGoogleSignInPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTGoogleSignInPlugin"]];
+  [WifiPlugin registerWithRegistrar:[registry registrarForPlugin:@"WifiPlugin"]];
 }
 
 @end

@@ -43,7 +43,7 @@ class _JoinStartState extends State<JoinStart> {
     print(error);
   }
 
-  Stream<NetworkAddress> _scanDevices() async {
+  _scanDevices() async {
     final String ip = await Wifi.ip;
     final String subnet = ip.substring(0, ip.lastIndexOf('.'));
 
@@ -59,100 +59,99 @@ class _JoinStartState extends State<JoinStart> {
     //     {
     //       devices.add(addr.ip);
     //     }
-        // _joinCardTemplate(context, addr.ip);
-      }
+    //     // _joinCardTemplate(context, addr.ip);
+    //   }
+    // });
   }
 
   // Template for all the available hosts on network
-//   Widget _joinCardTemplate(context, String ip, {String username = 'default'}) {
-//     SizeConfig().init(context);
-//     return Card(
-//         shape:
-//             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-//         margin: EdgeInsets.symmetric(
-//             vertical: SizeConfig.safeBlockVertical * 2,
-//             horizontal: SizeConfig.safeBlockHorizontal * 2),
-//         child: RaisedButton(
-//           onPressed: () {
-//             showDialog(
-//               context: context,
-//               child: AlertDialog(
-//                 shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(10.0),
-//                 ),
-//                 title: Text('Enter Match PIN to join'),
-//                 content: new Row(
-//                   children: <Widget>[
-//                     new Expanded(
-//                         child: new TextField(
-//                       autofocus: true,
-//                       decoration: new InputDecoration(
-//                         labelText: 'Match PIN',
-//                         hintText: 'eg. AB123',
-//                       ),
-//                       onChanged: (value) {
-//                         // gamePin = value;
-//                       },
-//                     ))
-//                   ],
-//                 ),
-//                 actions: <Widget>[
-//                   FlatButton(
-//                       child: Text('Cancel'),
-//                       textColor: Colors.red,
-//                       onPressed: () {
-//                         Navigator.pop(context);
-//                       } //should go back to home page
-// //                  Navigator.of(context).pop(teamName);
-//                       ),
-//                   FlatButton(
-//                       child: Text('Confirm'),
-//                       textColor: Colors.green,
-//                       onPressed: () async {
-//                         setState(() {
-//                           print(gamePin);
-//                           print(key2ip(gamePin));
-//                           client = Client(
-//                             hostname: ip,
-//                             port: 4040,
-//                             onData: this.onData,
-//                             onError: this.onError,
-//                           );
-//                         });
-//                         if (client.connected) {
-//                           print("connected");
-//                         } else {
-//                           print("waiting for connection");
-// //                    await client.connect();
-//                         }
-//                         Navigator.push(
-//                           context,
-//                           MaterialPageRoute(
-//                               builder: (context) =>
-//                                   PlayerWaitingRoom(this.client, this.player)),
-//                         );
-//                       }),
-//                 ],
-//               ),
-//             );
-//           },
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.start,
-//             children: <Widget>[
-//               Padding(
-//                 padding: EdgeInsets.symmetric(
-//                     vertical: SizeConfig.safeBlockVertical * 2),
-//                 child: Text(username,
-//                     style: TextStyle(
-//                         color: Colors.black,
-//                         fontSize: SizeConfig.safeBlockHorizontal * 4)),
-//               ),
-//               SizedBox(width: SizeConfig.safeBlockHorizontal * 80)
-//             ],
-//           ),
-//         ));
-//   }
-
+  Widget _joinCardTemplate(context, String ip, {String username = 'default'}) {
+    return Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        margin: EdgeInsets.symmetric(
+            vertical: SizeConfig.safeBlockVertical * 2,
+            horizontal: SizeConfig.safeBlockHorizontal * 2),
+        child: RaisedButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                title: Text('Enter Match PIN to join'),
+                content: new Row(
+                  children: <Widget>[
+                    new Expanded(
+                        child: new TextField(
+                      autofocus: true,
+                      decoration: new InputDecoration(
+                        labelText: 'Match PIN',
+                        hintText: 'eg. AB123',
+                      ),
+                      onChanged: (value) {
+                        gamePin = value;
+                      },
+                    ))
+                  ],
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                      child: Text('Cancel'),
+                      textColor: Colors.red,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      } //should go back to home page
+//                  Navigator.of(context).pop(teamName);
+                      ),
+                  FlatButton(
+                      child: Text('Confirm'),
+                      textColor: Colors.green,
+                      onPressed: () async {
+                        setState(() {
+                          print(gamePin);
+                          print(key2ip(gamePin));
+                          client = Client(
+                            hostname: ip,
+                            port: 4040,
+                            onData: this.onData,
+                            onError: this.onError,
+                          );
+                        });
+                        if (client.connected) {
+                          print("connected");
+                        } else {
+                          print("waiting for connection");
+//                    await client.connect();
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PlayerWaitingRoom(this.client, this.player)),
+                        );
+                      }),
+                ],
+              ),
+            );
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: SizeConfig.safeBlockVertical * 2),
+                child: Text(username,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: SizeConfig.safeBlockHorizontal * 4)),
+              ),
+              SizedBox(width: SizeConfig.safeBlockHorizontal * 80)
+            ],
+          ),
+        ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,11 +175,32 @@ class _JoinStartState extends State<JoinStart> {
                 alignment: Alignment.bottomLeft,
                 fit: BoxFit.scaleDown),
           ),
-          child: StreamBuilder(
-            builder: _scanDevices(),
-            )
+          child: FutureBuilder<NetworkAddress>(
+            future: _scanDevices(),
+            builder: (context, snapshot) {
+              NetworkAddress addr; 
+              List<Widget> children = [];
+              if (snapshot.hasData) {
+                addr = snapshot.data;
+
+                if (addr.exists) {
+                  print('Found device: ${addr.ip}');
+                  if (!devices.contains(addr.ip)) {
+                    devices.add(addr.ip);
+                  for(String ip in devices){
+                    children.add(_joinCardTemplate(context, ip));
+                    }
+                }
+              }
+            }
+          return Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: children
+              ),
+          );
           // Column(children: for(final game in (await _scanDevices())) _joinCardTemplate(context, )),
-          ),
-    );
+          },
+      )));
   }
 }
