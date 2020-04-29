@@ -1,0 +1,13 @@
+Plan:
+
+1. Get IPs on the network using https://pub.dev/packages/ping_discover_network#-readme-tab- --> https://github.com/andrey-ushakov/ping_discover_network/blob/master/lib/src/network_analyzer.dart
+Q: If this is a stream then I should use stream https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+
+
+2. After getting IPs construct widgets
+-- How to do this with async data? 
+
+3. After widgets made, redirect to previous showdialog sequence
+
+
+Some help: https://medium.com/@felixseip01/discovering-devices-in-your-local-network-in-a-mobile-application-81785eec7093
