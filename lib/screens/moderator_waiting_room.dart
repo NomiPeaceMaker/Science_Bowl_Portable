@@ -28,6 +28,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 
   List<bool> redActive = List.generate(5, (_) => true);
   List<bool> greenActive = List.generate(5, (_) => true);
+  var teamNumber = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
 
   _ModeratorWaitingRoomState(this.server, this.moderator,this.questionSet);
 
@@ -59,26 +60,34 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        SizedBox(
-            width: 140.0,
-            height: 50,
-            child: FlatButton (
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Text(
-                  'Red $rNum',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-              ),
-              color: Colors.red,
-              textColor: Colors.white,
-              onPressed: () {
-                setState(() {
-                });
-              },
-          )
+        StreamBuilder(
+
+          stream: redPlayerJoinStreamController[teamNumber[rNum]].stream,
+          builder: (context, snapshot) { SizedBox(
+              width: 140.0,
+              height: 50,
+              child: FlatButton (
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                    'Red $rNum',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                ),
+                color: Colors.red,
+                textColor: Colors.white,
+                onPressed: () {
+                  setState(() {
+                  });
+                },
+              )
+            );
+          }
         ),
-        SizedBox(
+    StreamBuilder(
+        stream: greenPlayerJoinStreamController[teamNumber[gNum]].stream,
+        builder: (context, snapshot) {
+          SizedBox(
             width: 140.0,
             height: 50,
             child: FlatButton (
@@ -86,7 +95,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Text(
-                  'Green $rNum',
+                  'Green $gNum',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
               ),
               color: Colors.green,
@@ -96,7 +105,8 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                 });
               },
             )
-        ),
+          );
+        }),
       ]
     );
   }

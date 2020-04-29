@@ -23,7 +23,10 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   Client client;
   Player player;
   _PlayerWaitingRoomState(this.client, this.player);
+  var teamNumber = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
 
+  List<bool> redActive = List.generate(5, (_) => true);
+  List<bool> greenActive = List.generate(5, (_) => true);
 
   StreamSubscription socketDataStreamSubscription;
   @override
@@ -48,12 +51,6 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
       }
     });
   }
-
-
-  List<bool> redActive = List.generate(5, (_) => true);
-  List<bool> greenActive = List.generate(5, (_) => true);
-
-  var teamNumber = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
 
   Row playerRowWidget(String rNum, String gNum) {
     return Row(
@@ -94,7 +91,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Text(
-                    'Green $rNum',
+                    'Green $gNum',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
                 ),
                 color: greenActive[teamNumber[gNum]] ? Colors.green : Colors.grey,

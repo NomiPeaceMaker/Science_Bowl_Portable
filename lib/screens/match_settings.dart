@@ -409,10 +409,12 @@ class _MatchSettingState extends State<MatchSettings> {
                     iconSize: 30,
                     onPressed: () async {
                       await server.start();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ModeratorWaitingRoom(this.server, this.moderator)),
-                      );
+                      (context as Element).reassemble();
+//                      Navigator.pop(context);
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(builder: (context) => ModeratorWaitingRoom(this.server, this.moderator)),
+//                      );
                       setState(() {});
                     },
                   )
