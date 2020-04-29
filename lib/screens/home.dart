@@ -6,6 +6,7 @@ import 'package:sciencebowlportable/screens/match_settings.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
+import 'join_findModRoom.dart';
 
 enum settings { help, report }
 
