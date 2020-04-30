@@ -1,32 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/screens/onboarding.dart';
-import 'package:sciencebowlportable/screens/result.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sciencebowlportable/screens/login.dart';
 
+int initScreen;
 
-
-void main() => runApp(MyApp());
+Future <void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  initScreen = await prefs.getInt("initScreen");
+  print('initScreen $initScreen');
+  
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
   _MyApp createState() => _MyApp();
 }
 
+Map<String, Widget Function(BuildContext)> route0;
 
 class _MyApp extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    if(initScreen == 0) // IF THIS IS THE FIRST TIME RUNNING
+    {
+      {route0 = <String, WidgetBuilder>{
+        '/': (context) => OnboardingScreen(),
+          // When navigating to the "/second" route, build the SecondScreen widget.
+        '/home': (context) => MyHomePage(),
+      };
+      }
+    }
+    else{ // IF THIS IS NOT THE FIRST TIME RUNNING
+      {route0 = <String, WidgetBuilder>{
+      '/': (context) => Login(),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+      '/home': (context) => MyHomePage(),
+    };
+    }
+    
+    }
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+      
       initialRoute: '/',
-        routes: {
-          // When navigating to the "/" route, build the FirstScreen widget.
-          '/': (context) => OnboardingScreen(),
-          // When navigating to the "/second" route, build the SecondScreen widget.
-          '/home': (context) => MyHomePage(),
-        },
+        routes: route0,
+        
         // home: OnboardingScreen(),
           // home: Result()
     );
