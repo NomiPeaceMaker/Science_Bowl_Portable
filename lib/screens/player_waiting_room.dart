@@ -7,6 +7,9 @@ import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/screens/widgets.dart';
+import 'package:sciencebowlportable/utilities/styles.dart';
+
+import 'home.dart';
 
 class PlayerWaitingRoom extends StatefulWidget {
   Client client;
@@ -24,13 +27,12 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   Player player;
   _PlayerWaitingRoomState(this.client, this.player);
 
-
   StreamSubscription socketDataStreamSubscription;
   @override
   void initState() {
     super.initState();
     Stream socketDataStream = socketDataStreamController.stream;
-    socketDataStreamSubscription = socketDataStream.listen((data){
+    socketDataStreamSubscription = socketDataStream.listen((data) {
       print("DATTTA");
       print(data);
       if (data[0] == "R") {
@@ -38,7 +40,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
       } else if (data[0] == "G") {
         print("G joined");
       }
-      if (data=="StartGame") {
+      if (data == "StartGame") {
         print("Moving on to game");
         socketDataStreamSubscription.cancel();
         Navigator.push(
@@ -49,72 +51,63 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
     });
   }
 
-
   List<bool> redActive = List.generate(5, (_) => true);
   List<bool> greenActive = List.generate(5, (_) => true);
 
-  var teamNumber = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
+  var teamNumber = {"1": 0, "2": 1, "Captain": 2, "3": 3, "4": 4};
 
   Row playerRowWidget(String rNum, String gNum) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          SizedBox(
-              width: 140.0,
-              height: 50,
-              child: FlatButton (
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Text(
-                    'Red $rNum',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                ),
-                color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
-                textColor: Colors.white,
-                onPressed: () {
-                  setState(() {
-                    redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <
+        Widget>[
+      SizedBox(
+          width: 140.0,
+          height: 50,
+          child: FlatButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Text('Red $rNum',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+            color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
+            textColor: Colors.white,
+            onPressed: () {
+              setState(() {
+                redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
 //                    int playerNumber = teamNumber[rNum];
 //                    Stream s = redPlayerJoinStreamController[playerNumber].stream;
 //                    redPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
 //                      redActive[playerNumber] = !redActive[playerNumber];
 //                    });
-                    client.write("R$rNum");
+                client.write("R$rNum");
 //                    redPlayerJoinStreamController[playerNumber].add("R$rNum");
-                  });
-                },
-              )
-          ),
-          SizedBox(
-              width: 140.0,
-              height: 50,
-              child: FlatButton (
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Text(
-                    'Green $rNum',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                ),
-                color: greenActive[teamNumber[gNum]] ? Colors.green : Colors.grey,
-                textColor: Colors.white,
-                onPressed: () {
-                  setState(() {
-                    greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
+              });
+            },
+          )),
+      SizedBox(
+          width: 140.0,
+          height: 50,
+          child: FlatButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Text('Green $rNum',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+            color: greenActive[teamNumber[gNum]] ? Colors.green : Colors.grey,
+            textColor: Colors.white,
+            onPressed: () {
+              setState(() {
+                greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
 //                    int playerNumber = teamNumber[gNum];
 //                    Stream s = greenPlayerJoinStreamController[playerNumber].stream;
 //                    greenPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
 //                      greenActive[playerNumber] = !greenActive[playerNumber];
 //                    });
-                    client.write("G$gNum");
+                client.write("G$gNum");
 //                    greenPlayerJoinStreamController[playerNumber].add("G$gNum");
-                  });
-                },
-              )
-          ),
-        ]
-    );
+              });
+            },
+          )),
+    ]);
   }
 
   @override
@@ -124,7 +117,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => _exitDialog(),
         ),
         backgroundColor: Color(0xffF8B400),
         title: Text(
@@ -144,8 +137,9 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                 "Slots Available",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Color(0xffCC0066), fontSize: 22
-                ),
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xffCC0066),
+                    fontSize: 22),
               ),
             ),
           ),
@@ -155,14 +149,16 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
               Text(
                 "Red Team",
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18
-                ),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                    fontSize: 18),
               ),
               Text(
                 "Green Team",
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18
-                ),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                    fontSize: 18),
               ),
             ],
           ),
@@ -178,15 +174,42 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
               child: Text(
                 "Please wait for the Moderator\nto Start the Game",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold,
-                  color: Colors.blueGrey,
-                  fontSize: 18
-                ),
-               ),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey,
+                    fontSize: 18),
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+_exitDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Exit to Home Page"),
+            content: Text("Are you sure you want to exit to the home page?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("No", style: staystyle),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Exit", style: exitstyle),
+                onPressed: () {  Navigator.pushAndRemoveUntil(context, 
+                  MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
+                  ),
+                  ModalRoute.withName('/'));},
+              ),
+            ],
+          );
+        });
   }
 }
