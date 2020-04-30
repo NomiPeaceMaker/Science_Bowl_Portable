@@ -39,7 +39,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
       data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
       print(data);
       Player player = Player(data);
-      print("AT WAITING SCREEN");
+      print("AT WAITING SCREEN MODERATOR");
       int playerNumber = teamNumber[data.substring(1)];
       print(playerNumber);
       if (data[0] == "R") {

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Models.dart';
+import 'package:sciencebowlportable/globals.dart';
 import "package:hex/hex.dart";
 
 class Client {
@@ -22,7 +23,7 @@ class Client {
   connect() async {
     print("TRY TO CONNECT");
     try {
-      socket = await Socket.connect(hostname, 4040);
+      socket = await Socket.connect(hostname, PORT);
       print("CONNECTION SUCCESSFULL");
       socket.listen(
         onData,

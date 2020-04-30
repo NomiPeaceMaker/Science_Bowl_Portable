@@ -50,9 +50,13 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
         );
       }
     });
+    print("CLIENT EXISTS--------------------------------------");
+    print(client.socket);
+    print("CLIENT EXISTS--------------------------------------");
   }
 
-  Row playerRowWidget(String rNum, String gNum) {
+  Row playerRowWidget(String num, Client client) {
+    print(client);
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
@@ -64,20 +68,21 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Text(
-                    'Red $rNum',
+                    'Red $num',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
                 ),
-                color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
+                color: redActive[teamNumber[num]] ? Colors.red : Colors.grey,
                 textColor: Colors.white,
                 onPressed: () {
                   setState(() {
-                    redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
+                    client.write("R$num");
+                    print(teamNumber[num]);
+                    redActive[teamNumber[num]] = !redActive[teamNumber[num]];
 //                    int playerNumber = teamNumber[rNum];
 //                    Stream s = redPlayerJoinStreamController[playerNumber].stream;
 //                    redPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
 //                      redActive[playerNumber] = !redActive[playerNumber];
 //                    });
-                    client.write("R$rNum");
 //                    redPlayerJoinStreamController[playerNumber].add("R$rNum");
                   });
                 },
@@ -91,20 +96,21 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Text(
-                    'Green $gNum',
+                    'Green $num',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
                 ),
-                color: greenActive[teamNumber[gNum]] ? Colors.green : Colors.grey,
+                color: greenActive[teamNumber[num]] ? Colors.green : Colors.grey,
                 textColor: Colors.white,
                 onPressed: () {
+                  client.write("G$num");
                   setState(() {
-                    greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
+                    print(teamNumber[num]);
+                    greenActive[teamNumber[num]] = !greenActive[teamNumber[num]];
 //                    int playerNumber = teamNumber[gNum];
 //                    Stream s = greenPlayerJoinStreamController[playerNumber].stream;
 //                    greenPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
 //                      greenActive[playerNumber] = !greenActive[playerNumber];
 //                    });
-                    client.write("G$gNum");
 //                    greenPlayerJoinStreamController[playerNumber].add("G$gNum");
                   });
                 },
@@ -163,11 +169,11 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
               ),
             ],
           ),
-          playerRowWidget("1", "1"),
-          playerRowWidget("2", "2"),
-          playerRowWidget("Captain", "Captain"),
-          playerRowWidget("3", "3"),
-          playerRowWidget("4", "4"),
+          playerRowWidget("1", client),
+          playerRowWidget("2", client),
+          playerRowWidget("Captain", client),
+          playerRowWidget("3", client),
+          playerRowWidget("4", client),
           Container(
             margin: EdgeInsets.only(bottom: 20.0),
             child: Align(

@@ -51,6 +51,8 @@ class Server {
   onRequest(Socket socket) {
     print("New User");
     print(socket);
+    socket.write("Connected");
+    print("Sending connect message to client.");
     if (!sockets.contains(socket)) {
       sockets.add(socket);
     }
