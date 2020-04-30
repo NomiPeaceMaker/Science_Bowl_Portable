@@ -59,47 +59,41 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   }
 
   Row playerRowWidget(String num) {
-    print(client);
-    return new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          new SizedBox(
-              width: 140.0,
-              height: 50,child:
-              new StreamBuilder(
-                stream: redPlayerJoinStreamController[teamNumber[num]].stream,
-                builder: (context, snapshot) {
-                if (snapshot.data == 'toggleButton') {
-                  print("toggle");
-                  print(num);
-                  redActive[teamNumber[num]] = !redActive[teamNumber[num]];
-                }
-                return new FlatButton (
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Text(
-                        'Red $num',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                    ),
-                    color: redActive[teamNumber[num]] ? Colors.red : Colors.grey,
-                    textColor: Colors.white,
-                    onPressed: () {
-                      setState(() {
-                        client.write("R$num");
-  //                      print(teamNumber[num]);
-  //                      redActive[teamNumber[num]] = !redActive[teamNumber[num]];
-    //                    int playerNumber = teamNumber[rNum];
-    //                    Stream s = redPlayerJoinStreamController[playerNumber].stream;
-    //                    redPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
-    //                      redActive[playerNumber] = !redActive[playerNumber];
-    //                    });
-    //                    redPlayerJoinStreamController[playerNumber].add("R$rNum");
-                      });
-                    },
-                  );
-              })
-          ),
+      print(client);
+      return new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            new SizedBox(
+                width: 140.0,
+                height: 50,
+                child:
+                  new StreamBuilder(
+                      stream: redPlayerJoinStreamController[teamNumber[num]].stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == 'toggleButton') {
+                          print("toggle");
+                          print(num);
+                          redActive[teamNumber[num]] = !redActive[teamNumber[num]];
+                        }
+                        return new FlatButton (
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Text(
+                              'Red $num',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                          ),
+                          color: redActive[teamNumber[num]] ? Colors.red : Colors.grey,
+                          textColor: Colors.white,
+                          onPressed: () {
+                            setState(() {
+                              client.write("R$num");
+//                              redActive[teamNumber[num]] = !redActive[teamNumber[num]];
+                            });
+                            },
+                        );
+                      })
+            ),
           SizedBox(
               width: 140.0,
               height: 50,
