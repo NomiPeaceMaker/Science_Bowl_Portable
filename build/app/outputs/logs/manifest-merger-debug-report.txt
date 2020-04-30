@@ -19,7 +19,6 @@ MERGED from [:firebase_analytics] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The
 MERGED from [:shared_preferences] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:shared_preferences_web] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\shared_preferences_web\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:shared_preferences_macos] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\shared_preferences_macos\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.multidex:multidex:2.0.0] C:\Users\lenovo\.gradle\caches\transforms-2\files-2.1\9183dd67cc4be451f16211719ca08356\multidex-2.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.firebase:firebase-analytics:17.3.0] C:\Users\lenovo\.gradle\caches\transforms-2\files-2.1\24f2ecc60bfd425a06c90f85515ed8a5\firebase-analytics-17.3.0\AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.firebase:firebase-auth:19.2.0] C:\Users\lenovo\.gradle\caches\transforms-2\files-2.1\1e1aba52ab9f4fc5a2ef49e506d2f30a\firebase-auth-19.2.0\AndroidManifest.xml:17:1-42:12
 MERGED from [com.google.android.gms:play-services-measurement:17.3.0] C:\Users\lenovo\.gradle\caches\transforms-2\files-2.1\6cf46803045e84076d971aaaf34b253d\play-services-measurement-17.3.0\AndroidManifest.xml:17:1-55:12
@@ -293,8 +292,6 @@ MERGED from [:shared_preferences_web] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP
 MERGED from [:shared_preferences_web] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\shared_preferences_web\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:shared_preferences_macos] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\shared_preferences_macos\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:shared_preferences_macos] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\shared_preferences_macos\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [androidx.multidex:multidex:2.0.0] C:\Users\lenovo\.gradle\caches\transforms-2\files-2.1\9183dd67cc4be451f16211719ca08356\multidex-2.0.0\AndroidManifest.xml:20:5-43
-MERGED from [androidx.multidex:multidex:2.0.0] C:\Users\lenovo\.gradle\caches\transforms-2\files-2.1\9183dd67cc4be451f16211719ca08356\multidex-2.0.0\AndroidManifest.xml:20:5-43
 MERGED from [com.google.firebase:firebase-analytics:17.3.0] C:\Users\lenovo\.gradle\caches\transforms-2\files-2.1\24f2ecc60bfd425a06c90f85515ed8a5\firebase-analytics-17.3.0\AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-analytics:17.3.0] C:\Users\lenovo\.gradle\caches\transforms-2\files-2.1\24f2ecc60bfd425a06c90f85515ed8a5\firebase-analytics-17.3.0\AndroidManifest.xml:5:5-44
 MERGED from [com.google.firebase:firebase-auth:19.2.0] C:\Users\lenovo\.gradle\caches\transforms-2\files-2.1\1e1aba52ab9f4fc5a2ef49e506d2f30a\firebase-auth-19.2.0\AndroidManifest.xml:21:5-44

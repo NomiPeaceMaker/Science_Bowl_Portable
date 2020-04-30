@@ -28,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return new WillPopScope(
-      onWillPop: () async => false,
+      onWillPop:  _onBackPressed,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Container(
@@ -280,4 +280,25 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+  Future<bool> _onBackPressed() {
+  return showDialog(
+    context: context,
+    builder: (context) => new AlertDialog(
+      title: new Text('Are you sure?'),
+      content: new Text('Do you want to exit an App'),
+      actions: <Widget>[
+        new GestureDetector(
+          onTap: () => Navigator.of(context).pop(false),
+          child: Text("NO"),
+        ),
+        SizedBox(height: 16),
+        new GestureDetector(
+          onTap: () => SystemNavigator.pop(),
+          child: Text("YES"),
+        ),
+      ],
+    ),
+  ) ??
+      false;
+}
 }
