@@ -44,7 +44,6 @@ class _MatchSettingState extends State<MatchSettings> {
     }
     printIps().then((value) {
       print(moderator.gamePin);
-      pin = moderator.gamePin;
     }, onError: (error) {
       print(error);
     });
@@ -409,9 +408,13 @@ class _MatchSettingState extends State<MatchSettings> {
                     color: Colors.red,
                     iconSize: 30,
                     onPressed: () async {
+                      if (moderator.gamePin == null) {
+                        print("error");
+                      }
                       await server.start();
 //                      (context as Element).reassemble();
 //                      Navigator.pop(context);
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => ModeratorWaitingRoom(this.server, this.moderator)),

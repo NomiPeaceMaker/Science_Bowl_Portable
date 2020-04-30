@@ -24,8 +24,9 @@ class _PinState extends State<Pin> {
   TextEditingController controller = TextEditingController();
 
   onData(Uint8List data) {
-    String msg = String.fromCharCodes(data).replaceAll(new RegExp(r"\s+\b|\b\s"), "");;
-//    socketDataStreamController.add(msg);
+    String msg = String.fromCharCodes(data).replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+    print("Message Recieved from server $msg");
+    socketDataStreamController.add(msg);
 
     if (msg == "sendPlayerID") {
       client.write(player.playerID);

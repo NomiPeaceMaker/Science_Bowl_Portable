@@ -30,24 +30,37 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   List<bool> greenActive = List.generate(5, (_) => true);
   var teamNumber = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
 
+//  List<StreamController<String>> redPlayerJoinStreamController = new List(5);
+//  List<StreamController<String>> greenPlayerJoinStreamController = new List(5);
+
   _ModeratorWaitingRoomState(this.server, this.moderator,this.questionSet);
 
   StreamSubscription socketDataStreamSubscription;
   initState() {
     Stream socketDataStream = socketDataStreamController.stream;
+//    List<StreamController<String>> redPlayerJoinStreamController = new List.filled(5, StreamController.broadcast());
+//    List<StreamController<String>> greenPlayerJoinStreamController = new List.filled(5, StreamController.broadcast());
+
+    for( var i = 0 ; i < 5; i++ ) {
+      redPlayerJoinStreamController[i] = StreamController.broadcast();
+      greenPlayerJoinStreamController[i] = StreamController.broadcast();
+    }
     socketDataStreamSubscription = socketDataStream.listen((data){
       data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
       print(data);
+      server.sendAll(data);
       Player player = Player(data);
       print("AT WAITING SCREEN MODERATOR");
       int playerNumber = teamNumber[data.substring(1)];
       print(playerNumber);
       if (data[0] == "R") {
-        redPlayerJoinStreamController[teamNumber[playerNumber]].add("jj");
-        moderator.redTeam.players.add(player);
+        print("check");
+        print(playerNumber);
+        redPlayerJoinStreamController[playerNumber].add("toggleButton");
+//        moderator.redTeam.players.add(player);
       } else if (data[0] == "G") {
-        greenPlayerJoinStreamController[teamNumber[playerNumber]].add("jj");
-        moderator.redTeam.players.add(player);
+        greenPlayerJoinStreamController[playerNumber].add("toggleButton");
+//        moderator.redTeam.players.add(player);
       }
     });
 //    R1controller = new StreamController();
@@ -70,22 +83,24 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
             new StreamBuilder(
               stream: redPlayerJoinStreamController[teamNumber[rNum]].stream,
               builder: (context, snapshot) {
-              redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
-              return new FlatButton (
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Text(
-                    'Red $rNum',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                ),
-                color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
-                textColor: Colors.white,
-                onPressed: () {
-                  setState(() {
-                  });
-                },
-               );
+                if (snapshot.data == 'toggleButton'){
+                  redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
+                }
+                return new FlatButton (
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Text(
+                      'Red $rNum',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                  ),
+                  color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
+                  textColor: Colors.white,
+                  onPressed: () {
+                    setState(() {
+                    });
+                  },
+                 );
               })
         ),
         new SizedBox(
@@ -94,7 +109,9 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
           child: new StreamBuilder(
             stream: greenPlayerJoinStreamController[teamNumber[gNum]].stream,
             builder: (context, snapshot) {
-              greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
+              if (snapshot.data == 'toggleButton'){
+                greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
+              }
               return new FlatButton(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
