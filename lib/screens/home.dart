@@ -7,6 +7,8 @@ import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 import 'package:sciencebowlportable/screens/howtoplay.dart';
+import 'package:flutter/services.dart';
+
 
 enum settings { help, report }
 
@@ -21,11 +23,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  DateTime currentBackPressTime;
   settings _selection;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return MaterialApp(
+    return new WillPopScope(
+    onWillPop: () async => false,
+    child: MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Container(
         decoration: BoxDecoration(
@@ -170,78 +175,78 @@ class _MyHomePageState extends State<MyHomePage> {
                             );
                           },
                         )),
-                  ),
-
-                  RaisedButton(
-                    child: Text('JOIN GAME',
-                        style: TextStyle(color: Colors.white, fontSize: 22.0)),
-                    color: Color(0xFF20BABA),
-                    padding: new EdgeInsets.symmetric(
-                        vertical: SizeConfig.safeBlockVertical * 4.5,
-                        horizontal: SizeConfig.safeBlockHorizontal * 13),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(45.0),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Pin()),
-                      );
-                    },
-                  ),
-                  // Center(
-                  //   child: Container(
-                  //     width: 250.0,
-                  //     padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
-                  //     color: Color(0xFF20BABA),
-                  //     child: Text("JOIN GAME",style: TextStyle(color: Colors.white,),
-                  // ),
-
-                  //   ),
-                  // ),
-//                   Center(
-//                     child: RaisedButton(
-//                     child: Text('HOW TO PLAY',style: TextStyle(color: Colors.white,fontSize: 30.0)),
-//                     color: Color(0xFF20BABA),
-//                     padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
-//                     onPressed: (){
-//                       // HOW TO PLAY SCREEN GOES HERE!
-//                       //NAVIGATION WAALI CHEEZ KARO
-//                     },
-//                   ),
-//                   ),
-            Center(
-              child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: SizeConfig.safeBlockVertical * 6,
-                      horizontal: SizeConfig.safeBlockHorizontal * 5),
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(45.0),
+                    RaisedButton(
+                      child: Text('JOIN GAME',
+                          style: TextStyle(color: Colors.white, fontSize: 22.0)),
+                      color: Color(0xFF20BABA),
+                      padding: new EdgeInsets.symmetric(
+                          vertical: SizeConfig.safeBlockVertical * 4.5,
+                          horizontal: SizeConfig.safeBlockHorizontal * 13),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(45.0),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Pin()),
+                        );
+                      },
                     ),
-                    child: Text('HOW TO PLAY',
-                        style:
-                        TextStyle(color: Colors.white, fontSize: 22.0)),
-                    color: Color(0xFF20BABA),
-                    padding: new EdgeInsets.symmetric(
-                        vertical: SizeConfig.safeBlockVertical * 4.5,
-                        horizontal: SizeConfig.safeBlockHorizontal * 13),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HowToPlay()),
-                      );
-                    },
-                  )),
-            ),
+                    Center(
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: SizeConfig.safeBlockVertical * 6,
+                              horizontal: SizeConfig.safeBlockHorizontal * 5),
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(45.0),
+                            ),
+                            child: Text('HOW TO PLAY',
+                                style:
+                                TextStyle(color: Colors.white, fontSize: 22.0)),
+                            color: Color(0xFF20BABA),
+                            padding: new EdgeInsets.symmetric(
+                                vertical: SizeConfig.safeBlockVertical * 4.5,
+                                horizontal: SizeConfig.safeBlockHorizontal * 13),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HowToPlay()),
+                              );
+                            },
+                          )),
+                    ),
+                    Center(
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: SizeConfig.safeBlockVertical * 1,
+                              horizontal: SizeConfig.safeBlockHorizontal * 5),
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(45.0),
+                            ),
+                            child: Text('EXIT GAME',
+                                style:
+                                TextStyle(color: Colors.white, fontSize: 22.0)),
+                            color: Colors.red,
+                            padding: new EdgeInsets.symmetric(
+                                vertical: SizeConfig.safeBlockVertical * 4.5,
+                                horizontal: SizeConfig.safeBlockHorizontal * 13),
+                            onPressed: () {
+                              SystemNavigator.pop();
+                            },
+                          )),
+                    ),
 
                 ])),
           ),
         ),
       ),
+    ),
     );
   }
+  
+  
 }
-
-class _WaitingRoom {}
