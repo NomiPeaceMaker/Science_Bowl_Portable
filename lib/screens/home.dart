@@ -28,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return new WillPopScope(
-      onWillPop:  _onBackPressed,
+      onWillPop:  _exitDialog,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Container(
@@ -280,25 +280,48 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-  Future<bool> _onBackPressed() {
-  return showDialog(
-    context: context,
-    builder: (context) => new AlertDialog(
-      title: new Text('Are you sure?'),
-      content: new Text('Do you want to exit an App'),
-      actions: <Widget>[
-        new GestureDetector(
-          onTap: () => Navigator.of(context).pop(false),
-          child: Text("NO"),
-        ),
-        SizedBox(height: 16),
-        new GestureDetector(
-          onTap: () => SystemNavigator.pop(),
-          child: Text("YES"),
-        ),
-      ],
-    ),
-  ) ??
-      false;
-}
+//   Future<bool> _onBackPressed() {
+//   return showDialog(
+//     context: context,
+//     builder: (context) => new AlertDialog(
+//       title: new Text('Are you sure?'),
+//       content: new Text('Do you want to exit an App'),
+//       actions: <Widget>[
+//         new GestureDetector(
+//           onTap: () => Navigator.of(context).pop(false),
+//           child: Text("NO"),
+//         ),
+//         SizedBox(height: 16),
+//         new GestureDetector(
+//           onTap: () => SystemNavigator.pop(),
+//           child: Text("YES"),
+//         ),
+//       ],
+//     ),
+//   ) ??
+//       false;
+// }
+Future<bool> _exitDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Exit SBP"),
+            content: Text("Are you sure you want to exit the app?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("No", style: staystyle),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Exit", style: exitstyle),
+                onPressed: () {SystemNavigator.pop();},
+              ),
+            ],
+          );
+        });
+  }
 }
