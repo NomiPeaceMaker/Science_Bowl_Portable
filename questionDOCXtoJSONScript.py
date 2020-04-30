@@ -55,7 +55,7 @@ bonus_answer
 bonus_image
 '''
 
-def outjson(question, QuestionNumber, directory):
+def outjson(question, QuestionNumber, directory, ErrorLog):
     jsonQuestion = {}
     
     if question.tossUp.subtype == 'Earth and Space':
@@ -79,8 +79,13 @@ def outjson(question, QuestionNumber, directory):
 
     if 'none' in jsonQuestion.values() or '' in jsonQuestion.values():
         print("Error: 'none' or empty string detected. Skipping question with information\n\t", jsonQuestion)
+        ErrorLog['None'].append(jsonQuestion)
         return False
 
+    if ((jsonQuestion['tossup_isShortAns'] == False) and (jsonQuestion['tossup_MCQoptions'] == None)) or ((jsonQuestion['bonus_isShortAns'] == False) and (jsonQuestion['bonus_MCQoptions'] == None)):
+        print("Error: Internal Inconsistency detected. Question is MCQ but has no options in question\n\t", jsonQuestion)
+        ErrorLog['noMCQoptions'].append(jsonQuestion)
+        return False
     
     # if not os.path.isdir(directory):
     #     print('Making directory ', directory)
@@ -111,7 +116,7 @@ def sanitize_answer(ans):
     else:
         return ans
 
-def readDOCX(subjectArrays, input_filename,level):
+def readDOCX(subjectArrays, input_filename,level, ErrorLog):
 
     global subjectList
     global questionType
@@ -171,7 +176,8 @@ def readDOCX(subjectArrays, input_filename,level):
                 if (demo.tossUp.subtype != 'none'):
                     subjectArrays[demo.tossUp.subtype].append(demo)
                 else:
-                    print("ERROR: Cannot determine subject in file:", input_filename)
+                    ErrorLog['None_Subject'].append(input_filename)
+                    print("ERROR: Cannot determine subject of file in:", input_filename)
                     print("Skipping Question")
 
                 #continue
@@ -256,6 +262,7 @@ def main():
         subjectArrays[subject] = []
     
     Cache = {}
+
     directory = './jsonQuestions/' 
 
     if (level == 0):
@@ -272,6 +279,21 @@ def main():
     else:
         print("Creating cache...")
         Cache['filesRead'] = []
+        for subject in subjectList:
+            Cache[subject] = 0
+
+    ErrorLog = {}
+
+    if os.path.exists(directory+'/1errorLog.json'):
+        with open(directory+'/1errorLog.json') as f:
+            ErrorLog = json.load(f)
+    else:
+        print("Creating error log...")
+        ErrorLog['Info'] = 'None: Some missing information detected \nnoMCQoptions: Question is MCQ but does not have a MCQ field \nNone_Subject: Unable to find subject of Question'
+        ErrorLog['None'] = []
+        ErrorLog['noMCQoptions'] = []
+        ErrorLog['None_Subject'] = []
+
         for subject in subjectList:
             Cache[subject] = 0
 
@@ -300,25 +322,25 @@ def main():
     for i, file in enumerate(filesInDirectory):
         print(i,": ", file)
     
-    allchoice = input('INPUT: Press A if you want to read all of these files\nIf NO, press any other key. Add only those files you want to read into "questionsRepo" and try again:') 
+    allchoice = input('INPUT: Press "A" if you want to read all of these files. If NO, press any other key. \nHINT: Add only those files you want to read into "questionsRepo" and try again. \nInput:') 
     if (allchoice.lower() == 'a'):
         for file in filesInDirectory:
-            readDOCX(subjectArrays, file,level)
+            readDOCX(subjectArrays, file,level,ErrorLog)
             Cache['filesRead'].append(file)
     else:
         return
 
         
-    print("Before Output")
-    total = 0
+    print("\nBefore Output")
+    beforetotal = 0
     afterCount = {}
     for subject in subjectList:
         numberofquestions = len(subjectArrays[subject])
         print("\t",subject,":", numberofquestions)
         afterCount[subject] = 0
-        total += numberofquestions
+        beforetotal += numberofquestions
 
-    print("Total found ", total)
+    print("Total found ", beforetotal)
 
     #output to JSON while any question remain
     
@@ -330,7 +352,7 @@ def main():
                 loop = True
                 Cache[subject] += 1
                 afterCount[subject] += 1
-                if not (outjson(subjectArrays[subject].pop(), Cache[subject], directory)):
+                if not (outjson(subjectArrays[subject].pop(), Cache[subject], directory, ErrorLog)):
                     Cache[subject] -= 1
                     afterCount[subject] -= 1
 
@@ -339,13 +361,14 @@ def main():
 
 
 
-    total = 0
+    aftertotal = 0
     print("\nAfter Output: ")
     for subject in subjectList:
         numberofquestions = afterCount[subject]
         print("\t",subject,":", numberofquestions)
-        total += numberofquestions
-    print("Total used ", total)
+        aftertotal += numberofquestions
+    print("Total used ", aftertotal)
+    print("Questions skipped", beforetotal - aftertotal)
 
     print("\nSubject Indexes at: ")
     for subject in subjectList:
@@ -355,8 +378,12 @@ def main():
 
     # Save for later 
     with open(directory+'/0cache.json','w') as json_file:
-        print("Saving Output in Cache")
+        print("Saving indexes in Cache")
         json.dump(Cache,json_file)
+
+    with open(directory+'/1errorlog.json','w') as json_file:
+        print("Saving Error log")
+        json.dump(ErrorLog,json_file)
         
           
 main()
