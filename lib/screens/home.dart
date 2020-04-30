@@ -244,10 +244,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 // Future <bool>  _exitDialog() async {
-//   // SystemNavigator.pop();
-//   await SystemShortcuts.home();
-
-
     // showDialog(
     //     context: context,
     //     barrierDismissible: true,
