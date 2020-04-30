@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/pin_screen.dart';
-import 'package:sciencebowlportable/screens/moderator.dart';
+// import 'package:sciencebowlportable/screens/moderator.dart';
 import 'package:sciencebowlportable/screens/match_settings.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 import 'package:sciencebowlportable/screens/howtoplay.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
+import 'package:move_to_background/move_to_background.dart';
+
 
 enum settings { help, report }
 
@@ -28,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return new WillPopScope(
-      onWillPop:  _exitDialog,
+      
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Container(
@@ -230,98 +232,42 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                       ),
                     ),
-                  // Padding(
-                  //     padding: EdgeInsets.symmetric(
-                  //         vertical: SizeConfig.safeBlockVertical * 3,
-                  //         horizontal: SizeConfig.safeBlockHorizontal * 5),
-                  //     child: RaisedButton(
-                  //       shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(45.0),
-                  //       ),
-                  //       child: Text('HOW TO PLAY',
-                  //           style:
-                  //               TextStyle(color: Colors.white, fontSize: 22.0)),
-                  //       color: Color(0xFF20BABA),
-                  //       padding: new EdgeInsets.symmetric(
-                  //           vertical: SizeConfig.safeBlockVertical * 4.5,
-                  //           horizontal: SizeConfig.safeBlockHorizontal * 13),
-                  //       onPressed: () {
-                  //         Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (context) => HowToPlay()),
-                  //         );
-                  //       },
-                  //     )),
-                  // Center(
-                  //   child: Padding(
-                  //       padding: EdgeInsets.symmetric(
-                  //           vertical: SizeConfig.safeBlockVertical * 1,
-                  //           horizontal: SizeConfig.safeBlockHorizontal * 5),
-                  //       child: RaisedButton(
-                  //         shape: RoundedRectangleBorder(
-                  //           borderRadius: BorderRadius.circular(45.0),
-                  //         ),
-                  //         child: Text('EXIT GAME',
-                  //             style:
-                  //             TextStyle(color: Colors.white, fontSize: 22.0)),
-                  //         color: Colors.red,
-                  //         padding: new EdgeInsets.symmetric(
-                  //             vertical: SizeConfig.safeBlockVertical * 4.5,
-                  //             horizontal: SizeConfig.safeBlockHorizontal * 13),
-                  //         onPressed: () {
-                  //           SystemNavigator.pop();
-                  //         },
-                  //       )),
-                  // ),
                 ])),
           ),
         ),
       ),
+      onWillPop:  () async {
+        MoveToBackground.moveTaskToBack();
+        return false;
+      },
     );
   }
-//   Future<bool> _onBackPressed() {
-//   return showDialog(
-//     context: context,
-//     builder: (context) => new AlertDialog(
-//       title: new Text('Are you sure?'),
-//       content: new Text('Do you want to exit an App'),
-//       actions: <Widget>[
-//         new GestureDetector(
-//           onTap: () => Navigator.of(context).pop(false),
-//           child: Text("NO"),
-//         ),
-//         SizedBox(height: 16),
-//         new GestureDetector(
-//           onTap: () => SystemNavigator.pop(),
-//           child: Text("YES"),
-//         ),
-//       ],
-//     ),
-//   ) ??
-//       false;
-// }
-Future<bool> _exitDialog() {
-    showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Exit SBP"),
-            content: Text("Are you sure you want to exit the app?"),
-            actions: <Widget>[
-              FlatButton(
-                child: Text("No", style: staystyle),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                child: Text("Exit", style: exitstyle),
-                onPressed: () {SystemNavigator.pop();},
-              ),
-            ],
-          );
-        });
-  }
+
+// Future <bool>  _exitDialog() async {
+//   // SystemNavigator.pop();
+//   await SystemShortcuts.home();
+
+
+    // showDialog(
+    //     context: context,
+    //     barrierDismissible: true,
+    //     builder: (context) {
+    //       return AlertDialog(
+    //         title: Text("Exit SBP"),
+    //         content: Text("Are you sure you want to exit the app?"),
+    //         actions: <Widget>[
+    //           FlatButton(
+    //             child: Text("No", style: staystyle),
+    //             onPressed: () {
+    //               Navigator.of(context).pop();
+    //             },
+    //           ),
+    //           FlatButton(
+    //             child: Text("Exit", style: exitstyle),
+    //             onPressed: () {SystemNavigator.pop();},
+    //           ),
+    //         ],
+    //       );
+    //     });
+  // }
 }

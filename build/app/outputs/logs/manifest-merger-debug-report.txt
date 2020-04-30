@@ -15,6 +15,7 @@ MERGED from [:cloud_firestore_web] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\Th
 MERGED from [:firebase_core] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-15:12
 MERGED from [:firebase_core_web] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\firebase_core_web\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:flutter_facebook_login] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\flutter_facebook_login\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:move_to_background] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\move_to_background\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:firebase_analytics] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\firebase_analytics\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-19:12
 MERGED from [:shared_preferences] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:shared_preferences_web] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\shared_preferences_web\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
@@ -284,6 +285,8 @@ MERGED from [:firebase_core_web] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The 
 MERGED from [:firebase_core_web] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\firebase_core_web\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_facebook_login] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\flutter_facebook_login\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_facebook_login] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\flutter_facebook_login\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:move_to_background] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\move_to_background\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:move_to_background] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\move_to_background\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:firebase_analytics] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\firebase_analytics\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:firebase_analytics] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\firebase_analytics\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:shared_preferences] C:\Users\lenovo\Desktop\Spring 2020\SE\SBP\The App\science_bowl_portable\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
