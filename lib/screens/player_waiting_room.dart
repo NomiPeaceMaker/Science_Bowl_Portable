@@ -1,12 +1,11 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:sciencebowlportable/screens/player_buzzer.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
-import 'package:sciencebowlportable/screens/widgets.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 
 import 'home.dart';
@@ -26,46 +25,50 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   Client client;
   Player player;
   _PlayerWaitingRoomState(this.client, this.player);
-  var teamNumber = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
+  var playerPositionIndexDict = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
+  List<StreamController<String>> playerJoinStreamControllers = new List(5);
 
-  List<bool> redActive = List.generate(5, (_) => true);
-  List<bool> greenActive = List.generate(5, (_) => true);
+//  List<bool> redActive = List.generate(5, (_) => true);
+//  List<bool> greenActive = List.generate(5, (_) => true);
 
   StreamSubscription socketDataStreamSubscription;
   @override
   void initState() {
     super.initState();
       for (var i = 0 ; i < 5; i++ ) {
-        redPlayerJoinStreamController[i] = StreamController.broadcast();
-        greenPlayerJoinStreamController[i] = StreamController.broadcast();
+        playerJoinStreamControllers[i] = StreamController.broadcast();
+//        greenPlayerJoinStreamController[i] = StreamController.broadcast();
       }
       Stream socketDataStream = socketDataStreamController.stream;
       socketDataStreamSubscription = socketDataStream.listen((data) {
-        data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
-        print(data);
-        int playerNumber = teamNumber[data.substring(1)];
-        print(playerNumber);
-        if (data[0] == "R") {
-          redPlayerJoinStreamController[playerNumber].add("toggleButton");
-        } else if (data[0] == "G") {
-          greenPlayerJoinStreamController[playerNumber].add("toggleButton");
-        }
-        if (data=="StartGame") {
-          print("Moving on to game");
-          socketDataStreamSubscription.cancel();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Game(client, player)),
-          );
-        }
+
+//        data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+//        print(data);
+//        int playerNumber = playerPositionIndexDict[data.substring(1)];
+//        print(playerNumber);
+//        if (data[0] == "R") {
+//          playerJoinStreamControllers[playerNumber].add("toggleButton");
+//        } else if (data[0] == "G") {
+//          playerJoinStreamControllers[playerNumber].add("toggleButton");
+//        }
+//        if (data=="StartGame") {
+//          print("Moving on to game");
+//          socketDataStreamSubscription.cancel();
+//          Navigator.push(
+//            context,
+//            MaterialPageRoute(builder: (context) => Game(client, player)),
+//          );
+//        }
     });
   }
   SizedBox teamSlot(String playerPosition, String team) {
     var buttonColor;
+    int playerPositionIndex = playerPositionIndexDict[playerPosition];
     if (team == "Red") {
       buttonColor = Colors.red;
     }
     else if (team == "Green") {
+      playerPositionIndex += 5;
       buttonColor = Colors.green;
     }
     return new SizedBox(
@@ -73,7 +76,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
       height: 50,
       child:
       new StreamBuilder(
-          stream: redPlayerJoinStreamController[teamNumber[playerPosition]].stream,
+          stream: playerJoinStreamControllers[playerPositionIndex].stream,
           builder: (context, snapshot) {
             if (snapshot.data == 'toggleButton') {
               print("toggle");
@@ -89,10 +92,11 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                   '$team $playerPosition',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
               ),
-              color: redActive[teamNumber[playerPosition]] ? buttonColor : Colors.grey,
+              color: Colors.grey,
               textColor: Colors.white,
               onPressed: () {
                 setState(() {
+                  var message = {"type": "buzzer", "userName": player.userName, "playerPositionIndex": playerPositionIndex.toString()};
                   client.write("R$playerPosition");
 //                              redActive[teamNumber[num]] = !redActive[teamNumber[num]];
                 });

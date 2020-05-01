@@ -1,13 +1,11 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/moderator.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Player.dart';
-import 'package:sciencebowlportable/screens/widgets.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 
@@ -29,42 +27,49 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   Server server;
   Moderator moderator;
   List<Question> questionSet;
+  var playerPositionIndexDict = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
+  List<StreamController<String>> playerJoinStreamControllers = new List(5);
 
-  List<bool> redActive = List.generate(5, (_) => true);
-  List<bool> greenActive = List.generate(5, (_) => true);
-  var teamNumber = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
-
-//  List<StreamController<String>> redPlayerJoinStreamController = new List(5);
-//  List<StreamController<String>> greenPlayerJoinStreamController = new List(5);
+//  List<bool> redActive = List.generate(5, (_) => true);
+//  List<bool> greenActive = List.generate(5, (_) => true);
 
   _ModeratorWaitingRoomState(this.server, this.moderator,this.questionSet);
 
   StreamSubscription socketDataStreamSubscription;
+
   initState() {
     Stream socketDataStream = socketDataStreamController.stream;
 //    List<StreamController<String>> redPlayerJoinStreamController = new List.filled(5, StreamController.broadcast());
 //    List<StreamController<String>> greenPlayerJoinStreamController = new List.filled(5, StreamController.broadcast());
 
-    for( var i = 0 ; i < 5; i++ ) {
-      redPlayerJoinStreamController[i] = StreamController.broadcast();
-      greenPlayerJoinStreamController[i] = StreamController.broadcast();
+    for( var i = 0 ; i < 10; i++ ) {
+      playerJoinStreamControllers[i] = StreamController.broadcast();
+//      greenPlayerJoinStreamController[i] = StreamController.broadcast();
     }
+
     socketDataStreamSubscription = socketDataStream.listen((data){
-      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+//      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
       print(data);
       server.sendAll(data);
-      Player player = Player(data);
-      print("AT WAITING SCREEN MODERATOR");
-      int playerNumber = teamNumber[data.substring(1)];
-      print(playerNumber);
-      if (data[0] == "R") {
-        print("check");
-        print(playerNumber);
-        redPlayerJoinStreamController[playerNumber].add("toggleButton");
+      data = json.decode(data);
+
+//      Player player = Player(data);
+      print("LISTENING AT WAITING SCREEN MODERATOR");
+//      int playerNumber = playerPositionIndexDict[data.substring(1)];
+//      print(playerNumber);
+//      if (data[0] == "R") {
+//        print("check");
+//        print(playerNumber);
+//        redPlayerJoinStreamController[playerNumber].add("toggleButton");
 //        moderator.redTeam.players.add(player);
-      } else if (data[0] == "G") {
-        greenPlayerJoinStreamController[playerNumber].add("toggleButton");
+//      } else if (data[0] == "G") {
+//        greenPlayerJoinStreamController[playerNumber].add("toggleButton");
 //        moderator.redTeam.players.add(player);
+//      }
+      if (data["type"] == "buzzer") {
+        int playerPositionIndex = int.parse(data["playerPositionIndex"]);
+        String userName = data["userName"];
+        playerJoinStreamControllers[playerPositionIndex].add(userName);
       }
     });
 //    R1controller = new StreamController();
@@ -77,11 +82,15 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   }
 
   SizedBox teamSlot(String playerPosition, String team) {
-    var buttonColor;
+    var buttonColor, buttonText;
+    int playerPositionIndex = playerPositionIndexDict[playerPosition];
     if (team == "Red") {
+      buttonText = 'Red $playerPosition';
       buttonColor = Colors.red;
     }
     else if (team == "Green") {
+      playerPositionIndex += 5;
+      buttonText = 'Green $playerPosition';
       buttonColor = Colors.green;
     }
     return new SizedBox(
@@ -89,21 +98,23 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
         height: 50,
         child:
         new StreamBuilder(
-            stream: redPlayerJoinStreamController[teamNumber[playerPosition]].stream,
+            stream: playerJoinStreamControllers[playerPositionIndex].stream,
             builder: (context, snapshot) {
-              if (snapshot.data == 'toggleButton'){
-                redPlayerJoinStreamController[teamNumber[playerPosition]].add(" ");
-                redActive[teamNumber[playerPosition]] = !redActive[teamNumber[playerPosition]];
+              if (snapshot.data != null){
+                playerJoinStreamControllers[playerPositionIndex].add(null);
+                buttonText = snapshot.data;
+                buttonColor = Colors.grey;
+//                redActive[teamNumber[playerPosition]] = !redActive[teamNumber[playerPosition]];
               }
               return new FlatButton (
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Text(
-                    'Red $playerPosition',
+                    buttonText,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
                 ),
-                color: redActive[teamNumber[playerPosition]] ? Colors.red : Colors.grey,
+                color: buttonColor,
                 textColor: Colors.white,
                 onPressed: () {
                   setState(() {
