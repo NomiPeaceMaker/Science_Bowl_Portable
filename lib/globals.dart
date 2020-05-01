@@ -9,6 +9,8 @@ List<StreamController<String>> greenPlayerJoinStreamController = new List.filled
 List<StreamSubscription> redPlayerJoinStreamSubscription;
 List<StreamSubscription> greenPlayerJoinStreamSubscription;
 
+String Wifi_ip = "none";
+
 bool isModerator = false;
 String pin = "0000";
 //String name1 = 'nomi';
