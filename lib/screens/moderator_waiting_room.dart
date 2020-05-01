@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/moderator.dart';
@@ -84,6 +85,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
               stream: redPlayerJoinStreamController[teamNumber[rNum]].stream,
               builder: (context, snapshot) {
                 if (snapshot.data == 'toggleButton'){
+                  redPlayerJoinStreamController[teamNumber[gNum]].add(" ");
                   redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
                 }
                 return new FlatButton (
@@ -110,6 +112,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
             stream: greenPlayerJoinStreamController[teamNumber[gNum]].stream,
             builder: (context, snapshot) {
               if (snapshot.data == 'toggleButton'){
+                greenPlayerJoinStreamController[teamNumber[gNum]].add(" ");
                 greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
               }
               return new FlatButton(
