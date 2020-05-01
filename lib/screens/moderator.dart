@@ -34,7 +34,7 @@ class _HostState extends State<Host> {
   List<Question> questionSet;
 
   _HostState(this.server, this.moderator,this.questionSet);
-  bool paused = true;
+  bool paused = false;
   int aScore = 0;
   int bScore = 0;
   String roundName = "Toss-Up";
@@ -53,7 +53,7 @@ class _HostState extends State<Host> {
   bool isBuzzerActive = false;
   Timer _buzzTimer;
   Timer _gameTimer;
-
+  bool doneReading=false;
 
   int bonusTimer;
   int tossUpTimer; //5 secs for buzzer timer
@@ -108,6 +108,7 @@ class _HostState extends State<Host> {
     }
     _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
+        doneReading=true;
         if (tossUpTimer > 0) {
           tossUpTimer--;
         } else {
@@ -206,7 +207,7 @@ class _HostState extends State<Host> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: Text(
-          "HOST",
+          (!paused)? "HOST" : "Paused",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
         ),
         centerTitle: true,
@@ -228,11 +229,21 @@ class _HostState extends State<Host> {
                 if (paused) {
                   setState(() {
                     paused = false;
+                    _startGameTimer();
+                    if(doneReading)
+                      {
+                        _startBuzzTimer();
+                      }
                   });
                 }
                 else {
                   setState(() {
                     paused = true;
+                    _gameTimer.cancel();
+                    if (doneReading)
+                      {
+                        _buzzTimer.cancel();
+                      }
                   });
                 }
               },
@@ -327,7 +338,7 @@ class _HostState extends State<Host> {
                     Padding(
                       padding: EdgeInsets.all(20),
                       child: Text(
-                        "Q"+(index+1).toString()+"."+questionSet[index].tossupQuestion,
+                        (roundName=="Toss-Up")?"Q"+(index+1).toString()+"."+questionSet[index].tossupQuestion : "Q"+(index+1).toString()+"."+questionSet[index].bonusQuestion,
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -364,7 +375,7 @@ class _HostState extends State<Host> {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                       child: Text(
-                        "Ans. " + questionSet[index].tossupAnswer,
+                        (roundName=="Toss-Up")?"Ans. " + questionSet[index].tossupAnswer : "Ans. " + questionSet[index].bonusAnswer,
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
@@ -389,18 +400,19 @@ class _HostState extends State<Host> {
                             color: Colors.green,
                             onPressed: () {
                               setState(() {
-                                if (index==questionSet.length-1)
-                                  {
+                                if (!paused) {
+                                  if (index == questionSet.length - 1) {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => Result()),
+                                      MaterialPageRoute(
+                                          builder: (context) => Result()),
                                     );
                                   }
-                                else
-                                  {
-                                    index+=1;
+                                  else {
+                                    index += 1;
                                     roundName = "Toss-Up";
                                   }
+                                }
                               });
                             }, //next qs
                           ),
@@ -446,7 +458,7 @@ class _HostState extends State<Host> {
                 textColor: Colors.white,
                 onPressed: () {
                   setState(() {
-                    if (!BuzzerOpen)
+                    if (!BuzzerOpen && !paused)
                     {
                       server.sendAll("BuzzerAvailable");
                       BuzzerOpen=true;
@@ -498,6 +510,7 @@ class _HostState extends State<Host> {
                     textColor: Colors.white,
                     onPressed: () {
                       setState(() {
+                        if(!paused){
                         server.sendAll("Correct");
                         if (roundName=="Toss-Up")
                           {
@@ -513,16 +526,27 @@ class _HostState extends State<Host> {
                           }
                         else
                           {
-                            roundName="Toss-Up";
-                            if(team=="A")
-                            {
-                              aScore+=10;
+                            if (index == questionSet.length - 1) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Result()),
+                              );
                             }
-                            else
-                            {
-                              bScore+=10;
-                            }
+                          else{
+                              index+=1;
+                              roundName="Toss-Up";
+                              if(team=="A")
+                              {
+                                aScore+=10;
+                              }
+                              else
+                              {
+                                bScore+=10;
+                              }
                           }
+                          }
+                        }
                       }
                      );
                     },
@@ -539,20 +563,20 @@ class _HostState extends State<Host> {
                     textColor: Colors.white,
                     onPressed: () => {
                         setState(() {
-                          server.sendAll("Incorrect");
-                          if (index==questionSet.length-1)
-                            {
+                          if(!paused) {
+                            server.sendAll("Incorrect");
+                            if (index == questionSet.length - 1) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => Result()),
+                                MaterialPageRoute(
+                                    builder: (context) => Result()),
                               );
                             }
-                          else
-                          {
-                            index+=1;
-                            roundName = "Toss-Up";
+                            else {
+                              index += 1;
+                              roundName = "Toss-Up";
+                            }
                           }
-
                         }
                       ),
                     },
@@ -571,15 +595,15 @@ class _HostState extends State<Host> {
                     textColor: Colors.white,
                     onPressed: () => {
                       setState(() {
-                        server.sendAll("Penalty");
-                        //need to do more work here
-                        if(team=="A")
-                        {
-                          bScore+=4;
-                        }
-                        else
-                        {
-                          aScore+=4;
+                        if(!paused) {
+                          server.sendAll("Penalty");
+                          //need to do more work here
+                          if (team == "A") {
+                            bScore += 4;
+                          }
+                          else {
+                            aScore += 4;
+                          }
                         }
                       }),
                     },
