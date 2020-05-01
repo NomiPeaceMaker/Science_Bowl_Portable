@@ -38,7 +38,8 @@ class _MyApp extends State<MyApp> {
     else // IF THIS IS THE FIRST TIME RUNNING
     {
       {route0 = <String, WidgetBuilder>{
-        '/': (context) => OnboardingScreen(),
+//        '/': (context) => OnboardingScreen(),
+        '/': (context) => MyHomePage(),
           // When navigating to the "/second" route, build the SecondScreen widget.
         '/home': (context) => MyHomePage(),
       };

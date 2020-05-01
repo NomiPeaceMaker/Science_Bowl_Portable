@@ -14,6 +14,8 @@ MERGED from [:cloud_firestore] /home/lappy/GitHub/Science_Bowl_Portable/build/cl
 MERGED from [:cloud_firestore_web] /home/lappy/GitHub/Science_Bowl_Portable/build/cloud_firestore_web/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:firebase_core] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-15:12
 MERGED from [:firebase_core_web] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_core_web/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:connectivity] /home/lappy/GitHub/Science_Bowl_Portable/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-10:12
+MERGED from [:connectivity_macos] /home/lappy/GitHub/Science_Bowl_Portable/build/connectivity_macos/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:flutter_facebook_login] /home/lappy/GitHub/Science_Bowl_Portable/build/flutter_facebook_login/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:move_to_background] /home/lappy/GitHub/Science_Bowl_Portable/build/move_to_background/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:firebase_analytics] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-19:12
@@ -283,6 +285,10 @@ MERGED from [:firebase_core] /home/lappy/GitHub/Science_Bowl_Portable/build/fire
 MERGED from [:firebase_core] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:firebase_core_web] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_core_web/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:firebase_core_web] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_core_web/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity] /home/lappy/GitHub/Science_Bowl_Portable/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity] /home/lappy/GitHub/Science_Bowl_Portable/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity_macos] /home/lappy/GitHub/Science_Bowl_Portable/build/connectivity_macos/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity_macos] /home/lappy/GitHub/Science_Bowl_Portable/build/connectivity_macos/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_facebook_login] /home/lappy/GitHub/Science_Bowl_Portable/build/flutter_facebook_login/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_facebook_login] /home/lappy/GitHub/Science_Bowl_Portable/build/flutter_facebook_login/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:move_to_background] /home/lappy/GitHub/Science_Bowl_Portable/build/move_to_background/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
@@ -468,7 +474,9 @@ ADDED from [:firebase_core] /home/lappy/GitHub/Science_Bowl_Portable/build/fireb
 	android:name
 		ADDED from [:firebase_core] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-123
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from [:firebase_analytics] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-79
+ADDED from [:connectivity] /home/lappy/GitHub/Science_Bowl_Portable/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-79
+MERGED from [:firebase_analytics] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-79
+MERGED from [:firebase_analytics] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-79
 MERGED from [com.google.android.gms:play-services-measurement:17.3.0] /home/lappy/.gradle/caches/transforms-2/files-2.1/6cf46803045e84076d971aaaf34b253d/play-services-measurement-17.3.0/AndroidManifest.xml:24:5-79
 MERGED from [com.google.android.gms:play-services-measurement:17.3.0] /home/lappy/.gradle/caches/transforms-2/files-2.1/6cf46803045e84076d971aaaf34b253d/play-services-measurement-17.3.0/AndroidManifest.xml:24:5-79
 MERGED from [com.google.android.gms:play-services-measurement-api:17.3.0] /home/lappy/.gradle/caches/transforms-2/files-2.1/458ea6d658fe24f223d46c60f0fae216/play-services-measurement-api-17.3.0/AndroidManifest.xml:23:5-79
@@ -484,7 +492,11 @@ MERGED from [com.google.android.gms:play-services-measurement-sdk-api:17.3.0] /h
 MERGED from [io.grpc:grpc-android:1.21.0] /home/lappy/.gradle/caches/transforms-2/files-2.1/e8bac0b08c1a7cbe6924fc1caa80bd85/grpc-android-1.21.0/AndroidManifest.xml:11:5-79
 MERGED from [io.grpc:grpc-android:1.21.0] /home/lappy/.gradle/caches/transforms-2/files-2.1/e8bac0b08c1a7cbe6924fc1caa80bd85/grpc-android-1.21.0/AndroidManifest.xml:11:5-79
 	android:name
-		ADDED from [:firebase_analytics] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-76
+		ADDED from [:connectivity] /home/lappy/GitHub/Science_Bowl_Portable/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-76
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from [:connectivity] /home/lappy/GitHub/Science_Bowl_Portable/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-76
+	android:name
+		ADDED from [:connectivity] /home/lappy/GitHub/Science_Bowl_Portable/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:8:22-73
 uses-permission#android.permission.WAKE_LOCK
 ADDED from [:firebase_analytics] /home/lappy/GitHub/Science_Bowl_Portable/build/firebase_analytics/intermediates/library_manifest/debug/AndroidManifest.xml:9:5-68
 MERGED from [com.google.android.gms:play-services-measurement:17.3.0] /home/lappy/.gradle/caches/transforms-2/files-2.1/6cf46803045e84076d971aaaf34b253d/play-services-measurement-17.3.0/AndroidManifest.xml:25:5-68
