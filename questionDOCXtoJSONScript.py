@@ -1,14 +1,21 @@
 import docx
-import os
 import time
 import math
 import json
+import os
+from os import listdir
+from os.path import isfile, join
 from random import shuffle
 
 # to make this file run make sure to download the file dependencies (the imports)
 
+#initialize some important global variables that will be used for semantic analysis of the text
 subjectList = ['Biology','Math','Physics','Chemistry','Earth and Space']
 questionType = ['Multiple Choice', 'Short Answer']
+
+
+#Check cache in direcotory -> Save current indexes of files
+#G
 
 
 class qstruct:                          # Question Structure
@@ -48,16 +55,15 @@ bonus_answer
 bonus_image
 '''
 
-def outjson(question, QuestionNumber):
+def outjson(question, QuestionNumber, directory, ErrorLog):
     jsonQuestion = {}
-    
-    jsonQuestion['id']                  = QuestionNumber
-    jsonQuestion['difficultyLevel']     = question.tossUp.level
     
     if question.tossUp.subtype == 'Earth and Space':
         question.tossUp.subtype = 'Earth_and_Space'
 
-    jsonQuestion['subjectType']         = question.tossUp.subtype
+    jsonQuestion['id']                  = QuestionNumber 
+    jsonQuestion['difficultyLevel']     = question.tossUp.level 
+    jsonQuestion['subjectType']         = question.tossUp.subtype  
 
     jsonQuestion['tossup_question']     = question.tossUp.qbody
     jsonQuestion['tossup_isShortAns']   = True if (question.tossUp.form == 'Short Answer') else False 
@@ -71,19 +77,29 @@ def outjson(question, QuestionNumber):
     jsonQuestion['bonus_answer']        = question.bonus.answer
     jsonQuestion['bonus_image']         = None
 
-    dir = './jsonQuestions/'
+    if 'none' in jsonQuestion.values() or '' in jsonQuestion.values():
+        print("Error: 'none' or empty string detected. Skipping question with information\n\t", jsonQuestion)
+        ErrorLog['None'].append(jsonQuestion)
+        return False
 
-    if not os.path.isdir(dir):
-        print('Making directory ', dir)
-        os.makedirs(dir)
+    if ((jsonQuestion['tossup_isShortAns'] == False) and (jsonQuestion['tossup_MCQoptions'] == None)) or ((jsonQuestion['bonus_isShortAns'] == False) and (jsonQuestion['bonus_MCQoptions'] == None)):
+        print("Error: Internal Inconsistency detected. Question is MCQ but has no options in question\n\t", jsonQuestion)
+        ErrorLog['noMCQoptions'].append(jsonQuestion)
+        return False
+    
+    # if not os.path.isdir(directory):
+    #     print('Making directory ', directory)
+    #     os.makedirs(dir)
 
     filename = question.tossUp.subtype + '_' + str(QuestionNumber) + '.json'
-    with open(dir + filename,'w') as json_file:
+    with open(directory + '/' + filename,'w') as json_file:
         json.dump(jsonQuestion, json_file)
+        return True
 
 # remove everything after and including the word answer
 def sanitize_ansOption(ansOption):
-    pos = ansOption.find('ANSWER:')
+    lowered = ansOption.lower()
+    pos = lowered.find('answer:')
     
     if pos != -1:
         return ansOption[:pos]
@@ -92,137 +108,22 @@ def sanitize_ansOption(ansOption):
 
 # remove everything before the word answer
 def sanitize_answer(ans):
-    pos = ans.find('ANSWER:')
+    lowered = ans.lower()
+    pos = lowered.find('answer:')
     
     if pos != -1:
         return ans[pos:]
     else:
         return ans
 
-def putLevel(level, demo, easyList, hardList):
-    if level == 0:
-        easyList.append(demo)
-    elif level == 1:
-        hardList.append(demo)
+def readDOCX(subjectArrays, input_filename,level, ErrorLog):
 
-def askDifficulty(sub,easy, hard,level) :
-    if level == 0:
-        return easy
-    else:
-        return hard                
-    
-
-def chicken():
-    print("      __//")
-    print("    /.__.\\")
-    print("    \\ \\/ /")
-    print(" '__/    \\")
-    print("  \\-      )")
-    print("   \\_____/")
-    print("_____|_|____")
-    print('     " "')
-
-def byeChicken():
-    print("\t\t      __// Bye Bye")
-    print("\t\t    /.__.\\")
-    print("\t\t    \\ \\/ /")
-    print("\t\t '__/    \\")
-    print("\t\t  \\-      )")
-    print("\t\t   \\_____/")
-    print("\t\t_____|_|____")
-    print('\t\t     " "')
-
-def main():
-    
-    print("Please make sure any docx file that will be written to is closed before using this program.")
-    chicken()
-    # Question list contains all the question objects
-    Qlist = []
- 
-    # Subject Lists
-    phyList_easy     = []
-    phyList_hard     = []
-    chemList_easy    = []
-    chemList_hard    = []
-    bioList_easy     = []
-    bioList_hard     = []
-    mathList_easy    = []
-    mathList_hard    = []
-    EnSList_easy     = []
-    EnSList_hard     = []
-    
-    # lists that help categorise questions
     global subjectList
     global questionType
 
-
-    print("\n============Input Sequence============\n")
-    print("Gobble gobble. Here's what I've found in this directory:")
-    directory = []
-    filesRead = []
-
-    for file in os.listdir():
-        _, e = os.path.splitext(file)
-        if e == ".docx" and file not in filesRead:
-            directory.append(file)
-    
-    for i, file in enumerate(directory):
-        print(i,": ", file)
-    
-        incorrectAns = True
-        while incorrectAns:
-            try:
-                ch_dir = int(input("Please input the number of the file you want me to eat (select index) OR input -1 to move to next sequnce: "))
-                if ch_dir == -1:
-                    break
-
-                input_filename = directory[ch_dir]
-
-                if input_filename in filesRead:
-                    print("WARNING: You've already read this file.")
-                    ch = input("Are you sure you want to continue? Input 'y' if you really want to do this:")
-                    if ch == 'y' or ch == 'Y':
-                        print("That's not weird at all.")
-                        incorrectAns = False
-                    else:
-                        print("trying again")
-                else:
-                    incorrectAns = False
-                        
-            except IndexError:
-                print("ERROR: Please select the an in range index.")
-                continue
-            except ValueError:
-                print("ERROR: Please input integers only.")
-                continue
-            
-            if ch_dir == -1:
-                break
-            
-            filesRead.append(input_filename)
+    inDoc = docx.Document('./questionRepo/' + input_filename)
         
-    incorrectAns = True
-    while incorrectAns:
-        try:
-            level_sel = int(input("How difficult are these questions? (input 0 for easy, 1 for hard):"))
-        except ValueError:
-            print("ERROR: Please input integers only.")
-            continue
-
-        if level_sel == 0:
-            level = 0
-            incorrectAns = False
-        elif level_sel == 1:
-            level = 1
-            incorrectAns = False
-        else:
-            print("Please try again")
-
-    inDoc = docx.Document(input_filename)
-    
     tossUpEncounter = False
-    
-    # mcqflag = False
 
     for _, para in enumerate(inDoc.paragraphs):
         txt = para.text
@@ -271,23 +172,13 @@ def main():
             if 'ANSWER' in txt:
                 demo.bonus.answer = sanitize_answer(txt)
                 
-                # Master List
-                Qlist.append(demo)
-                
-                if 'Biology' in demo.tossUp.subtype:
-                    putLevel(level,demo,bioList_easy,bioList_hard)
-                    
-                if 'Math' in demo.tossUp.subtype:
-                    putLevel(level,demo,mathList_easy,mathList_hard)
-                
-                if 'Physics' in demo.tossUp.subtype:
-                    putLevel(level,demo,phyList_easy,phyList_hard)
-                
-                if 'Chemistry' in demo.tossUp.subtype:
-                    putLevel(level,demo,chemList_easy,chemList_hard)
-
-                if 'Earth and Space' in demo.tossUp.subtype:
-                    putLevel(level,demo,EnSList_easy,EnSList_hard)
+                #add question to appropriate Array
+                if (demo.tossUp.subtype != 'none'):
+                    subjectArrays[demo.tossUp.subtype].append(demo)
+                else:
+                    ErrorLog['None_Subject'].append(input_filename)
+                    print("ERROR: Cannot determine subject of file in:", input_filename)
+                    print("Skipping Question")
 
                 #continue
             for _, sub in enumerate(subjectList):
@@ -307,78 +198,192 @@ def main():
                     demo.bonus.qbody = body
                     #print("body found", body)
                     break
+
+
+def chicken():
+    print("      __//")
+    print("    /.__.\\")
+    print("    \\ \\/ /")
+    print(" '__/    \\")
+    print("  \\-      )")
+    print("   \\_____/")
+    print("_____|_|____")
+    print('     " "')
+
+def byeChicken():
+    print("\t\t      __// Bye Bye")
+    print("\t\t    /.__.\\")
+    print("\t\t    \\ \\/ /")
+    print("\t\t '__/    \\")
+    print("\t\t  \\-      )")
+    print("\t\t   \\_____/")
+    print("\t\t_____|_|____")
+    print('\t\t     " "')
+
+def main():
     os.system('cls')
-    print(len(Qlist), "total questions found!")
-    print()
-    print("\t","Easy\t", "Hard")
-    print("Bio:\t", len(bioList_easy),"\t", len(bioList_hard))
-    print("Chem:\t", len(chemList_easy), "\t", len(chemList_hard))
-    print("Math:\t", len(mathList_easy), "\t",len(mathList_hard))
-    print("Phys:\t", len(phyList_easy), "\t",len(phyList_hard))
-    print("EnS:\t", len(EnSList_easy), "\t",len(EnSList_hard))
-    
+    print("Please make sure any docx file that will be written to is closed before using this program.")
+    chicken()
+    # Question list contains all the question objects
 
-    # os.system('cls')
-    
-    out_count = 0
+    # lists that help categorise questions
+
+    global subjectList
+    global questionType
+
+    print("\n============Input Sequence============\n")
+    incorrectAns = True
+    while incorrectAns:
+        try:
+            level_sel = int(input("What level are these questions? (input 0 for middleSchool, 1 for highSchool):"))
+        except ValueError:
+            print("ERROR: Please input integers only.")
+            continue
+
+        if level_sel == 0:
+            level = 0
+            incorrectAns = False
+        elif level_sel == 1:
+            level = 1
+            incorrectAns = False
+        else:
+            print("Please try again")
+
+
+    if not os.path.exists('./questionRepo'):
+        print('ERROR: Folder "questionRepo" NOT FOUND.\nCreating folder... please try again after populating the folder with docx files with your questions')
+        os.makedirs('./questionRepo')
+        return
         
-    # difficulty level
-    phyList     = askDifficulty("PHYSICS", phyList_easy,phyList_hard,level)
-    chemList    = askDifficulty("CHEMISTRY", chemList_easy,chemList_hard,level)
-    bioList     = askDifficulty("BIOLOGY", bioList_easy,bioList_hard,level)
-    mathList    = askDifficulty("MATH",mathList_easy,mathList_hard,level)
-    EnSList     = askDifficulty("EARTH AND SPACE",EnSList_easy,EnSList_hard,level)
+    # Array to append all subjects questions
+
+    subjectArrays = {}
+    for subject in subjectList:
+        subjectArrays[subject] = []
     
-        
-    # Count of questions
-    bio_count   = 0 
-    chem_count  = 0
-    phy_count   = 0
-    math_count  = 0
-    EnS_count   = 0
+    Cache = {}
+
+    directory = './jsonQuestions/' 
+
+    if (level == 0):
+        directory += 'middleSchoolQuestions'
+    elif (level == 1):
+        directory += 'highSchoolQuestions'
+
+    Cache['directory'] = directory
     
 
-    while len(phyList) or len(chemList) or len(bioList) or len(mathList) or len(EnSList):
-            
-        if len(phyList):
-            phy_count += 1
-            obj = phyList.pop(0)
-            Qlist.remove(obj)
-            outjson(obj,phy_count)
-            out_count += 1
+    if os.path.exists(directory+'/0cache.json'):
+        with open(directory+'/0cache.json') as f:
+            Cache = json.load(f)
+    else:
+        print("Creating cache...")
+        Cache['filesRead'] = []
+        for subject in subjectList:
+            Cache[subject] = 0
+
+    ErrorLog = {}
+
+    if os.path.exists(directory+'/1errorLog.json'):
+        with open(directory+'/1errorLog.json') as f:
+            ErrorLog = json.load(f)
+    else:
+        print("Creating error log...")
+        ErrorLog['Info'] = 'None: Some missing information detected \nnoMCQoptions: Question is MCQ but does not have a MCQ field \nNone_Subject: Unable to find subject of Question'
+        ErrorLog['None'] = []
+        ErrorLog['noMCQoptions'] = []
+        ErrorLog['None_Subject'] = []
+
+        for subject in subjectList:
+            Cache[subject] = 0
+
+    if not os.path.exists(directory):
+        print("Creating directory", directory)
+        os.makedirs(directory)
+    
+
+
+    print("Gobble gobble. Here's what I've found in folder questionRepo:")
+    filesInDirectory = []
+
+
+    for file in listdir('./questionRepo'):
+        _, e = os.path.splitext(file)
+        if e == ".docx" and file not in Cache['filesRead']:
+            filesInDirectory.append(file)
+    
+    
+    if (len(filesInDirectory) == 0):
+        print("No new questions found, files already read include:",Cache['filesRead'])
+        print("If you think this is an error, please delete 0Cache.json")
+        print("WARNING: Action will reset indexes")
+        return
+    
+    for i, file in enumerate(filesInDirectory):
+        print(i,": ", file)
+    
+    allchoice = input('INPUT: Press "A" if you want to read all of these files. If NO, press any other key. \nHINT: Add only those files you want to read into "questionsRepo" and try again. \nInput:') 
+    if (allchoice.lower() == 'a'):
+        for file in filesInDirectory:
+            readDOCX(subjectArrays, file,level,ErrorLog)
+            Cache['filesRead'].append(file)
+    else:
+        return
+
         
-        if len(chemList):
-            chem_count += 1
-            obj = chemList.pop(0)
-            Qlist.remove(obj)
-            outjson(obj,chem_count)
-            out_count += 1
+    print("\nBefore Output")
+    beforetotal = 0
+    afterCount = {}
+    for subject in subjectList:
+        numberofquestions = len(subjectArrays[subject])
+        print("\t",subject,":", numberofquestions)
+        afterCount[subject] = 0
+        beforetotal += numberofquestions
 
-        if len(bioList):
-            bio_count += 1 
-            obj = bioList.pop(0)
-            Qlist.remove(obj)
-            outjson(obj,bio_count)
-            out_count += 1
+    print("Total found ", beforetotal)
 
-        if len(mathList):
-            math_count += 1
-            obj = mathList.pop(0)
-            Qlist.remove(obj)
-            outjson(obj,math_count)
-            out_count += 1
+    #output to JSON while any question remain
+    
+    loop = True
+    while loop:
+        loop = False
+        for subject in subjectList:
+            if (subjectArrays[subject]):
+                loop = True
+                Cache[subject] += 1
+                afterCount[subject] += 1
+                if not (outjson(subjectArrays[subject].pop(), Cache[subject], directory, ErrorLog)):
+                    Cache[subject] -= 1
+                    afterCount[subject] -= 1
 
-        if len(EnSList): 
-            EnS_count += 1
-            obj = EnSList.pop(0)
-            Qlist.remove(obj)
-            outjson(obj,EnS_count)
-            out_count += 1
+        if loop == False:
+            break
 
-    print("Outputting\n",bio_count,"bio quesitons\n",chem_count,"chem quesitons\n",phy_count,"phy quesitons\n",math_count,"math quesitons\n",EnS_count,"EnS quesitons",)         
 
+
+    aftertotal = 0
+    print("\nAfter Output: ")
+    for subject in subjectList:
+        numberofquestions = afterCount[subject]
+        print("\t",subject,":", numberofquestions)
+        aftertotal += numberofquestions
+    print("Total used ", aftertotal)
+    print("Questions skipped", beforetotal - aftertotal)
+
+    print("\nSubject Indexes at: ")
+    for subject in subjectList:
+        numberofquestions = Cache[subject]
+        print("\t",subject,"at", numberofquestions)
+
+
+    # Save for later 
+    with open(directory+'/0cache.json','w') as json_file:
+        print("Saving indexes in Cache")
+        json.dump(Cache,json_file)
+
+    with open(directory+'/1errorlog.json','w') as json_file:
+        print("Saving Error log")
+        json.dump(ErrorLog,json_file)
         
           
-  
-    
 main()

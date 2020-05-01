@@ -11,7 +11,15 @@ class Result extends StatefulWidget {
 class _ResultState extends State<Result> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new WillPopScope(
+    onWillPop: () async {
+        Navigator.pushAndRemoveUntil(context, 
+                  MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
+                  ),
+                  ModalRoute.withName('/home'));
+        return false;
+      },
+    child: Scaffold(
       backgroundColor: const Color(0xFFF8B400),
       body: Padding(
         padding: EdgeInsets.fromLTRB(20.0, 80.0, 20.0, 0.0),
@@ -138,6 +146,7 @@ class _ResultState extends State<Result> {
           ],
         ),
       ),
+    ),
     );
   }
 }

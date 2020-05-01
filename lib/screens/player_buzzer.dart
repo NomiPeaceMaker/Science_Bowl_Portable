@@ -25,18 +25,18 @@ class _GameState extends State<Game> {
   int _minutes=5;
   int _seconds=0;
   Color txtClr = Colors.white;
-  int redScore = 0;
+  int aScore = 0;
   String gamePin="NP5629";
-  int greenScore = 0;
+  int bScore = 0;
   Color bzrBorder=Colors.white;
   Color buzzerClr=Color(0xFFf84b4b);
   String buzzerTxt="Buzz In!";
   String roundName="Toss-up";
-  String playerName = "Red Captain";
+  String playerName = "A Captain";
   bool isBuzzerActive=false;
   String buf="0";
   bool unavailable=true;
-  bool team=true; //true for red, false for green
+  String team="A"; //true for red, false for green
   int _counter = 5;
   Timer _buzzTimer;
   Timer _gameTimer;
@@ -62,13 +62,13 @@ class _GameState extends State<Game> {
       print(element);
       if (element=="Correct")
       {
-        if (team)
+        if (team=="A")
         {
-          redScore+=4;
+          aScore+=4;
         }
         else
         {
-          greenScore+=4;
+          bScore+=4;
         }
       }
       else if (element=="Incorrect")
@@ -243,7 +243,7 @@ class _GameState extends State<Game> {
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    "Red\n"+redScore.toString(),
+                    "Team A\n"+aScore.toString(),
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
                   )
@@ -266,7 +266,7 @@ class _GameState extends State<Game> {
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    "Green\n"+greenScore.toString(),
+                    "Team B\n"+bScore.toString(),
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightGreen, fontSize: 18),
                   )

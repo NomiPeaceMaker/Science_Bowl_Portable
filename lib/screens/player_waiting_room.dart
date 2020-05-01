@@ -7,6 +7,9 @@ import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/screens/widgets.dart';
+import 'package:sciencebowlportable/utilities/styles.dart';
+
+import 'home.dart';
 
 class PlayerWaitingRoom extends StatefulWidget {
   Client client;
@@ -32,11 +35,11 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   @override
   void initState() {
     super.initState();
-      for( var i = 0 ; i < 5; i++ ) {
+      for (var i = 0 ; i < 5; i++ ) {
         redPlayerJoinStreamController[i] = StreamController.broadcast();
         greenPlayerJoinStreamController[i] = StreamController.broadcast();
       }
-      Stream socketDataStream = socketDataStreamController.stream;
+    Stream socketDataStream = socketDataStreamController.stream;
       socketDataStreamSubscription = socketDataStream.listen((data) {
         data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
         print(data);
@@ -57,7 +60,6 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
         }
     });
   }
-
   Row playerRowWidget(String num) {
       print(client);
       return new Row(
@@ -116,14 +118,6 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                   onPressed: () {
                     client.write("G$num");
                     setState(() {
-//                      print(teamNumber[num]);
-//                      greenActive[teamNumber[num]] = !greenActive[teamNumber[num]];
-  //                    int playerNumber = teamNumber[gNum];
-  //                    Stream s = greenPlayerJoinStreamController[playerNumber].stream;
-  //                    greenPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
-  //                      greenActive[playerNumber] = !greenActive[playerNumber];
-  //                    });
-  //                    greenPlayerJoinStreamController[playerNumber].add("G$gNum");
                     });
                   },
                 );})
@@ -139,7 +133,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => _exitDialog(),
         ),
         backgroundColor: Color(0xffF8B400),
         title: Text(
@@ -159,8 +153,9 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                 "Slots Available",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Color(0xffCC0066), fontSize: 22
-                ),
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xffCC0066),
+                    fontSize: 22),
               ),
             ),
           ),
@@ -170,14 +165,16 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
               Text(
                 "Red Team",
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18
-                ),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                    fontSize: 18),
               ),
               Text(
                 "Green Team",
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18
-                ),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                    fontSize: 18),
               ),
             ],
           ),
@@ -193,15 +190,42 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
               child: Text(
                 "Please wait for the Moderator\nto Start the Game",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold,
-                  color: Colors.blueGrey,
-                  fontSize: 18
-                ),
-               ),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey,
+                    fontSize: 18),
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+_exitDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Exit to Home Page"),
+            content: Text("Are you sure you want to exit to the home page?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("No", style: staystyle),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Exit", style: exitstyle),
+                onPressed: () {  Navigator.pushAndRemoveUntil(context, 
+                  MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
+                  ),
+                  ModalRoute.withName('/'));},
+              ),
+            ],
+          );
+        });
   }
 }

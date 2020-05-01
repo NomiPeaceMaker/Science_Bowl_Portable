@@ -6,3 +6,13 @@ final appBarStyle = TextStyle(
   color: Colors.white,
   fontFamily: 'Roboto',
 );
+
+final exitstyle = TextStyle(
+  color: Colors.red,
+  fontSize: 16.0,
+);
+
+final staystyle = TextStyle(
+  color: Colors.grey,
+  fontSize: 16.0,
+);

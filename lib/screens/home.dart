@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/pin_screen.dart';
-import 'package:sciencebowlportable/screens/moderator.dart';
+// import 'package:sciencebowlportable/screens/moderator.dart';
 import 'package:sciencebowlportable/screens/match_settings.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 import 'package:sciencebowlportable/screens/howtoplay.dart';
+// import 'package:flutter/services.dart';
+import 'package:move_to_background/move_to_background.dart';
+
 
 enum settings { help, report }
 
@@ -21,104 +24,108 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  DateTime currentBackPressTime;
   settings _selection;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/homeBG.png"), fit: BoxFit.cover)),
-        child: Scaffold(
-          drawer: Drawer(
-              child: ListView(
-            children: [
-              DrawerHeader(
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text.rich(TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: "Welcome,\n",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeConfig.safeBlockHorizontal * 6.5)),
-                      TextSpan(
-                          text: "${user.userName}",
+    return new WillPopScope(
+      
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/homeBG.png"), fit: BoxFit.cover)),
+          child: Scaffold(
+            drawer: Drawer(
+                child: ListView(
+              children: [
+                DrawerHeader(
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text.rich(TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: "Welcome,\n",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    SizeConfig.safeBlockHorizontal * 6.5)),
+                        TextSpan(
+                            text: "${user.userName}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize:
+                                    SizeConfig.safeBlockHorizontal * 4.5)),
+                      ],
+                    )),
+                  ),
+                ),
+                ListTile(
+                  leading: Image(
+                    image: AssetImage('assets/a.png'),
+                    // height: 250,
+                    // width: 250,
+                  ),
+                  title: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Edit_account()),
+                        );
+                      },
+                      child: Container(
+                        child: Text(
+                          "Edit Account",
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontWeight: FontWeight.normal,
-                              fontSize: SizeConfig.safeBlockHorizontal * 4.5)),
-                    ],
-                  )),
+                              color: Color(0xFFF8B400),
+                              fontSize: SizeConfig.safeBlockHorizontal * 4.5),
+                        ),
+                      )),
                 ),
-              ),
-              ListTile(
-                leading: Image(
-                  image: AssetImage('assets/a.png'),
-                  // height: 250,
-                  // width: 250,
+                ListTile(),
+                ListTile(),
+                ListTile(),
+              ],
+            )),
+            appBar: AppBar(
+              title: Text('SBP', style: appBarStyle),
+              centerTitle: true,
+              backgroundColor: Color(0xFFF8B400),
+              actions: <Widget>[
+                PopupMenuButton<settings>(
+                  onSelected: (settings result) {
+                    setState(() {
+                      _selection = result;
+                    });
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<settings>>[
+                    PopupMenuItem(
+                      value: settings.report,
+                      child: Text('Report'),
+                    ),
+                  ],
                 ),
-                title: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Edit_account()),
-                      );
-                    },
-                    child: Container(
-                      child: Text(
-                        "Edit Account",
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            color: Color(0xFFF8B400),
-                            fontSize: SizeConfig.safeBlockHorizontal * 4.5),
-                      ),
-                    )),
-              ),
-              ListTile(),
-              ListTile(),
-              ListTile(),
-            ],
-          )),
-          appBar: AppBar(
-            title: Text('SBP', style: appBarStyle),
-            centerTitle: true,
-            backgroundColor: Color(0xFFF8B400),
-            actions: <Widget>[
-              PopupMenuButton<settings>(
-                onSelected: (settings result) {
-                  setState(() {
-                    _selection = result;
-                  });
-                },
-                itemBuilder: (BuildContext context) =>
-                    <PopupMenuEntry<settings>>[
-                  PopupMenuItem(
-                    value: settings.report,
-                    child: Text('Report'),
-                  ),
-                ],
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          // THIS IS WHERE THE MAIN PAGE OF THE APP STARTS
-          backgroundColor: Colors.white,
-          body: Container( decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              'assets/home_back.png',
-            ),
-            alignment: Alignment.bottomLeft,
-            fit: BoxFit.scaleDown
-            ),
-        ),
-            child: Align(
-                alignment: Alignment.center,
+            // THIS IS WHERE THE MAIN PAGE OF THE APP STARTS
+            backgroundColor: Colors.white,
+            body: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                        'assets/home_back.png',
+                      ),
+                      alignment: Alignment.bottomLeft,
+                      fit: BoxFit.scaleDown),
+                ),
                 child: Column(children: [
                   Row(children: [
                     Padding(
@@ -146,102 +153,117 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ])),
                         ])),
                   ]),
-                  Center(
-                    child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: SizeConfig.safeBlockVertical * 6,
-                            horizontal: SizeConfig.safeBlockHorizontal * 5),
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(45.0),
+                  Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: SizeConfig.safeBlockVertical * 3.5,
+                          horizontal: SizeConfig.safeBlockHorizontal * 5),
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(45.0),
+                        ),
+                        child: SizedBox(
+                          height: SizeConfig.blockSizeVertical * 21,
+                          width: SizeConfig.blockSizeVertical * 50,
+                          child: Center(
+                            child: Text('HOST GAME',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 22.0)),
                           ),
-                          child: Text('HOST GAME',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 22.0)),
-                          color: Color(0xFF20BABA),
-                          padding: new EdgeInsets.symmetric(
-                              vertical: SizeConfig.safeBlockVertical * 4.5,
-                              horizontal: SizeConfig.safeBlockHorizontal * 13),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MatchSettings()),
-                            );
-                          },
-                        )),
-                  ),
+                        ),
+                        color: Color(0xFF20BABA),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MatchSettings()),
+                          );
+                        },
+                      )),
 
-                  RaisedButton(
-                    child: Text('JOIN GAME',
-                        style: TextStyle(color: Colors.white, fontSize: 22.0)),
-                    color: Color(0xFF20BABA),
-                    padding: new EdgeInsets.symmetric(
-                        vertical: SizeConfig.safeBlockVertical * 4.5,
-                        horizontal: SizeConfig.safeBlockHorizontal * 13),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(45.0),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: SizeConfig.safeBlockVertical * 3.5,
+                        horizontal: SizeConfig.safeBlockHorizontal * 5),
+                      child: RaisedButton(
+                        child: SizedBox(
+                          height: SizeConfig.blockSizeVertical * 21,
+                          width: SizeConfig.blockSizeVertical * 50,
+                          child: Center(
+                            child: Text('JOIN GAME',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 22.0)),
+                          ),
+                        ),
+                        color: Color(0xFF20BABA),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(45.0),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Pin()),
+                          );
+                        },
+                      ),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Pin()),
-                      );
-                    },
-                  ),
-                  // Center(
-                  //   child: Container(
-                  //     width: 250.0,
-                  //     padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
-                  //     color: Color(0xFF20BABA),
-                  //     child: Text("JOIN GAME",style: TextStyle(color: Colors.white,),
-                  // ),
-
-                  //   ),
-                  // ),
-//                   Center(
-//                     child: RaisedButton(
-//                     child: Text('HOW TO PLAY',style: TextStyle(color: Colors.white,fontSize: 30.0)),
-//                     color: Color(0xFF20BABA),
-//                     padding: new EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 40.0),
-//                     onPressed: (){
-//                       // HOW TO PLAY SCREEN GOES HERE!
-//                       //NAVIGATION WAALI CHEEZ KARO
-//                     },
-//                   ),
-//                   ),
-            Center(
-              child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: SizeConfig.safeBlockVertical * 6,
-                      horizontal: SizeConfig.safeBlockHorizontal * 5),
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(45.0),
+                     Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: SizeConfig.safeBlockVertical * 3.5,
+                        horizontal: SizeConfig.safeBlockHorizontal * 5),
+                      child: RaisedButton(
+                        child: SizedBox(
+                          height: SizeConfig.blockSizeVertical * 21,
+                          width: SizeConfig.blockSizeVertical * 50,
+                          child: Center(
+                            child: Text('HOW TO PLAY',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 22.0)),
+                          ),
+                        ),
+                        color: Color(0xFF20BABA),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(45.0),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HowToPlay()),
+                          );
+                        },
+                      ),
                     ),
-                    child: Text('HOW TO PLAY',
-                        style:
-                        TextStyle(color: Colors.white, fontSize: 22.0)),
-                    color: Color(0xFF20BABA),
-                    padding: new EdgeInsets.symmetric(
-                        vertical: SizeConfig.safeBlockVertical * 4.5,
-                        horizontal: SizeConfig.safeBlockHorizontal * 13),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HowToPlay()),
-                      );
-                    },
-                  )),
-            ),
-
                 ])),
           ),
         ),
       ),
+      onWillPop:  () async {
+        MoveToBackground.moveTaskToBack();
+        return false;
+      },
     );
   }
-}
 
-class _WaitingRoom {}
+// Future <bool>  _exitDialog() async {
+    // showDialog(
+    //     context: context,
+    //     barrierDismissible: true,
+    //     builder: (context) {
+    //       return AlertDialog(
+    //         title: Text("Exit SBP"),
+    //         content: Text("Are you sure you want to exit the app?"),
+    //         actions: <Widget>[
+    //           FlatButton(
+    //             child: Text("No", style: staystyle),
+    //             onPressed: () {
+    //               Navigator.of(context).pop();
+    //             },
+    //           ),
+    //           FlatButton(
+    //             child: Text("Exit", style: exitstyle),
+    //             onPressed: () {SystemNavigator.pop();},
+    //           ),
+    //         ],
+    //       );
+    //     });
+  // }
+}
