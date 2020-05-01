@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/pin_screen.dart';
-import 'package:sciencebowlportable/screens/moderator.dart';
+// import 'package:sciencebowlportable/screens/moderator.dart';
 import 'package:sciencebowlportable/screens/match_settings.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
@@ -9,6 +9,9 @@ import 'package:sciencebowlportable/utilities/styles.dart';
 import 'package:sciencebowlportable/screens/howtoplay.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
+// import 'package:flutter/services.dart';
+import 'package:move_to_background/move_to_background.dart';
+
 
 enum settings { help, report }
 
@@ -26,7 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return new WillPopScope(
-      onWillPop: () async => false,
+      
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Container(
@@ -156,6 +159,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
+      onWillPop:  () async {
+        MoveToBackground.moveTaskToBack();
+        return false;
+      },
     );
   }
 

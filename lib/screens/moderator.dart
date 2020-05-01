@@ -34,7 +34,7 @@ class _HostState extends State<Host> {
   List<Question> questionSet;
 
   _HostState(this.server, this.moderator,this.questionSet);
-  bool paused = true;
+  bool paused = false;
   int aScore = 0;
   int bScore = 0;
   String roundName = "Toss-Up";
@@ -43,7 +43,7 @@ class _HostState extends State<Host> {
 //  String Q =
 //      "What is the most common term used in genetics to decribe the observable physical charactersitics of an organism casued by the expression of a gene or a set of genes?";
 //  String A = "PHENOTYPE";
-  bool BuzzerOpen = false;
+//  bool buzzerOpen = false;
   double timeToAnswer = 2.113;
   String team ="A"; //depends on who buzzed in
 //  String reading_txt = "Done Reading";
@@ -53,7 +53,7 @@ class _HostState extends State<Host> {
   bool isBuzzerActive = false;
   Timer _buzzTimer;
   Timer _gameTimer;
-
+  bool doneReading=false;
 
   int bonusTimer;
   int tossUpTimer; //5 secs for buzzer timer
@@ -108,20 +108,58 @@ class _HostState extends State<Host> {
     }
     _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        if (tossUpTimer > 0) {
-          tossUpTimer--;
-        } else {
-          _buzzTimer.cancel();
-          setState(() {
-            if (isBuzzerActive) {
-              unavailable = true;
-//              txtClr=Color(0xffAEAEAE);
-//              buzzerTxt="Unavailable";
-//              buzzerClr=Colors.white;
-//              bzrBorder=Color(0xffAEAEAE);
-            }
-          });
+        doneReading=true;
+        if (roundName=="Toss-Up") {
+          if (tossUpTimer > 0) {
+            tossUpTimer--;
+          }
+          else {
+            _buzzTimer.cancel();
+            setState(() {
+              if (index == questionSet.length - 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Result()),
+                );
+              }
+              else{
+                index+=1;
+                roundName="Toss-Up";
+                doneReading=false;
+                if (isBuzzerActive) {
+                  unavailable = true;
+                }
+              }
+            });
+          }
         }
+        else
+          {
+            if (bonusTimer > 0) {
+              bonusTimer--;
+            }
+            else {
+              _buzzTimer.cancel();
+              setState(() {
+                if (index == questionSet.length - 1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Result()),
+                  );
+                }
+                else{
+                doneReading=false;
+                index+=1;
+                roundName="Toss-Up";
+                if (isBuzzerActive) {
+                  unavailable = true;
+                }
+                }
+              });
+            }
+          }
       });
     });
   }
@@ -132,9 +170,13 @@ class _HostState extends State<Host> {
     }
     _gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        if (_minutes < 0) {
-          _gameTimer.cancel();
-        }
+        if (_seconds==1 &&_minutes==0)
+          {
+            _gameTimer.cancel();
+          }
+//        if (_minutes < 0) {
+//          _gameTimer.cancel();
+//        }
         if (_seconds > 0) {
           _seconds--;
           if (_seconds < 10) {
@@ -147,6 +189,14 @@ class _HostState extends State<Host> {
           _seconds = 59;
           _minutes -= 1;
         }
+        if(_seconds==0 && _minutes==0)
+          {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Result()),
+            );
+          }
       });
     });
   }
@@ -206,7 +256,7 @@ class _HostState extends State<Host> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: Text(
-          "HOST",
+          (!paused)? "HOST" : "Paused",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
         ),
         centerTitle: true,
@@ -228,11 +278,21 @@ class _HostState extends State<Host> {
                 if (paused) {
                   setState(() {
                     paused = false;
+                    _startGameTimer();
+                    if(doneReading)
+                      {
+                        _startBuzzTimer();
+                      }
                   });
                 }
                 else {
                   setState(() {
                     paused = true;
+                    _gameTimer.cancel();
+                    if (doneReading)
+                      {
+                        _buzzTimer.cancel();
+                      }
                   });
                 }
               },
@@ -247,16 +307,25 @@ class _HostState extends State<Host> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Text(
-                      "Team A\n" + aScore.toString(),
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                          fontSize: 18),
-                    )),
+                Column(
+                children: <Widget>[
+                 Text(
+                  "Team A",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                      fontSize: 18)
+                 ),
+                  Text(
+                  aScore.toString(),
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                      fontSize: 18),),
+                ],
+              ),
                 Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -278,16 +347,25 @@ class _HostState extends State<Host> {
                               color: Colors.purple,
                               fontSize: 18),
                         ))),
-                Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Text(
-                      "Team B\n" + bScore.toString(),
-                      textAlign: TextAlign.left,
+                Column(
+                  children: <Widget>[
+                    Text(
+                        "Team B",
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.lightGreen,
+                            fontSize: 18)
+                    ),
+                    Text(
+                      bScore.toString(),
+                      textAlign: TextAlign.right,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.lightGreen,
-                          fontSize: 18),
-                    ))
+                          fontSize: 18),),
+                  ],
+                ),
               ],
             ),
             Card(
@@ -327,7 +405,7 @@ class _HostState extends State<Host> {
                     Padding(
                       padding: EdgeInsets.all(20),
                       child: Text(
-                        "Q"+(index+1).toString()+"."+questionSet[index].tossupQuestion,
+                        (roundName=="Toss-Up")?"Q"+(index+1).toString()+"."+questionSet[index].tossupQuestion : "Q"+(index+1).toString()+"."+questionSet[index].bonusQuestion,
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -364,7 +442,7 @@ class _HostState extends State<Host> {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                       child: Text(
-                        "Ans. " + questionSet[index].tossupAnswer,
+                        (roundName=="Toss-Up")?"Ans. " + questionSet[index].tossupAnswer : "Ans. " + questionSet[index].bonusAnswer,
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
@@ -389,18 +467,19 @@ class _HostState extends State<Host> {
                             color: Colors.green,
                             onPressed: () {
                               setState(() {
-                                if (index==questionSet.length-1)
-                                  {
+                                if (!paused) {
+                                  if (index == questionSet.length - 1) {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => Result()),
+                                      MaterialPageRoute(
+                                          builder: (context) => Result()),
                                     );
                                   }
-                                else
-                                  {
-                                    index+=1;
+                                  else {
+                                    index += 1;
                                     roundName = "Toss-Up";
                                   }
+                                }
                               });
                             }, //next qs
                           ),
@@ -427,7 +506,7 @@ class _HostState extends State<Host> {
             //          ),
             Card(
               margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-              color: BuzzerOpen ? Colors.grey : Colors.lightGreen,
+              color: doneReading ? Colors.grey : Colors.lightGreen,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
@@ -436,20 +515,21 @@ class _HostState extends State<Host> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Text(
-                  BuzzerOpen
-                      ? "Buzzer Open: " + tossUpTimer.toString()
-                      : "Done Reading",
+                  (doneReading && roundName=="Toss-Up")
+                      ? "Buzzer Open: " + tossUpTimer.toString():
+                  (doneReading && roundName=="Bonus")? "Buzzer Open: " + bonusTimer.toString():
+                      "Done Reading",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 padding: EdgeInsets.all(20.0),
-                color: BuzzerOpen ? Colors.grey : Colors.lightGreen,
+                color: doneReading ? Colors.grey : Colors.lightGreen,
                 textColor: Colors.white,
                 onPressed: () {
                   setState(() {
-                    if (!BuzzerOpen)
+                    if (!doneReading && !paused)
                     {
                       server.sendAll("BuzzerAvailable");
-                      BuzzerOpen=true;
+                      doneReading=true;
                       _startBuzzTimer();
                     }
                   });
@@ -498,6 +578,7 @@ class _HostState extends State<Host> {
                     textColor: Colors.white,
                     onPressed: () {
                       setState(() {
+                        if(!paused){
                         server.sendAll("Correct");
                         if (roundName=="Toss-Up")
                           {
@@ -513,16 +594,27 @@ class _HostState extends State<Host> {
                           }
                         else
                           {
-                            roundName="Toss-Up";
-                            if(team=="A")
-                            {
-                              aScore+=10;
+                            if (index == questionSet.length - 1) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Result()),
+                              );
                             }
-                            else
-                            {
-                              bScore+=10;
-                            }
+                          else{
+                              index+=1;
+                              roundName="Toss-Up";
+                              if(team=="A")
+                              {
+                                aScore+=10;
+                              }
+                              else
+                              {
+                                bScore+=10;
+                              }
                           }
+                          }
+                        }
                       }
                      );
                     },
@@ -539,20 +631,20 @@ class _HostState extends State<Host> {
                     textColor: Colors.white,
                     onPressed: () => {
                         setState(() {
-                          server.sendAll("Incorrect");
-                          if (index==questionSet.length-1)
-                            {
+                          if(!paused) {
+                            server.sendAll("Incorrect");
+                            if (index == questionSet.length - 1) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => Result()),
+                                MaterialPageRoute(
+                                    builder: (context) => Result()),
                               );
                             }
-                          else
-                          {
-                            index+=1;
-                            roundName = "Toss-Up";
+                            else {
+                              index += 1;
+                              roundName = "Toss-Up";
+                            }
                           }
-
                         }
                       ),
                     },
@@ -569,19 +661,164 @@ class _HostState extends State<Host> {
                     padding: EdgeInsets.all(20.0),
                     color: Colors.red,
                     textColor: Colors.white,
-                    onPressed: () => {
-                      setState(() {
-                        server.sendAll("Penalty");
-                        //need to do more work here
-                        if(team=="A")
-                        {
-                          bScore+=4;
-                        }
-                        else
-                        {
-                          aScore+=4;
-                        }
-                      }),
+                    onPressed: () =>
+                    {
+                      if(!paused){
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(
+//                                backgroundColor: Colors.whi,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(20.0)),
+                                //this right here
+                                child: Container(
+//                                  color: Colors.greenAccent,
+                                  height: (roundName=="Toss-Up")? 320 : 250,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
+                                      children: [
+                                        Align(
+                                          child: Icon(
+                                            Icons.outlined_flag,
+                                            size: 60.0,
+                                            color: Colors.black,
+                                          ),
+                                          alignment: Alignment.center,
+                                        ),
+                                        Align(
+                                          child: Text(
+                                            "Select a Penalty:",
+                                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26, color: Colors.black),
+                                          ),
+                                          alignment: Alignment.center,
+                                        ),
+                                        SizedBox(
+                                          width: 320.0,
+                                          height: 60.0,
+                                          child: RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10.0),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                if (!paused) {
+                                                  server.sendAll("Interrupt");
+                                                  //need to do more work here
+                                                  if (team == "A") {
+                                                    bScore += 4;
+                                                  }
+                                                  else {
+                                                    aScore += 4;
+                                                  }
+                                                }
+                                              });
+                                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                                            },
+                                            child: Text(
+                                              "Interrupt!",
+                                              style: TextStyle(fontSize: 20,
+                                                  color: Colors.white),
+                                            ),
+//                                            color: const Color(0xFF1BC0C5),
+                                              color: Colors.red,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        SizedBox(
+                                          width: 320.0,
+                                          height: 60.0,
+                                          child: RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10.0),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                if (!paused) {
+                                                  server.sendAll("Blurt");
+                                                  //need to do more work here
+                                                  if (team == "A") {
+                                                    bScore += 4;
+                                                  }
+                                                  else {
+                                                    aScore += 4;
+                                                  }
+                                                }
+                                              });
+                                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                                            },
+                                            child: Text(
+                                              "Blurt!",
+                                              style: TextStyle(fontSize: 20,
+                                                  color: Colors.white),
+                                            ),
+                                            color: Colors.red,
+//                                            color: const Color(0xFF1BC0C5),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        (roundName=="Toss-Up")?
+                                        SizedBox(
+                                          width: 320.0,
+                                          height: 60.0,
+                                          child: RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10.0),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                if (!paused) {
+                                                  server.sendAll("Consultation");
+                                                  //need to do more work here
+                                                  if (team == "A") {
+                                                    bScore += 4;
+                                                  }
+                                                  else {
+                                                    aScore += 4;
+                                                  }
+                                                }
+                                              });
+                                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                                            },
+                                            child: Text(
+                                              "Consultation!",
+                                              style: TextStyle(fontSize: 20,
+                                                  color: Colors.white),
+                                            ),
+                                            color: Colors.red,
+//                                            color: const Color(0xFF1BC0C5),
+                                          ),
+                                        ) : Container(height:0, width:0),
+//                                        Spacer(),
+//                                        SizedBox(
+//                                          width: 320.0,
+//                                          child: RaisedButton(
+//                                            shape: RoundedRectangleBorder(
+//                                              borderRadius: BorderRadius.circular(10.0),
+//                                            ),
+//                                            onPressed: () {
+//                                              Navigator.of(context, rootNavigator: true).pop('dialog');
+//                                            },
+//                                            child: Text(
+//                                              "Cancel",
+//                                              style: TextStyle(
+//                                                  color: Colors.white),
+//                                            ),
+//                                          color: Colors.red,
+//                                          ),
+//                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                      },
                     },
                   ),
                 ],

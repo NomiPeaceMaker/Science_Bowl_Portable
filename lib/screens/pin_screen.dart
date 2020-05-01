@@ -19,16 +19,23 @@ class _PinState extends State<Pin> {
   String gamePin;
   Player player = Player("");
   Client client;
+  bool connected = false;
 
   List<String> serverLogs = [];
   TextEditingController controller = TextEditingController();
 
   onData(Uint8List data) {
-    String msg = String.fromCharCodes(data);
+    String msg = String.fromCharCodes(data).replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+    print("Message Recieved from server $msg");
     socketDataStreamController.add(msg);
-//    if (msg == "sendPlayerID") {
-//      client.write(player.playerID);
-//    }
+
+    if (msg == "sendPlayerID") {
+      client.write(player.playerID);
+    }
+    if (msg == "Connected") {
+      print("Coonected to server, recieved message!");
+      connected = true;
+    }
     setState(() {});
   }
 
@@ -93,16 +100,17 @@ class _PinState extends State<Pin> {
                     print(key2ip(gamePin));
                     client = Client(
                       hostname: key2ip(gamePin),
-                      port: 4040,
+                      port: PORT,
                       onData: this.onData,
                       onError: this.onError,
                     );
                   });
-                  if (client.connected) {
+                  if (connected) {
                     print("connected");
                   } else {
                     print("waiting for connection");
-//                    await client.connect();
+                    await client.connect();
+                    print("done connecting");
                   }
                   Navigator.push(
                     context,

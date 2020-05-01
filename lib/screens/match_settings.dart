@@ -233,7 +233,7 @@ class _MatchSettingState extends State<MatchSettings> {
                       onPressed: (int index) {
                         setState(() {
                           isSelectedDifficulty[index] =
-                              !isSelectedDifficulty[index];
+                          !isSelectedDifficulty[index];
                           isSelectedDifficulty[1 - index] = false;
                           moderator.gameDifficulty = isSelectedDifficulty[0]
                               ? "MiddleSchool"
@@ -284,7 +284,7 @@ class _MatchSettingState extends State<MatchSettings> {
                         onPressed: (int index) {
                           setState(() {
                             isSelectedSubject_1[index] =
-                                !isSelectedSubject_1[index];
+                            !isSelectedSubject_1[index];
                           });
                         },
                         isSelected: isSelectedSubject_1,
@@ -312,7 +312,7 @@ class _MatchSettingState extends State<MatchSettings> {
                         onPressed: (int index) {
                           setState(() {
                             isSelectedSubject_2[index] =
-                                !isSelectedSubject_2[index];
+                            !isSelectedSubject_2[index];
                           });
                         },
                         isSelected: isSelectedSubject_2,
@@ -449,30 +449,30 @@ class _MatchSettingState extends State<MatchSettings> {
         ));
   }
 
-  // _exitDialog() {
-  //   showDialog(
-  //       context: context,
-  //       barrierDismissible: true,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           title: Text("Exit to Home Page"),
-  //           content: Text("Are you sure you want to exit to the home page?"),
-  //           actions: <Widget>[
-  //             FlatButton(
-  //               child: Text("No", style: staystyle),
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //             ),
-  //             FlatButton(
-  //               child: Text("Exit", style: exitstyle),
-  //               onPressed: () {  Navigator.pushAndRemoveUntil(context, 
-  //                 MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
-  //                 ),
-  //                 ModalRoute.withName('/'));},
-  //             ),
-  //           ],
-  //         );
-  //       });
-  // }
+// _exitDialog() {
+//   showDialog(
+//       context: context,
+//       barrierDismissible: true,
+//       builder: (context) {
+//         return AlertDialog(
+//           title: Text("Exit to Home Page"),
+//           content: Text("Are you sure you want to exit to the home page?"),
+//           actions: <Widget>[
+//             FlatButton(
+//               child: Text("No", style: staystyle),
+//               onPressed: () {
+//                 Navigator.of(context).pop();
+//               },
+//             ),
+//             FlatButton(
+//               child: Text("Exit", style: exitstyle),
+//               onPressed: () {  Navigator.pushAndRemoveUntil(context,
+//                 MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
+//                 ),
+//                 ModalRoute.withName('/'));},
+//             ),
+//           ],
+//         );
+//       });
+// }
 }

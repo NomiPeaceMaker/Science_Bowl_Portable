@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\lenovo\\Desktop\\Spring 2020\\SE\\SBP\\The App\\science_bowl_portable\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-id\\values-id.xml",
+            "outputFile": "/home/lappy/GitHub/Science_Bowl_Portable/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-id/values-id.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\lenovo\\.gradle\\caches\\transforms-2\\files-2.1\\c516ae73654d19b48ba7bc5fdfe83fc9\\jetified-facebook-common-4.39.0\\res\\values-id\\values-id.xml",
+                    "source": "/home/lappy/.gradle/caches/transforms-2/files-2.1/3a84377f89ae97b10dab06dad178f4b8/jetified-facebook-common-4.39.0/res/values-id/values-id.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",

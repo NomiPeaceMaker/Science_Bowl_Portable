@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/moderator.dart';
@@ -11,8 +12,6 @@ import 'package:sciencebowlportable/models/Questions.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 
 import 'home.dart';
-
-
 
 class ModeratorWaitingRoom extends StatefulWidget {
   Server server;
@@ -33,74 +32,107 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 
   List<bool> redActive = List.generate(5, (_) => true);
   List<bool> greenActive = List.generate(5, (_) => true);
+  var teamNumber = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
+
+//  List<StreamController<String>> redPlayerJoinStreamController = new List(5);
+//  List<StreamController<String>> greenPlayerJoinStreamController = new List(5);
 
   _ModeratorWaitingRoomState(this.server, this.moderator,this.questionSet);
 
   StreamSubscription socketDataStreamSubscription;
   initState() {
     Stream socketDataStream = socketDataStreamController.stream;
+//    List<StreamController<String>> redPlayerJoinStreamController = new List.filled(5, StreamController.broadcast());
+//    List<StreamController<String>> greenPlayerJoinStreamController = new List.filled(5, StreamController.broadcast());
+
+    for( var i = 0 ; i < 5; i++ ) {
+      redPlayerJoinStreamController[i] = StreamController.broadcast();
+      greenPlayerJoinStreamController[i] = StreamController.broadcast();
+    }
     socketDataStreamSubscription = socketDataStream.listen((data){
-      Player player = Player(data);
-      print("AT WAITING SCREEN");
+      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
       print(data);
+      server.sendAll(data);
+      Player player = Player(data);
+      print("AT WAITING SCREEN MODERATOR");
+      int playerNumber = teamNumber[data.substring(1)];
+      print(playerNumber);
       if (data[0] == "R") {
-        int playerNumber = int.parse(data[1]);
-        print(data.substring(2));
-        moderator.redTeam.players.add(player);
+        print("check");
+        print(playerNumber);
+        redPlayerJoinStreamController[playerNumber].add("toggleButton");
+//        moderator.redTeam.players.add(player);
       } else if (data[0] == "G") {
-        moderator.redTeam.players.add(player);
+        greenPlayerJoinStreamController[playerNumber].add("toggleButton");
+//        moderator.redTeam.players.add(player);
       }
     });
 //    R1controller = new StreamController();
 //    R1stream = R1controller.stream;
 //    super.initState();
-    moderator.questionSet.then((list){
+      moderator.questionSet.then((list){
       questionSet=list;
       print("Retrieved questions");
     });
   }
 
   Row playerRowWidget(String rNum, String gNum) {
-    return Row(
+    return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        SizedBox(
-            width: 140.0,
-            height: 50,
-            child: FlatButton (
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Text(
-                  'Red $rNum',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-              ),
-              color: Colors.red,
-              textColor: Colors.white,
-              onPressed: () {
-                setState(() {
-                });
-              },
-          )
+       new SizedBox(
+          width: 140.0,
+          height: 50,
+          child:
+            new StreamBuilder(
+              stream: redPlayerJoinStreamController[teamNumber[rNum]].stream,
+              builder: (context, snapshot) {
+                if (snapshot.data == 'toggleButton'){
+                  redPlayerJoinStreamController[teamNumber[gNum]].add(" ");
+                  redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
+                }
+                return new FlatButton (
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Text(
+                      'Red $rNum',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                  ),
+                  color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
+                  textColor: Colors.white,
+                  onPressed: () {
+                    setState(() {
+                    });
+                  },
+                 );
+              })
         ),
-        SizedBox(
-            width: 140.0,
-            height: 50,
-            child: FlatButton (
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Text(
-                  'Green $rNum',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-              ),
-              color: Colors.green,
-              textColor: Colors.white,
-              onPressed: () {
-                setState(() {
-                });
-              },
-            )
+        new SizedBox(
+          width: 140.0,
+          height: 50,
+          child: new StreamBuilder(
+            stream: greenPlayerJoinStreamController[teamNumber[gNum]].stream,
+            builder: (context, snapshot) {
+              if (snapshot.data == 'toggleButton'){
+                greenPlayerJoinStreamController[teamNumber[gNum]].add(" ");
+                greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
+              }
+              return new FlatButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                    'Green $gNum',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                ),
+                color: greenActive[teamNumber[gNum]] ? Colors.green : Colors.grey,
+                textColor: Colors.white,
+                onPressed: () {
+                  setState(() {});
+                },
+              );
+            })
         ),
       ]
     );
@@ -185,7 +217,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                   textColor: Colors.white,
                   onPressed: () => {
                     socketDataStreamSubscription.cancel(),
-                      server.broadCast("StartGame"),
+                      server.sendAll("StartGame"),
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Host(this.server, this.moderator,this.questionSet)),
