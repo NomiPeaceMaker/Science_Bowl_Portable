@@ -334,39 +334,36 @@ class _GameState extends State<Game> {
             width:MediaQuery.of(context).size.width*0.6,
             height:MediaQuery.of(context).size.width*0.6,
             child:  StreamBuilder(
-            stream: BuzzerStreamController.stream,
-            builder: (context, snapshot) {
-              element=(snapshot.data==null) ? "Buzz In!" : snapshot.data;
-              print(snapshot.data);
-              if (element=="Available") {
-                print("making buzzer available");
-                buzzerClr = Colors.green;
-                unavailable = false;
-              }
-              if (element=="Incorrect") {
-                print("making buzzer red");
-                buzzerClr = Colors.red;
-                buzzerTxt = "Incorrect";
-              }
+              stream: BuzzerStreamController.stream,
+              builder: (context, snapshot) {
+                element=(snapshot.data==null) ? "Buzz In!" : snapshot.data;
+                print(snapshot.data);
+                if (element=="Available") {
+                  print("making buzzer available");
+                  buzzerClr = Colors.green;
+                  unavailable = false;
+                }
+                if (element=="Incorrect") {
+                  print("making buzzer red");
+                  buzzerClr = Colors.red;
+                  buzzerTxt = "Incorrect";
+                }
 
-              if (element=="Correct") {
-                print("making buzzer red");
-                buzzerClr = Colors.lightGreen;
-                buzzerTxt = "Correct!";
-              }
-
-
-              if (element=="Penalty") {
-                print("adding penalty");
-                buzzerClr = Colors.grey[900];
-                buzzerTxt = "Penalty!";
-              }
+                if (element=="Correct") {
+                  print("making buzzer red");
+                  buzzerClr = Colors.lightGreen;
+                  buzzerTxt = "Correct!";
+                }
 
 
-
+                if (element=="Penalty") {
+                  print("adding penalty");
+                  buzzerClr = Colors.grey[900];
+                  buzzerTxt = "Penalty!";
+                }
               return RaisedButton(
-              shape: CircleBorder(side: BorderSide(color: bzrBorder, width: 8.0)),
-              child: Column(
+                shape: CircleBorder(side: BorderSide(color: bzrBorder, width: 8.0)),
+                child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
@@ -442,8 +439,8 @@ class _GameState extends State<Game> {
                     );
                   },
                   color: buzzerClr,
-              );
-            },
+                );
+              },
             ),
           ),
         ],
