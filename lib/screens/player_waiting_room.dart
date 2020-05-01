@@ -39,7 +39,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
         redPlayerJoinStreamController[i] = StreamController.broadcast();
         greenPlayerJoinStreamController[i] = StreamController.broadcast();
       }
-    Stream socketDataStream = socketDataStreamController.stream;
+      Stream socketDataStream = socketDataStreamController.stream;
       socketDataStreamSubscription = socketDataStream.listen((data) {
         data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
         print(data);
@@ -60,68 +60,81 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
         }
     });
   }
-  Row playerRowWidget(String num) {
+  SizedBox teamSlot(String playerPosition, String team) {
+    var buttonColor;
+    if (team == "Red") {
+      buttonColor = Colors.red;
+    }
+    else if (team == "Green") {
+      buttonColor = Colors.green;
+    }
+    return new SizedBox(
+      width: 140.0,
+      height: 50,
+      child:
+      new StreamBuilder(
+          stream: redPlayerJoinStreamController[teamNumber[playerPosition]].stream,
+          builder: (context, snapshot) {
+            if (snapshot.data == 'toggleButton') {
+              print("toggle");
+              print(playerPosition);
+              buttonColor = Colors.grey;
+//              redActive[teamNumber[playerPosition]] = !redActive[teamNumber[playerPosition]];
+            }
+            return new FlatButton (
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Text(
+                  '$team $playerPosition',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+              ),
+              color: redActive[teamNumber[playerPosition]] ? buttonColor : Colors.grey,
+              textColor: Colors.white,
+              onPressed: () {
+                setState(() {
+                  client.write("R$playerPosition");
+//                              redActive[teamNumber[num]] = !redActive[teamNumber[num]];
+                });
+              },
+            );
+          })
+    );
+  }
+
+  Row playerRowWidget(String playerPosition) {
       print(client);
       return new Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            new SizedBox(
-                width: 140.0,
-                height: 50,
-                child:
-                  new StreamBuilder(
-                      stream: redPlayerJoinStreamController[teamNumber[num]].stream,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == 'toggleButton') {
-                          print("toggle");
-                          print(num);
-                          redActive[teamNumber[num]] = !redActive[teamNumber[num]];
-                        }
-                        return new FlatButton (
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Text(
-                              'Red $num',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                          ),
-                          color: redActive[teamNumber[num]] ? Colors.red : Colors.grey,
-                          textColor: Colors.white,
-                          onPressed: () {
-                            setState(() {
-                              client.write("R$num");
-//                              redActive[teamNumber[num]] = !redActive[teamNumber[num]];
-                            });
-                            },
-                        );
-                      })
-            ),
-          SizedBox(
-              width: 140.0,
-              height: 50,
-              child: new StreamBuilder(
-                stream: greenPlayerJoinStreamController[teamNumber[num]].stream,
-                builder: (context, snapshot) {
-                if (snapshot.data == 'toggleButton'){
-                  greenActive[teamNumber[num]] = !greenActive[teamNumber[num]];
-                }
-                return new FlatButton (
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      'Green $num',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: greenActive[teamNumber[num]] ? Colors.green : Colors.grey,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    client.write("G$num");
-                    setState(() {
-                    });
-                  },
-                );})
-          ),
+            teamSlot(playerPosition, "Red"),
+            teamSlot(playerPosition, "Green"),
+//            SizedBox(
+//                width: 140.0,
+//                height: 50,
+//                child: new StreamBuilder(
+//                  stream: greenPlayerJoinStreamController[teamNumber[num]].stream,
+//                  builder: (context, snapshot) {
+//                  if (snapshot.data == 'toggleButton'){
+//                    greenActive[teamNumber[num]] = !greenActive[teamNumber[num]];
+//                  }
+//                  return new FlatButton (
+//                    shape: RoundedRectangleBorder(
+//                      borderRadius: BorderRadius.circular(10.0),
+//                    ),
+//                    child: Text(
+//                        'Green $num',
+//                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+//                    ),
+//                    color: greenActive[teamNumber[num]] ? Colors.green : Colors.grey,
+//                    textColor: Colors.white,
+//                    onPressed: () {
+//                      client.write("G$num");
+//                      setState(() {
+//                      });
+//                    },
+//                  );})
+//            ),
         ]
     );
   }
