@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Client.dart';
@@ -82,6 +83,11 @@ class _PinState extends State<Pin> {
                 child: Text('Confirm'),
                   textColor: Colors.green,
                 onPressed: () async {
+                  // get wifi ip XXX.XXX.XXX.XXX
+                  Wifi_ip = await (Connectivity().getWifiIP());
+                  // remove the last bit so now you should have XXX.XXX.XXX.___ (test this just in case)
+                  String subnet = Wifi_ip.substring(0, Wifi_ip.lastIndexOf('.'));
+
                   setState(() {
                     print(gamePin);
                     print(key2ip(gamePin));
