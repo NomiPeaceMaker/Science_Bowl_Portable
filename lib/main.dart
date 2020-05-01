@@ -4,7 +4,7 @@ import 'package:sciencebowlportable/screens/onboarding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sciencebowlportable/screens/login.dart';
 
-int initScreen;
+int initScreen = 0;
 
 Future <void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +26,16 @@ class _MyApp extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    if(initScreen == 0) // IF THIS IS THE FIRST TIME RUNNING
+    
+    if(initScreen == 1){ // IF THIS IS NOT THE FIRST TIME RUNNING
+      {route0 = <String, WidgetBuilder>{
+      '/': (context) => Login(),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+      '/home': (context) => MyHomePage(),
+    };
+    }
+    }
+    else // IF THIS IS THE FIRST TIME RUNNING
     {
       {route0 = <String, WidgetBuilder>{
         '/': (context) => OnboardingScreen(),
@@ -34,15 +43,6 @@ class _MyApp extends State<MyApp> {
         '/home': (context) => MyHomePage(),
       };
       }
-    }
-    else{ // IF THIS IS NOT THE FIRST TIME RUNNING
-      {route0 = <String, WidgetBuilder>{
-      '/': (context) => Login(),
-        // When navigating to the "/second" route, build the SecondScreen widget.
-      '/home': (context) => MyHomePage(),
-    };
-    }
-    
     }
     return MaterialApp(
       title: 'Flutter Demo',

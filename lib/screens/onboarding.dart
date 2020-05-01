@@ -80,7 +80,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         child: FlatButton(
                           onPressed: () async {
                             SharedPreferences prefs = await SharedPreferences.getInstance();
-                            initScreen = await prefs.getInt("initScreen");
+                            initScreen = prefs.getInt("initScreen");
                             await prefs.setInt("initScreen", 1);
                             print('initScreen $initScreen');
                             Navigator.push(
@@ -229,7 +229,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           //         fontWeight: FontWeight.bold)),
                                           color: Colors.white,
                                           padding: new EdgeInsets.all(30.0),
-                                          onPressed: () {
+                                          onPressed: () async {
+                                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            initScreen = prefs.getInt("initScreen");
+                                            await prefs.setInt("initScreen", 1);
+                                            print('initScreen $initScreen');
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
