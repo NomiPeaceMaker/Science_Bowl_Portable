@@ -79,12 +79,16 @@ Future<List<Question>> retrieveQuestions() async {
       {
         List splits=decoder["tossup_question"].split(" ");
         temp.tossupQuestion = splits.sublist(4).join(" ");
+        splits=decoder["bonus_question"].split(" ");
+        temp.bonusQuestion = splits.sublist(4).join(" ");
         temp.subjectType = "Earth and Space";
       }
     else
       {
         List splits=decoder["tossup_question"].split(" ");
         temp.tossupQuestion = splits.sublist(2).join(" ");
+        splits=decoder["bonus_question"].split(" ");
+        temp.bonusQuestion = splits.sublist(2).join(" ");
         temp.subjectType = decoder["subjectType"];
       }
     temp.tossupIsShortAns = decoder["tossup_isShortAns"];
@@ -96,7 +100,6 @@ Future<List<Question>> retrieveQuestions() async {
     }
     temp.tossupAnswer = decoder["tossup_answer"].substring(8); //removed answer
     temp.tossupImageURL = decoder["tossup_imageURL"];
-    temp.bonusQuestion = decoder["bonus_question"];
     temp.bonusIsShortAns = decoder["bonus_isShortAns"];
     if (decoder["bonus_MCQoptions"] != null) {
       List bonusOptions = decoder["bonus_MCQoptions"].split("\n");

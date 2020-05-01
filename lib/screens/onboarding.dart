@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sciencebowlportable/screens/login.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
+import 'package:sciencebowlportable/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Code inspired by https://github.com/MarcusNg/flutter_onboarding_ui/blob/master/lib/screens/onboarding_screen.dart
 
@@ -11,6 +13,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
+  
   final int _numPages = 3;
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
@@ -30,6 +33,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   );
 
   List<Widget> _buildPageIndicator() {
+    print('initScreen $initScreen');
     List<Widget> list = [];
     for (int i = 0; i < _numPages; i++) {
       list.add(i == _currentPage ? _indicator(true) : _indicator(false));
@@ -74,10 +78,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       Container(
                         alignment: Alignment.centerRight,
                         child: FlatButton(
-                          onPressed: () => Navigator.push(
+                          onPressed: () async {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            initScreen = prefs.getInt("initScreen");
+                            await prefs.setInt("initScreen", 1);
+                            print('initScreen $initScreen');
+                            Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => Login()),
-                          ),
+                          );
+                          },
                           child: Text(
                             'Skip',
                             style: TextStyle(
@@ -219,7 +229,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           //         fontWeight: FontWeight.bold)),
                                           color: Colors.white,
                                           padding: new EdgeInsets.all(30.0),
-                                          onPressed: () {
+                                          onPressed: () async {
+                                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            initScreen = prefs.getInt("initScreen");
+                                            await prefs.setInt("initScreen", 1);
+                                            print('initScreen $initScreen');
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
