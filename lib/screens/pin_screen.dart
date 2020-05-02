@@ -2,10 +2,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Client.dart';
-<<<<<<< HEAD
 import 'package:sciencebowlportable/models/Player.dart';
-=======
->>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/screens/player_waiting_room.dart';
 
@@ -20,10 +17,7 @@ class Pin extends StatefulWidget {
 
 class _PinState extends State<Pin> {
   String gamePin;
-<<<<<<< HEAD
   Player player = Player("");
-=======
->>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
   Client client;
   bool connected = false;
 
@@ -31,7 +25,6 @@ class _PinState extends State<Pin> {
   TextEditingController controller = TextEditingController();
 
   onData(Uint8List data) {
-<<<<<<< HEAD
     String msg = String.fromCharCodes(data).replaceAll(new RegExp(r"\s+\b|\b\s"), "");
     print("Message Recieved from server $msg");
     socketDataStreamController.add(msg);
@@ -39,11 +32,6 @@ class _PinState extends State<Pin> {
     if (msg == "sendPlayerID") {
       client.write(player.playerID);
     }
-=======
-    String msg = String.fromCharCodes(data);
-    print("Message Recieved from server $msg");
-    socketDataStreamController.add(msg);
->>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
     if (msg == "Connected") {
       print("Coonected to server, recieved message!");
       connected = true;
@@ -108,19 +96,12 @@ class _PinState extends State<Pin> {
                   String subnet = Wifi_ip.substring(0, Wifi_ip.lastIndexOf('.'));
 
                   setState(() {
-<<<<<<< HEAD
                     // subnet = subnet.substring(0,8);
                     print(subnet); // SUBNET is now the same as the "G" Character in the thing but better.
                     print(gamePin);
                     print(key2ip(gamePin,subnet));
                     client = Client(
                       hostname: key2ip(gamePin, subnet),
-=======
-                    print(gamePin);
-                    print(key2ip(gamePin));
-                    client = Client(
-                      hostname: key2ip(gamePin),
->>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                       port: PORT,
                       onData: this.onData,
                       onError: this.onError,
@@ -135,11 +116,7 @@ class _PinState extends State<Pin> {
                   }
                   Navigator.push(
                     context,
-<<<<<<< HEAD
-                    MaterialPageRoute(builder: (context) => PlayerWaitingRoom(this.client, this.player)),
-=======
                     MaterialPageRoute(builder: (context) => PlayerWaitingRoom(this.client)),
->>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                   );
                 }
               ),
