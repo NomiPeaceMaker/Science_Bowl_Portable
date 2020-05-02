@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'dart:convert';
 import 'dart:io';
 import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/globals.dart';
@@ -9,6 +10,7 @@ import 'package:sciencebowlportable/screens/loading.dart';
 
 import 'package:sciencebowlportable/models/Server.dart';
 import 'dart:typed_data';
+
 import 'package:sciencebowlportable/utilities/styles.dart';
 
 class MatchSettings extends StatefulWidget {
@@ -73,7 +75,7 @@ class _MatchSettingState extends State<MatchSettings> {
   }
 
   onData(Uint8List data) {
-    String msg = String.fromCharCodes(data);
+    var msg = String.fromCharCodes(data);
     socketDataStreamController.add(msg);
     setState(() {});
   }
