@@ -299,10 +299,8 @@ class _MatchSettingState extends State<MatchSettings> {
                         ],
                         onPressed: (int index) {
                           setState(() {
-                            isSelectedSubject_1[index] =
-                                !isSelectedSubject_1[index];
-                            moderator.subjectsdict[index] =
-                                !moderator.subjectsdict[index];
+                            isSelectedSubject_1[index] = !isSelectedSubject_1[index];
+                            moderator.subjectsdict[index] = !moderator.subjectsdict[index];
                             print(index);
                           });
                         },
