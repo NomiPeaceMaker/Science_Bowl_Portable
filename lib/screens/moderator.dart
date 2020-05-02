@@ -35,6 +35,8 @@ class _HostState extends State<Host> {
   _HostState(this.server, this.moderator,this.questionSet);
   bool paused = false;
 
+
+
   String roundName = "Toss-Up";
   String playerName= "A Captain"; //change according to player in focus
   double timeToAnswer = 2.113;
@@ -394,6 +396,7 @@ class _HostState extends State<Host> {
                         Text(
                           (roundName=="Toss-Up" && questionSet[index].tossupIsShortAns) ? "Short Answer" : (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns)? "MCQ"
                               : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
+
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
@@ -698,6 +701,7 @@ class _HostState extends State<Host> {
                           }
                         }
                       }
+
                       ),
                     },
                   ),

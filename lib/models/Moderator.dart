@@ -11,8 +11,13 @@ class Moderator extends User {
   //change directory to wherever json files are:
 //  Future<List<Question>> questionSet=parser("C:/Users/Zohair/Desktop/Anusheh's Documents/Software Engineering/Development/Science_Bowl_Portable/jsonQuestions/");
   Future<List<Question>> questionSet = retrieveQuestions();
+<<<<<<< HEAD
+  Team redTeam = Team("red");
+  Team greenTeam = Team("green");
+=======
   Team aTeam = Team("A");
   Team bTeam = Team("B");
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
 }
 
 //void main()
