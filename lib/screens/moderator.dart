@@ -1,5 +1,8 @@
 import 'dart:ui';
+<<<<<<< HEAD
 
+=======
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
@@ -35,8 +38,12 @@ class _HostState extends State<Host> {
 
   _HostState(this.server, this.moderator,this.questionSet);
   bool paused = false;
+<<<<<<< HEAD
   int aScore = 0;
   int bScore = 0;
+=======
+
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
   String roundName = "Toss-Up";
 //  String Qsubject = "Biology";
 //  String Qtype = "Short Answer";
@@ -74,7 +81,14 @@ class _HostState extends State<Host> {
     bonusTimer=moderator.bonusTime;
     tossUpTimer = moderator.tossUpTime; //5 secs for buzzer timer
     _minutes = this.moderator.gameTime; //customize match say aaye ga
+<<<<<<< HEAD
 
+=======
+    this.moderator.bTeam.score=0;
+    this.moderator.aTeam.score=0;
+    this.moderator.aTeam.canAnswer=true;
+    this.moderator.bTeam.canAnswer=true;
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
 //    print(questionSet);
     _startGameTimer();
     super.initState();
@@ -102,13 +116,21 @@ class _HostState extends State<Host> {
   }
 
   void _startBuzzTimer() {
+<<<<<<< HEAD
+=======
+    bonusTimer=moderator.bonusTime;
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
     tossUpTimer = this.moderator.tossUpTime;
     if (_buzzTimer != null) {
       _buzzTimer.cancel();
     }
     _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
+<<<<<<< HEAD
         doneReading=true;
+=======
+//        doneReading=true;
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
         if (roundName=="Toss-Up") {
           if (tossUpTimer > 0) {
             tossUpTimer--;
@@ -120,7 +142,11 @@ class _HostState extends State<Host> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
+<<<<<<< HEAD
                       builder: (context) => Result()),
+=======
+                      builder: (context) => Result(this.moderator)),
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                 );
               }
               else{
@@ -135,6 +161,7 @@ class _HostState extends State<Host> {
           }
         }
         else
+<<<<<<< HEAD
           {
             if (bonusTimer > 0) {
               bonusTimer--;
@@ -150,16 +177,40 @@ class _HostState extends State<Host> {
                   );
                 }
                 else{
+=======
+        {
+          if (bonusTimer > 0) {
+            bonusTimer--;
+          }
+          else {
+            _buzzTimer.cancel();
+            setState(() {
+              if (index == questionSet.length - 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Result(this.moderator)),
+                );
+              }
+              else{
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                 doneReading=false;
                 index+=1;
                 roundName="Toss-Up";
                 if (isBuzzerActive) {
                   unavailable = true;
                 }
+<<<<<<< HEAD
                 }
               });
             }
           }
+=======
+              }
+            });
+          }
+        }
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
       });
     });
   }
@@ -171,9 +222,15 @@ class _HostState extends State<Host> {
     _gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         if (_seconds==1 &&_minutes==0)
+<<<<<<< HEAD
           {
             _gameTimer.cancel();
           }
+=======
+        {
+          _gameTimer.cancel();
+        }
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
 //        if (_minutes < 0) {
 //          _gameTimer.cancel();
 //        }
@@ -190,6 +247,7 @@ class _HostState extends State<Host> {
           _minutes -= 1;
         }
         if(_seconds==0 && _minutes==0)
+<<<<<<< HEAD
           {
             Navigator.push(
               context,
@@ -197,6 +255,15 @@ class _HostState extends State<Host> {
                   builder: (context) => Result()),
             );
           }
+=======
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Result(this.moderator)),
+          );
+        }
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
       });
     });
   }
@@ -280,9 +347,15 @@ class _HostState extends State<Host> {
                     paused = false;
                     _startGameTimer();
                     if(doneReading)
+<<<<<<< HEAD
                       {
                         _startBuzzTimer();
                       }
+=======
+                    {
+                      _startBuzzTimer();
+                    }
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                   });
                 }
                 else {
@@ -290,9 +363,15 @@ class _HostState extends State<Host> {
                     paused = true;
                     _gameTimer.cancel();
                     if (doneReading)
+<<<<<<< HEAD
                       {
                         _buzzTimer.cancel();
                       }
+=======
+                    {
+                      _buzzTimer.cancel();
+                    }
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                   });
                 }
               },
@@ -308,6 +387,7 @@ class _HostState extends State<Host> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Column(
+<<<<<<< HEAD
                 children: <Widget>[
                  Text(
                   "Team A",
@@ -326,6 +406,26 @@ class _HostState extends State<Host> {
                       fontSize: 18),),
                 ],
               ),
+=======
+                  children: <Widget>[
+                    Text(
+                        "Team A",
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                            fontSize: 18)
+                    ),
+                    Text(
+                      this.moderator.aTeam.score.toString(),
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                          fontSize: 18),),
+                  ],
+                ),
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                 Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -358,7 +458,11 @@ class _HostState extends State<Host> {
                             fontSize: 18)
                     ),
                     Text(
+<<<<<<< HEAD
                       bScore.toString(),
+=======
+                      this.moderator.bTeam.score.toString(),
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                       textAlign: TextAlign.right,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -390,13 +494,21 @@ class _HostState extends State<Host> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Text(
+<<<<<<< HEAD
                         questionSet[index].subjectType,
+=======
+                          questionSet[index].subjectType,
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         Text(
                           (roundName=="Toss-Up" && questionSet[index].tossupIsShortAns) ? "Short Answer" : (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns)? "MCQ"
+<<<<<<< HEAD
                           : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
+=======
+                              : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
@@ -417,12 +529,20 @@ class _HostState extends State<Host> {
                         questionSet[index].tossupMCQOptions[0]+"\n"+questionSet[index].tossupMCQOptions[1]+"\n"+questionSet[index].tossupMCQOptions[2]+"\n"+questionSet[index].tossupMCQOptions[3],
                         style: TextStyle(fontSize: 16),
                       )
+<<<<<<< HEAD
                         : (roundName=="Bonus" && !questionSet[index].bonusIsShortAns) ?
+=======
+                          : (roundName=="Bonus" && !questionSet[index].bonusIsShortAns) ?
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                       Text(
                         questionSet[index].bonusMCQOptions[0]+"\n"+questionSet[index].bonusMCQOptions[1]+"\n"+questionSet[index].bonusMCQOptions[2]+"\n"+questionSet[index].bonusMCQOptions[3],
                         style: TextStyle(fontSize: 16),
                       ):
+<<<<<<< HEAD
                           Container(width: 0.0, height: 0.0,),
+=======
+                      Container(width: 0.0, height: 0.0,),
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                     ),
 //                    ((roundName=="Toss-Up") && !questionSet[index].tossupIsShortAns) || ((roundName=="Bonus") && !questionSet[index].bonusIsShortAns) ?
 //                    ListView(
@@ -448,9 +568,15 @@ class _HostState extends State<Host> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ),
+<<<<<<< HEAD
                      Padding(
                        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
                        child: Row(
+=======
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                      child: Row(
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Padding(
@@ -472,12 +598,20 @@ class _HostState extends State<Host> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
+<<<<<<< HEAD
                                           builder: (context) => Result()),
+=======
+                                          builder: (context) => Result(this.moderator)),
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                                     );
                                   }
                                   else {
                                     index += 1;
                                     roundName = "Toss-Up";
+<<<<<<< HEAD
+=======
+                                    doneReading=false;
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                                   }
                                 }
                               });
@@ -518,7 +652,11 @@ class _HostState extends State<Host> {
                   (doneReading && roundName=="Toss-Up")
                       ? "Buzzer Open: " + tossUpTimer.toString():
                   (doneReading && roundName=="Bonus")? "Buzzer Open: " + bonusTimer.toString():
+<<<<<<< HEAD
                       "Done Reading",
+=======
+                  "Done Reading",
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 padding: EdgeInsets.all(20.0),
@@ -571,7 +709,11 @@ class _HostState extends State<Host> {
                     child: Text(
                       "Correct",
                       style:
+<<<<<<< HEAD
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+=======
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                     ),
                     padding: EdgeInsets.all(20.0),
                     color: Colors.lightBlue,
@@ -579,6 +721,7 @@ class _HostState extends State<Host> {
                     onPressed: () {
                       setState(() {
                         if(!paused){
+<<<<<<< HEAD
                         server.sendAll("Correct");
                         if (roundName=="Toss-Up")
                           {
@@ -593,11 +736,29 @@ class _HostState extends State<Host> {
                               }
                           }
                         else
+=======
+                          server.sendAll("Correct");
+                          if (roundName=="Toss-Up")
+                          {
+                            roundName="Bonus";
+                            doneReading=false;
+                            if(team=="A")
+                            {
+                              this.moderator.aTeam.score+=4;
+                            }
+                            else
+                            {
+                              this.moderator.bTeam.score+=4;
+                            }
+                          }
+                          else
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                           {
                             if (index == questionSet.length - 1) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
+<<<<<<< HEAD
                                     builder: (context) => Result()),
                               );
                             }
@@ -617,6 +778,28 @@ class _HostState extends State<Host> {
                         }
                       }
                      );
+=======
+                                    builder: (context) => Result(this.moderator)),
+                              );
+                            }
+                            else{
+                              index+=1;
+                              roundName="Toss-Up";
+                              doneReading=false;
+                              if(team=="A")
+                              {
+                                this.moderator.aTeam.score+=10;
+                              }
+                              else
+                              {
+                                this.moderator.bTeam.score+=10;
+                              }
+                            }
+                          }
+                        }
+                      }
+                      );
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                     },
                   ),
                   FlatButton(
@@ -630,22 +813,76 @@ class _HostState extends State<Host> {
                     color: Colors.amber,
                     textColor: Colors.white,
                     onPressed: () => {
+<<<<<<< HEAD
                         setState(() {
                           if(!paused) {
                             server.sendAll("Incorrect");
+=======
+                      setState(() {
+                        if(!paused) {
+                          server.sendAll("Incorrect"); //should tell which team answered correctly? so incorrect team cant answer again
+                          if(team=="A")
+                            {
+                              this.moderator.aTeam.canAnswer=false;
+//                              team="B";
+                            }
+                          else
+                            {
+                              this.moderator.bTeam.canAnswer=false;
+                            }
+                          if(this.moderator.bTeam.canAnswer || this.moderator.aTeam.canAnswer)
+                            {
+                              if (this.moderator.bTeam.canAnswer ) //notify mod?
+                                {
+                                  print("Team A cannot answer now");
+                                }
+                              else
+                                {
+                                  print("Team B cannot answer now");
+                                }
+                              print("here");
+                              doneReading=false;
+//                              Scaffold.of(context).showSnackBar(
+//                                SnackBar(
+////                                  content: Text(
+////                                      (this.moderator.aTeam.canAnswer)? ,
+////                                  ),
+//                                  content: Icon(Icons.pan_tool),
+//                                  backgroundColor: Colors.yellowAccent,
+////                                  animation: ,
+//                                  duration: Duration(seconds: 2),
+//                                ),
+//                              );
+                            }
+                          else { //next question
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                             if (index == questionSet.length - 1) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
+<<<<<<< HEAD
                                     builder: (context) => Result()),
+=======
+                                    builder: (context) => Result(this.moderator)),
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                               );
                             }
                             else {
                               index += 1;
                               roundName = "Toss-Up";
+<<<<<<< HEAD
                             }
                           }
                         }
+=======
+                              doneReading = false;
+                              this.moderator.aTeam.canAnswer=true;
+                              this.moderator.bTeam.canAnswer=true;
+                            }
+                          }
+                        }
+                      }
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                       ),
                     },
                   ),
@@ -656,7 +893,11 @@ class _HostState extends State<Host> {
                     child: Text(
                       "Penalty",
                       style:
+<<<<<<< HEAD
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+=======
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                     ),
                     padding: EdgeInsets.all(20.0),
                     color: Colors.red,
@@ -711,10 +952,17 @@ class _HostState extends State<Host> {
                                                   server.sendAll("Interrupt");
                                                   //need to do more work here
                                                   if (team == "A") {
+<<<<<<< HEAD
                                                     bScore += 4;
                                                   }
                                                   else {
                                                     aScore += 4;
+=======
+                                                    this.moderator.bTeam.score += 4;
+                                                  }
+                                                  else {
+                                                    this.moderator.aTeam.score += 4;
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                                                   }
                                                 }
                                               });
@@ -726,7 +974,11 @@ class _HostState extends State<Host> {
                                                   color: Colors.white),
                                             ),
 //                                            color: const Color(0xFF1BC0C5),
+<<<<<<< HEAD
                                               color: Colors.red,
+=======
+                                            color: Colors.red,
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                                           ),
                                         ),
                                         Spacer(),
@@ -743,10 +995,17 @@ class _HostState extends State<Host> {
                                                   server.sendAll("Blurt");
                                                   //need to do more work here
                                                   if (team == "A") {
+<<<<<<< HEAD
                                                     bScore += 4;
                                                   }
                                                   else {
                                                     aScore += 4;
+=======
+                                                    this.moderator.bTeam.score += 4;
+                                                  }
+                                                  else {
+                                                    this.moderator.aTeam.score += 4;
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                                                   }
                                                 }
                                               });
@@ -776,10 +1035,17 @@ class _HostState extends State<Host> {
                                                   server.sendAll("Consultation");
                                                   //need to do more work here
                                                   if (team == "A") {
+<<<<<<< HEAD
                                                     bScore += 4;
                                                   }
                                                   else {
                                                     aScore += 4;
+=======
+                                                    this.moderator.bTeam.score += 4;
+                                                  }
+                                                  else {
+                                                    this.moderator.aTeam.score += 4;
+>>>>>>> df723d014c47e9135d816e9088a75d89e3d74257
                                                   }
                                                 }
                                               });
