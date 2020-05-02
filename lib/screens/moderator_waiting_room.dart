@@ -65,7 +65,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
         print("IS PLAYER SLOT TAKEN");
         if (!playerSlotIsTakenList[playerPositionIndex]) {
           print("SENDING data to all");
-          server.sendAll(json.encode(data));
+          server.sendAll(data);
           if (previousState!="") {
             int previousStateIndex = playerPositionIndexDict[previousState];
             playerJoinStreamControllers[previousStateIndex].add("undoSelect");
