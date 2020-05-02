@@ -1,7 +1,7 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Client.dart';
-import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/screens/player_waiting_room.dart';
 
@@ -16,18 +16,20 @@ class Pin extends StatefulWidget {
 
 class _PinState extends State<Pin> {
   String gamePin;
-  Player player = Player("");
   Client client;
+  bool connected = false;
 
   List<String> serverLogs = [];
   TextEditingController controller = TextEditingController();
 
   onData(Uint8List data) {
     String msg = String.fromCharCodes(data);
+    print("Message Recieved from server $msg");
     socketDataStreamController.add(msg);
-//    if (msg == "sendPlayerID") {
-//      client.write(player.playerID);
-//    }
+    if (msg == "Connected") {
+      print("Coonected to server, recieved message!");
+      connected = true;
+    }
     setState(() {});
   }
 
@@ -82,25 +84,31 @@ class _PinState extends State<Pin> {
                 child: Text('Confirm'),
                   textColor: Colors.green,
                 onPressed: () async {
+                  // get wifi ip XXX.XXX.XXX.XXX
+                  Wifi_ip = await (Connectivity().getWifiIP());
+                  // remove the last bit so now you should have XXX.XXX.XXX.___ (test this just in case)
+                  String subnet = Wifi_ip.substring(0, Wifi_ip.lastIndexOf('.'));
+
                   setState(() {
                     print(gamePin);
                     print(key2ip(gamePin));
                     client = Client(
                       hostname: key2ip(gamePin),
-                      port: 4040,
+                      port: PORT,
                       onData: this.onData,
                       onError: this.onError,
                     );
                   });
-                  if (client.connected) {
+                  if (connected) {
                     print("connected");
                   } else {
                     print("waiting for connection");
-//                    await client.connect();
+                    await client.connect();
+                    print("done connecting");
                   }
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PlayerWaitingRoom(this.client, this.player)),
+                    MaterialPageRoute(builder: (context) => PlayerWaitingRoom(this.client)),
                   );
                 }
               ),

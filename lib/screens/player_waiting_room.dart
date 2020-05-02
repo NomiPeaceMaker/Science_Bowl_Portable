@@ -1,113 +1,169 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:sciencebowlportable/screens/player_buzzer.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
-import 'package:sciencebowlportable/screens/widgets.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 
 import 'home.dart';
 
 class PlayerWaitingRoom extends StatefulWidget {
   Client client;
-  Player player;
 
-  PlayerWaitingRoom(this.client, this.player);
+  PlayerWaitingRoom(this.client);
   @override
   _PlayerWaitingRoomState createState() {
-    return _PlayerWaitingRoomState(this.client, this.player);
+    return _PlayerWaitingRoomState(this.client);
   }
 }
 
 class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   Client client;
-  Player player;
-  _PlayerWaitingRoomState(this.client, this.player);
+  Player player = Player("");
+  _PlayerWaitingRoomState(this.client);
+  List<StreamController<String>> playerJoinStreamControllers = new List(10);
+  List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
+  List<String> playerNamesList = List.generate(10, (_) => "");
+
+//  List<bool> redActive = List.generate(5, (_) => tr"'$a' '$b'"ue);
+//  List<bool> greenActive = List.generate(5, (_) => true);
 
   StreamSubscription socketDataStreamSubscription;
   @override
   void initState() {
     super.initState();
-    Stream socketDataStream = socketDataStreamController.stream;
-    socketDataStreamSubscription = socketDataStream.listen((data) {
-      print("DATTTA");
-      print(data);
-      if (data[0] == "R") {
-        print("R joined");
-      } else if (data[0] == "G") {
-        print("G joined");
+      player.userName = user.userName;
+      player.email = user.email;
+      for (var i = 0 ; i < 10; i++ ) {
+        playerJoinStreamControllers[i] = StreamController.broadcast();
+//        greenPlayerJoinStreamController[i] = StreamController.broadcast();
       }
-      if (data == "StartGame") {
-        print("Moving on to game");
-        socketDataStreamSubscription.cancel();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Game(client, player)),
-        );
-      }
+      Stream socketDataStream = socketDataStreamController.stream;
+      socketDataStreamSubscription = socketDataStream.listen((data) {
+        ///////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////
+        print("DATA FROM SERVER");
+        print(data);
+        data = json.decode(data);
+        if (data["type"] == "buzzer") {
+          int playerPositionIndex = int.parse(data["playerPositionIndex"]);
+          String userName = data["userName"];
+          String previousState = data["previousState"];
+          if (previousState!="") {
+            int previousStateIndex = playerPositionIndexDict[previousState];
+            playerJoinStreamControllers[previousStateIndex].add("undoSelect");
+          }
+          playerJoinStreamControllers[playerPositionIndex].add(userName);
+          // test this out it might cause async problems
+          player.playerID = data["playerID"];
+        }
+        else if (data["type"] == "startGame") {
+          print("Moving on to game");
+          socketDataStreamSubscription.cancel();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Game(client, player)),
+          );
+        }
+
+        ///////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////
     });
   }
+  SizedBox teamSlotWidget(String playerPosition, String team) {
+    var color, buttonColor, buttonText;
+    String playerID = '$team $playerPosition';
+    int playerPositionIndex = playerPositionIndexDict[playerID];
+//    String buttonText = '$team $playerPosition';
+//    print("team $team");
+//    print("player index $playerPositionIndex");
+//    print("stream $playerJoinStreamControllers[playerPositionIndex]");
+    if (team == "Red") {
+      color = Colors.red;
+    }  else if (team == "Green") {
+//      playerPositionIndex += 5;
+      color = Colors.green;
+    }
+    if (playerSlotIsTakenList[playerPositionIndex]) {
+      buttonText = playerNamesList[playerPositionIndex];
+      buttonColor = Colors.grey;
+    } else {
+      buttonText = playerID;
+      buttonColor = color;
+    }
+//    buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
+    return new SizedBox(
+      width: 140.0,
+      height: 50,
+      child:
+      new StreamBuilder(
+          stream: playerJoinStreamControllers[playerPositionIndex].stream,
+          builder: (context, snapshot) {
+            if (snapshot.data == "undoSelect") {
+              playerJoinStreamControllers[playerPositionIndex].add(null);
+              playerSlotIsTakenList[playerPositionIndex] = false;
+              buttonColor = Colors.grey;
+              buttonText = playerNamesList[playerPositionIndex];
+              buttonColor = color;
+              buttonText = playerID;
+//              buttonText = playerPosition;
+//              buttonColor = color;
+            }
+            else if (snapshot.data != null) {
+//              buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
+              playerJoinStreamControllers[playerPositionIndex].add(null);
+              playerSlotIsTakenList[playerPositionIndex] = true;
+              playerNamesList[playerPositionIndex] = snapshot.data;
+              buttonColor = Colors.grey;
+              buttonText = playerNamesList[playerPositionIndex];
+//              buttonText = snapshot.data;
+//              buttonColor = (buttonColor==color) ? Colors.grey : color;
+//              redActive[teamNumber[playerPosition]] = !redActive[teamNumber[playerPosition]];
+            }
+            return new FlatButton (
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Text(
+                  buttonText,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+              ),
+              color: buttonColor,
+              textColor: Colors.white,
+              onPressed: () {
+                setState(() {
+                  print("Constructing message");
+                  var message = {
+                    "type": "buzzer",
+                    "userName": player.userName,
+                    "playerID": playerID,
+                    "playerPositionIndex": playerPositionIndex.toString(),
+                    "previousState": player.playerID,
+                  };
+                  print("SENDING TO SERVER");
+                  print(message);
+                  if (!playerSlotIsTakenList[playerPositionIndex]) {
+                    client.write(json.encode(message));
+                  }
+                });
+              },
+            );
+          })
+    );
+  }
 
-  List<bool> redActive = List.generate(5, (_) => true);
-  List<bool> greenActive = List.generate(5, (_) => true);
-
-  var teamNumber = {"1": 0, "2": 1, "Captain": 2, "3": 3, "4": 4};
-
-  Row playerRowWidget(String rNum, String gNum) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <
-        Widget>[
-      SizedBox(
-          width: 140.0,
-          height: 50,
-          child: FlatButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Text('Red $rNum',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
-            color: redActive[teamNumber[rNum]] ? Colors.red : Colors.grey,
-            textColor: Colors.white,
-            onPressed: () {
-              setState(() {
-                redActive[teamNumber[rNum]] = !redActive[teamNumber[rNum]];
-//                    int playerNumber = teamNumber[rNum];
-//                    Stream s = redPlayerJoinStreamController[playerNumber].stream;
-//                    redPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
-//                      redActive[playerNumber] = !redActive[playerNumber];
-//                    });
-                client.write("R$rNum");
-//                    redPlayerJoinStreamController[playerNumber].add("R$rNum");
-              });
-            },
-          )),
-      SizedBox(
-          width: 140.0,
-          height: 50,
-          child: FlatButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Text('Green $rNum',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
-            color: greenActive[teamNumber[gNum]] ? Colors.green : Colors.grey,
-            textColor: Colors.white,
-            onPressed: () {
-              setState(() {
-                greenActive[teamNumber[gNum]] = !greenActive[teamNumber[gNum]];
-//                    int playerNumber = teamNumber[gNum];
-//                    Stream s = greenPlayerJoinStreamController[playerNumber].stream;
-//                    greenPlayerJoinStreamSubscription[playerNumber] = s.listen((data) {
-//                      greenActive[playerNumber] = !greenActive[playerNumber];
-//                    });
-                client.write("G$gNum");
-//                    greenPlayerJoinStreamController[playerNumber].add("G$gNum");
-              });
-            },
-          )),
-    ]);
+  Row playerRowWidget(String playerPosition) {
+      print(client);
+      return new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            teamSlotWidget(playerPosition, "Red"),
+            teamSlotWidget(playerPosition, "Green"),
+        ]
+    );
   }
 
   @override
@@ -162,11 +218,11 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
               ),
             ],
           ),
-          playerRowWidget("1", "1"),
-          playerRowWidget("2", "2"),
-          playerRowWidget("Captain", "Captain"),
-          playerRowWidget("3", "3"),
-          playerRowWidget("4", "4"),
+          playerRowWidget("1"),
+          playerRowWidget("2",),
+          playerRowWidget("Captain"),
+          playerRowWidget("3"),
+          playerRowWidget("4"),
           Container(
             margin: EdgeInsets.only(bottom: 20.0),
             child: Align(

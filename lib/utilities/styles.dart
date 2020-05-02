@@ -13,6 +13,6 @@ final exitstyle = TextStyle(
 );
 
 final staystyle = TextStyle(
-  color: Colors.grey,
+  color: Colors.grey[700],
   fontSize: 16.0,
 );

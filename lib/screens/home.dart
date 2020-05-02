@@ -7,14 +7,13 @@ import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 import 'package:sciencebowlportable/screens/howtoplay.dart';
+import 'package:flutter/services.dart';
+import 'package:connectivity/connectivity.dart';
 // import 'package:flutter/services.dart';
 import 'package:move_to_background/move_to_background.dart';
 
 
 enum settings { help, report }
-
-// var name1 = 'NomiPeaceMaker';
-// void MyHomePage1() => runApp(MyHomePage());
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -153,85 +152,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ])),
                         ])),
                   ]),
-                  Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: SizeConfig.safeBlockVertical * 3.5,
-                          horizontal: SizeConfig.safeBlockHorizontal * 5),
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(45.0),
-                        ),
-                        child: SizedBox(
-                          height: SizeConfig.blockSizeVertical * 21,
-                          width: SizeConfig.blockSizeVertical * 50,
-                          child: Center(
-                            child: Text('HOST GAME',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 22.0)),
-                          ),
-                        ),
-                        color: Color(0xFF20BABA),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MatchSettings()),
-                          );
-                        },
-                      )),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: SizeConfig.safeBlockVertical * 3.5,
-                        horizontal: SizeConfig.safeBlockHorizontal * 5),
-                      child: RaisedButton(
-                        child: SizedBox(
-                          height: SizeConfig.blockSizeVertical * 21,
-                          width: SizeConfig.blockSizeVertical * 50,
-                          child: Center(
-                            child: Text('JOIN GAME',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 22.0)),
-                          ),
-                        ),
-                        color: Color(0xFF20BABA),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(45.0),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Pin()),
-                          );
-                        },
-                      ),
-                    ),
-                     Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: SizeConfig.safeBlockVertical * 3.5,
-                        horizontal: SizeConfig.safeBlockHorizontal * 5),
-                      child: RaisedButton(
-                        child: SizedBox(
-                          height: SizeConfig.blockSizeVertical * 21,
-                          width: SizeConfig.blockSizeVertical * 50,
-                          child: Center(
-                            child: Text('HOW TO PLAY',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 22.0)),
-                          ),
-                        ),
-                        color: Color(0xFF20BABA),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(45.0),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HowToPlay()),
-                          );
-                        },
-                      ),
-                    ),
+                  _button("HOST GAME", true, MatchSettings()),
+                  _button("JOIN GAME", true, Pin()),
+                  _button("HOW TO PLAY", false, HowToPlay()) // This shouldn't need internet but it doesnt work without so ig
                 ])),
           ),
         ),
@@ -243,27 +166,77 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-// Future <bool>  _exitDialog() async {
-    // showDialog(
-    //     context: context,
-    //     barrierDismissible: true,
-    //     builder: (context) {
-    //       return AlertDialog(
-    //         title: Text("Exit SBP"),
-    //         content: Text("Are you sure you want to exit the app?"),
-    //         actions: <Widget>[
-    //           FlatButton(
-    //             child: Text("No", style: staystyle),
-    //             onPressed: () {
-    //               Navigator.of(context).pop();
-    //             },
-    //           ),
-    //           FlatButton(
-    //             child: Text("Exit", style: exitstyle),
-    //             onPressed: () {SystemNavigator.pop();},
-    //           ),
-    //         ],
-    //       );
-    //     });
-  // }
+  _button(String title, bool needsInternet, landingPage) {
+    return Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: SizeConfig.safeBlockVertical * 3.5,
+            horizontal: SizeConfig.safeBlockHorizontal * 5),
+        child: RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(45.0),
+          ),
+          child: SizedBox(
+            height: SizeConfig.blockSizeVertical * 21,
+            width: SizeConfig.blockSizeVertical * 50,
+            child: Center(
+              child: Text(title,
+                  style: TextStyle(color: Colors.white, fontSize: 22.0)),
+            ),
+          ),
+          color: Color(0xFF20BABA),
+          onPressed: ()  async {
+            if (needsInternet) {
+              if (await _checkWifiConnectivity()) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => landingPage),
+                ); 
+                } else {
+                  _noInternetDialog();
+                }
+
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => landingPage),
+                ); 
+              }
+            }
+        ));
+  }
+
+  _noInternetDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("No Wifi Connectivity"),
+            content: Text(
+                "You need to be connected to Wifi to continue. Try connecting to Wifi and try again."),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay", style: staystyle),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  _checkWifiConnectivity() async {
+    var result = await Connectivity().checkConnectivity();
+
+    if (result == ConnectivityResult.wifi) {
+      print("Connected to Wifi");
+      return true;
+      // Wifi_ip = await (Connectivity.getWifiIP());
+
+    } else {
+      print("NO wifi detected");
+      return false;
+    }
+  }
 }

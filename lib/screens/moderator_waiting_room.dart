@@ -1,18 +1,15 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/moderator.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Player.dart';
-import 'package:sciencebowlportable/screens/widgets.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 
 import 'home.dart';
-
-
 
 class ModeratorWaitingRoom extends StatefulWidget {
   Server server;
@@ -30,78 +27,144 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   Server server;
   Moderator moderator;
   List<Question> questionSet;
+  List<StreamController<String>> playerJoinStreamControllers = new List(10);
+  List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
+  List<String> playerNamesList = List.generate(10, (_) => "");
 
-  List<bool> redActive = List.generate(5, (_) => true);
-  List<bool> greenActive = List.generate(5, (_) => true);
+//  List<bool> redActive = List.generate(5, (_) => true);
+//  List<bool> greenActive = List.generate(5, (_) => true);
 
   _ModeratorWaitingRoomState(this.server, this.moderator,this.questionSet);
 
   StreamSubscription socketDataStreamSubscription;
+
   initState() {
     Stream socketDataStream = socketDataStreamController.stream;
+//    List<StreamController<String>> redPlayerJoinStreamController = new List.filled(5, StreamController.broadcast());
+//    List<StreamController<String>> greenPlayerJoinStreamController = new List.filled(5, StreamController.broadcast());
+
+    for( var i = 0 ; i < 10; i++ ) {
+      playerJoinStreamControllers[i] = StreamController.broadcast();
+//      greenPlayerJoinStreamController[i] = StreamController.broadcast();
+    }
+
     socketDataStreamSubscription = socketDataStream.listen((data){
-      Player player = Player(data);
-      print("AT WAITING SCREEN");
+      ///////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////
+      print("got Data");
       print(data);
-      if (data[0] == "R") {
-        int playerNumber = int.parse(data[1]);
-        print(data.substring(2));
-        moderator.redTeam.players.add(player);
-      } else if (data[0] == "G") {
-        moderator.redTeam.players.add(player);
+      data = json.decode(data);
+
+      Player player = Player(data["playerID"]);
+      player.userName = data["userName"];
+      player.email = data["email"];
+      print("LISTENING AT WAITING SCREEN MODERATOR");
+      if (data["type"] == "buzzer") {
+        int playerPositionIndex = int.parse(data["playerPositionIndex"]);
+        String previousState = data["previousState"];
+        print("IS PLAYER SLOT TAKEN");
+        if (!playerSlotIsTakenList[playerPositionIndex]) {
+          print("SENDING data to all");
+          server.sendAll(data);
+          if (previousState!="") {
+            int previousStateIndex = playerPositionIndexDict[previousState];
+            playerJoinStreamControllers[previousStateIndex].add("undoSelect");
+          }
+          playerJoinStreamControllers[playerPositionIndex].add(player.userName);
+        }
       }
+
+//      int playerNumber = playerPositionIndexDict[data.substring(1)];
+//      print(playerNumber);
+//      if (data[0] == "R") {
+//        print("check");
+//        print(playerNumber);
+//        redPlayerJoinStreamController[playerNumber].add("toggleButton");
+//        moderator.redTeam.players.add(player);
+//      } else if (data[0] == "G") {
+//        greenPlayerJoinStreamController[playerNumber].add("toggleButton");
+//        moderator.redTeam.players.add(player);
+//      }
+      ///////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////
     });
 //    R1controller = new StreamController();
 //    R1stream = R1controller.stream;
 //    super.initState();
-    moderator.questionSet.then((list){
+      moderator.questionSet.then((list){
       questionSet=list;
       print("Retrieved questions");
     });
   }
 
-  Row playerRowWidget(String rNum, String gNum) {
-    return Row(
+  SizedBox teamSlotWidget(String playerPosition, String team) {
+    var color, buttonColor, buttonText;
+    String playerID = '$team $playerPosition';
+    int playerPositionIndex = playerPositionIndexDict[playerID];
+
+    print("player position index");
+    if (team == "Red") {
+      color = Colors.red;
+    } else if (team == "Green") {
+//      playerPositionIndex += 5;
+      color = Colors.green;
+    }
+    if (playerSlotIsTakenList[playerPositionIndex]) {
+      buttonText = playerNamesList[playerPositionIndex];
+      buttonColor = Colors.grey;
+    } else {
+      buttonText = playerID;
+      buttonColor = color;
+    }
+//    buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
+    return new SizedBox(
+        width: 140.0,
+        height: 50,
+        child:
+        new StreamBuilder(
+            stream: playerJoinStreamControllers[playerPositionIndex].stream,
+            builder: (context, snapshot) {
+              if (snapshot.data == "undoSelect") {
+                playerJoinStreamControllers[playerPositionIndex].add(null);
+                playerSlotIsTakenList[playerPositionIndex] = false;
+                buttonColor = color;
+                buttonText = playerID;
+//                buttonColor = color;
+              }
+              else if (snapshot.data != null) {
+//                buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
+                playerJoinStreamControllers[playerPositionIndex].add(null);
+                playerSlotIsTakenList[playerPositionIndex] = true;
+                playerNamesList[playerPositionIndex] = snapshot.data;
+                buttonColor = Colors.grey;
+                buttonText = playerNamesList[playerPositionIndex];
+//                redActive[teamNumber[playerPosition]] = !redActive[teamNumber[playerPosition]];
+              }
+              return new FlatButton (
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                    buttonText,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                ),
+                color: buttonColor,
+                textColor: Colors.white,
+                onPressed: () {
+                  setState(() {
+                  });
+                },
+              );
+            })
+    );
+  }
+
+  Row moderatorRowWidget(String playerPosition) {
+    return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        SizedBox(
-            width: 140.0,
-            height: 50,
-            child: FlatButton (
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Text(
-                  'Red $rNum',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-              ),
-              color: Colors.red,
-              textColor: Colors.white,
-              onPressed: () {
-                setState(() {
-                });
-              },
-          )
-        ),
-        SizedBox(
-            width: 140.0,
-            height: 50,
-            child: FlatButton (
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Text(
-                  'Green $rNum',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-              ),
-              color: Colors.green,
-              textColor: Colors.white,
-              onPressed: () {
-                setState(() {
-                });
-              },
-            )
-        ),
+        teamSlotWidget(playerPosition, "Red"),
+        teamSlotWidget(playerPosition, "Green"),
       ]
     );
   }
@@ -161,11 +224,11 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
               ),
             ],
           ),
-          playerRowWidget("1", "1"),
-          playerRowWidget("2", "2"),
-          playerRowWidget("Captain", "Captain"),
-          playerRowWidget("3", "3"),
-          playerRowWidget("4", "4"),
+          moderatorRowWidget("1"),
+          moderatorRowWidget("2"),
+          moderatorRowWidget("Captain"),
+          moderatorRowWidget("3"),
+          moderatorRowWidget("4"),
           Container(
             margin: EdgeInsets.only(bottom: 20.0),
             child: Align(
@@ -185,10 +248,10 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
                   textColor: Colors.white,
                   onPressed: () => {
                     socketDataStreamSubscription.cancel(),
-                      server.broadCast("StartGame"),
+                      server.sendAll(json.encode({"type":"startGame"})),
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Host(this.server, this.moderator,this.questionSet)),
+                        MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
                       ),
                   },
                 ),
