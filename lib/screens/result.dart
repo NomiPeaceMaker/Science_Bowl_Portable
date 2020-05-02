@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/main.dart';
 import 'package:sciencebowlportable/screens/home.dart';
+import 'package:sciencebowlportable/models/Moderator.dart';
 
 class Result extends StatefulWidget {
+  Moderator moderator;
+  Result(this.moderator);
+
   @override
-  _ResultState createState() => _ResultState();
+  _ResultState createState() => _ResultState(this.moderator);
 }
 
 class _ResultState extends State<Result> {
+  Moderator moderator;
+
+  _ResultState(this.moderator);
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
@@ -46,7 +53,7 @@ class _ResultState extends State<Result> {
                     ),
                     children: <TextSpan>[
                       TextSpan(
-                          text: 'A',
+                          text: (this.moderator.aTeam.score>this.moderator.bTeam.score)?"A" :(this.moderator.aTeam.score<this.moderator.bTeam.score)?"B": "A and B! \nIt's a Tie" ,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             // foreground: Paint()
@@ -82,15 +89,15 @@ class _ResultState extends State<Result> {
                       children: <Widget>[
                         Column(
                           children: <Widget>[
-                            Text('A Team',
+                            Text("Team A",
                                 style: TextStyle(
-                                  color: Colors.yellow,
+                                  color: Colors.red,
                                   fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                 )),
-                            Text('40',
+                            Text(this.moderator.aTeam.score.toString(),
                                 style: TextStyle(
-                                  color: Colors.yellow,
+                                  color: Colors.red,
                                   fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                 ))
@@ -98,15 +105,15 @@ class _ResultState extends State<Result> {
                         ),
                         SizedBox(width: 50.0),
                         Column(children: <Widget>[
-                          Text('B Team',
+                          Text('Team B',
                               style: TextStyle(
-                                color: Colors.blue,
+                                color: Colors.lightGreen,
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.w500,
                               )),
-                          Text('38',
+                          Text(this.moderator.bTeam.score.toString(),
                               style: TextStyle(
-                                color: Colors.blue,
+                                color: Colors.lightGreen,
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.w500,
                               ))

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:sciencebowlportable/models/Client.dart';
+import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/screens/player_waiting_room.dart';
 
@@ -17,6 +18,7 @@ class Pin extends StatefulWidget {
 
 class _PinState extends State<Pin> {
   String gamePin;
+  Player player = Player("");
   Client client;
   bool connected = false;
 
@@ -92,10 +94,12 @@ class _PinState extends State<Pin> {
                   String subnet = Wifi_ip.substring(0, Wifi_ip.lastIndexOf('.'));
 
                   setState(() {
+                    // subnet = subnet.substring(0,8);
+                    print(subnet); // SUBNET is now the same as the "G" Character in the thing but better.
                     print(gamePin);
-                    print(key2ip(gamePin));
+                    print(key2ip(gamePin,subnet));
                     client = Client(
-                      hostname: key2ip(gamePin),
+                      hostname: key2ip(gamePin, subnet),
                       port: PORT,
                       onData: this.onData,
                       onError: this.onError,

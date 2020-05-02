@@ -35,15 +35,10 @@ class _HostState extends State<Host> {
 
   _HostState(this.server, this.moderator,this.questionSet);
   bool paused = false;
-  int aScore = 0;
-  int bScore = 0;
+
   String roundName = "Toss-Up";
-//  String Qsubject = "Biology";
-//  String Qtype = "Short Answer";
-//  String Q =
-//      "What is the most common term used in genetics to decribe the observable physical charactersitics of an organism casued by the expression of a gene or a set of genes?";
-//  String A = "PHENOTYPE";
-//  bool buzzerOpen = false;
+  String playerName= "A Captain"; //change according to player in focus
+
   double timeToAnswer = 2.113;
   String team ="A"; //depends on who buzzed in
 //  String reading_txt = "Done Reading";
@@ -54,6 +49,7 @@ class _HostState extends State<Host> {
   Timer _buzzTimer;
   Timer _gameTimer;
   bool doneReading=false;
+  bool interrupt=true;
 
   int bonusTimer;
   int tossUpTimer; //5 secs for buzzer timer
@@ -74,6 +70,10 @@ class _HostState extends State<Host> {
     bonusTimer=moderator.bonusTime;
     tossUpTimer = moderator.tossUpTime; //5 secs for buzzer timer
     _minutes = this.moderator.gameTime; //customize match say aaye ga
+    this.moderator.bTeam.score=0;
+    this.moderator.aTeam.score=0;
+    this.moderator.aTeam.canAnswer=true;
+    this.moderator.bTeam.canAnswer=true;
 
 //    print(questionSet);
     _startGameTimer();
@@ -95,20 +95,23 @@ class _HostState extends State<Host> {
         server.sendAll(data);
       }
       if (data == "BuzzIn") {
-        print("Recongizing");
+        print("Recognizing");
+
         server.sendAll("Recognized");
       }
     });
   }
 
   void _startBuzzTimer() {
+    bonusTimer=moderator.bonusTime;
+
     tossUpTimer = this.moderator.tossUpTime;
     if (_buzzTimer != null) {
       _buzzTimer.cancel();
     }
     _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        doneReading=true;
+//        doneReading=true;
         if (roundName=="Toss-Up") {
           if (tossUpTimer > 0) {
             tossUpTimer--;
@@ -120,7 +123,7 @@ class _HostState extends State<Host> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Result()),
+                      builder: (context) => Result(this.moderator)),
                 );
               }
               else{
@@ -135,31 +138,33 @@ class _HostState extends State<Host> {
           }
         }
         else
-          {
-            if (bonusTimer > 0) {
-              bonusTimer--;
-            }
-            else {
-              _buzzTimer.cancel();
-              setState(() {
-                if (index == questionSet.length - 1) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Result()),
-                  );
-                }
-                else{
+        {
+          if (bonusTimer > 0) {
+            bonusTimer--;
+          }
+          else {
+            _buzzTimer.cancel();
+            setState(() {
+              if (index == questionSet.length - 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Result(this.moderator)),
+                );
+              }
+              else{
+
                 doneReading=false;
                 index+=1;
                 roundName="Toss-Up";
                 if (isBuzzerActive) {
                   unavailable = true;
                 }
-                }
-              });
-            }
+              }
+            });
           }
+        }
+
       });
     });
   }
@@ -171,9 +176,10 @@ class _HostState extends State<Host> {
     _gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         if (_seconds==1 &&_minutes==0)
-          {
-            _gameTimer.cancel();
-          }
+        {
+          _gameTimer.cancel();
+        }
+
 //        if (_minutes < 0) {
 //          _gameTimer.cancel();
 //        }
@@ -190,13 +196,13 @@ class _HostState extends State<Host> {
           _minutes -= 1;
         }
         if(_seconds==0 && _minutes==0)
-          {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Result()),
-            );
-          }
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Result(this.moderator)),
+          );
+        }
       });
     });
   }
@@ -280,9 +286,10 @@ class _HostState extends State<Host> {
                     paused = false;
                     _startGameTimer();
                     if(doneReading)
-                      {
-                        _startBuzzTimer();
-                      }
+                    {
+                      _startBuzzTimer();
+                    }
+
                   });
                 }
                 else {
@@ -290,9 +297,9 @@ class _HostState extends State<Host> {
                     paused = true;
                     _gameTimer.cancel();
                     if (doneReading)
-                      {
-                        _buzzTimer.cancel();
-                      }
+                    {
+                      _buzzTimer.cancel();
+                    }
                   });
                 }
               },
@@ -308,24 +315,24 @@ class _HostState extends State<Host> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Column(
-                children: <Widget>[
-                 Text(
-                  "Team A",
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                      fontSize: 18)
-                 ),
-                  Text(
-                  aScore.toString(),
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                      fontSize: 18),),
-                ],
-              ),
+                  children: <Widget>[
+                    Text(
+                        "Team A",
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                            fontSize: 18)
+                    ),
+                    Text(
+                      this.moderator.aTeam.score.toString(),
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                          fontSize: 18),),
+                  ],
+                ),
                 Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -358,7 +365,8 @@ class _HostState extends State<Host> {
                             fontSize: 18)
                     ),
                     Text(
-                      bScore.toString(),
+                      this.moderator.bTeam.score.toString(),
+
                       textAlign: TextAlign.right,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -390,13 +398,14 @@ class _HostState extends State<Host> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Text(
-                        questionSet[index].subjectType,
+                          questionSet[index].subjectType,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                         Text(
                           (roundName=="Toss-Up" && questionSet[index].tossupIsShortAns) ? "Short Answer" : (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns)? "MCQ"
-                          : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
+                              : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
+
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         ),
@@ -417,12 +426,14 @@ class _HostState extends State<Host> {
                         questionSet[index].tossupMCQOptions[0]+"\n"+questionSet[index].tossupMCQOptions[1]+"\n"+questionSet[index].tossupMCQOptions[2]+"\n"+questionSet[index].tossupMCQOptions[3],
                         style: TextStyle(fontSize: 16),
                       )
-                        : (roundName=="Bonus" && !questionSet[index].bonusIsShortAns) ?
+                          : (roundName=="Bonus" && !questionSet[index].bonusIsShortAns) ?
+
                       Text(
                         questionSet[index].bonusMCQOptions[0]+"\n"+questionSet[index].bonusMCQOptions[1]+"\n"+questionSet[index].bonusMCQOptions[2]+"\n"+questionSet[index].bonusMCQOptions[3],
                         style: TextStyle(fontSize: 16),
                       ):
-                          Container(width: 0.0, height: 0.0,),
+                      Container(width: 0.0, height: 0.0,),
+
                     ),
 //                    ((roundName=="Toss-Up") && !questionSet[index].tossupIsShortAns) || ((roundName=="Bonus") && !questionSet[index].bonusIsShortAns) ?
 //                    ListView(
@@ -448,15 +459,17 @@ class _HostState extends State<Host> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ),
-                     Padding(
-                       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
-                       child: Row(
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                      child: Row(
+
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Padding(
                             padding: EdgeInsets.all(10),
                             child: Text(
-                              "Skip Question:",
+                              "Skip Question",
+
                               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                             ),
                           ),
@@ -472,12 +485,14 @@ class _HostState extends State<Host> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Result()),
-                                    );
+                                          builder: (context) => Result(this.moderator)),
+                     );
                                   }
                                   else {
                                     index += 1;
                                     roundName = "Toss-Up";
+                                    interrupt=false;
+                                    doneReading=false;
                                   }
                                 }
                               });
@@ -515,14 +530,16 @@ class _HostState extends State<Host> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Text(
+                  (interrupt)? playerName + " interrupted!":
                   (doneReading && roundName=="Toss-Up")
                       ? "Buzzer Open: " + tossUpTimer.toString():
                   (doneReading && roundName=="Bonus")? "Buzzer Open: " + bonusTimer.toString():
-                      "Done Reading",
+                  "Done Reading",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 padding: EdgeInsets.all(20.0),
-                color: doneReading ? Colors.grey : Colors.lightGreen,
+                color: interrupt ? Colors.brown :doneReading ? Colors.grey : Colors.lightGreen,
+
                 textColor: Colors.white,
                 onPressed: () {
                   setState(() {
@@ -571,7 +588,8 @@ class _HostState extends State<Host> {
                     child: Text(
                       "Correct",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+
                     ),
                     padding: EdgeInsets.all(20.0),
                     color: Colors.lightBlue,
@@ -579,44 +597,48 @@ class _HostState extends State<Host> {
                     onPressed: () {
                       setState(() {
                         if(!paused){
-                        server.sendAll("Correct");
-                        if (roundName=="Toss-Up")
+                          server.sendAll("Correct");
+                          if (roundName=="Toss-Up")
                           {
                             roundName="Bonus";
+                            interrupt=false;
+                            doneReading=false;
                             if(team=="A")
-                              {
-                                aScore+=4;
-                              }
+                            {
+                              this.moderator.aTeam.score+=4;
+                            }
                             else
-                              {
-                                bScore+=4;
-                              }
+                            {
+                              this.moderator.bTeam.score+=4;
+                            }
                           }
-                        else
+                          else
                           {
                             if (index == questionSet.length - 1) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Result()),
+                                    builder: (context) => Result(this.moderator)),
                               );
-                            }
-                          else{
+                              }
+                            else{
                               index+=1;
                               roundName="Toss-Up";
+                              interrupt=false;
+                              doneReading=false;
                               if(team=="A")
                               {
-                                aScore+=10;
+                                this.moderator.aTeam.score+=10;
                               }
                               else
                               {
-                                bScore+=10;
+                                this.moderator.bTeam.score+=10;
                               }
-                          }
+                            }
                           }
                         }
                       }
-                     );
+                      );
                     },
                   ),
                   FlatButton(
@@ -630,22 +652,74 @@ class _HostState extends State<Host> {
                     color: Colors.amber,
                     textColor: Colors.white,
                     onPressed: () => {
-                        setState(() {
-                          if(!paused) {
-                            server.sendAll("Incorrect");
+                      setState(() {
+                        if(!paused) {
+                          server.sendAll("Incorrect"); //should tell which team answered correctly? so incorrect team cant answer again
+                          if(team=="A")
+                            {
+                              if(interrupt)
+                                {
+                                  this.moderator.bTeam.score+=4;
+                                }
+                              this.moderator.aTeam.canAnswer=false;
+//                              team="B";
+                            }
+                          else
+                            {
+                              if(interrupt)
+                              {
+                                this.moderator.aTeam.score+=4;
+                              }
+                              this.moderator.bTeam.canAnswer=false;
+                            }
+                          if(this.moderator.bTeam.canAnswer || this.moderator.aTeam.canAnswer)
+                            {
+                              if (this.moderator.bTeam.canAnswer ) //notify mod?
+                                {
+                                  print("Team A cannot answer now");
+                                }
+                              else
+                                {
+                                  print("Team B cannot answer now");
+                                }
+                              print("here");
+                              interrupt=false;
+                              doneReading=false;
+//                              Scaffold.of(context).showSnackBar(
+//                                SnackBar(
+////                                  content: Text(
+////                                      (this.moderator.aTeam.canAnswer)? ,
+////                                  ),
+//                                  content: Icon(Icons.pan_tool),
+//                                  backgroundColor: Colors.yellowAccent,
+////                                  animation: ,
+//                                  duration: Duration(seconds: 2),
+//                                ),
+//                              );
+                            }
+                          else { //next question
+
                             if (index == questionSet.length - 1) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Result()),
+                                    builder: (context) => Result(this.moderator)),
+
                               );
                             }
                             else {
                               index += 1;
                               roundName = "Toss-Up";
+                              interrupt=false;
+                              doneReading = false;
+                              this.moderator.aTeam.canAnswer=true;
+                              this.moderator.bTeam.canAnswer=true;
                             }
                           }
                         }
+                      }
+
+
                       ),
                     },
                   ),
@@ -656,7 +730,8 @@ class _HostState extends State<Host> {
                     child: Text(
                       "Penalty",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+
                     ),
                     padding: EdgeInsets.all(20.0),
                     color: Colors.red,
@@ -675,7 +750,8 @@ class _HostState extends State<Host> {
                                 //this right here
                                 child: Container(
 //                                  color: Colors.greenAccent,
-                                  height: (roundName=="Toss-Up")? 320 : 250,
+                                  height: (roundName=="Toss-Up")? 450 : 380,
+
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Column(
@@ -711,10 +787,11 @@ class _HostState extends State<Host> {
                                                   server.sendAll("Interrupt");
                                                   //need to do more work here
                                                   if (team == "A") {
-                                                    bScore += 4;
+                                                    this.moderator.bTeam.score += 4;
                                                   }
                                                   else {
-                                                    aScore += 4;
+                                                    this.moderator.aTeam.score += 4;
+
                                                   }
                                                 }
                                               });
@@ -726,7 +803,8 @@ class _HostState extends State<Host> {
                                                   color: Colors.white),
                                             ),
 //                                            color: const Color(0xFF1BC0C5),
-                                              color: Colors.red,
+                                            color: Colors.red,
+
                                           ),
                                         ),
                                         Spacer(),
@@ -743,10 +821,11 @@ class _HostState extends State<Host> {
                                                   server.sendAll("Blurt");
                                                   //need to do more work here
                                                   if (team == "A") {
-                                                    bScore += 4;
+                                                    this.moderator.bTeam.score += 4;
                                                   }
                                                   else {
-                                                    aScore += 4;
+                                                    this.moderator.aTeam.score += 4;
+
                                                   }
                                                 }
                                               });
@@ -776,10 +855,11 @@ class _HostState extends State<Host> {
                                                   server.sendAll("Consultation");
                                                   //need to do more work here
                                                   if (team == "A") {
-                                                    bScore += 4;
+                                                    this.moderator.bTeam.score += 4;
                                                   }
                                                   else {
-                                                    aScore += 4;
+                                                    this.moderator.aTeam.score += 4;
+
                                                   }
                                                 }
                                               });
@@ -794,6 +874,121 @@ class _HostState extends State<Host> {
 //                                            color: const Color(0xFF1BC0C5),
                                           ),
                                         ) : Container(height:0, width:0),
+                                        Spacer(),
+                                        SizedBox(
+                                          width: 320.0,
+                                          height: 60.0,
+                                          child: RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10.0),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                if (!paused) {
+                                                  //need to do more work here
+                                                  if (team == "A") {
+                                                    server.sendAll("Disqualify A"); //answering before buzzing in or communication before buzzing in
+//                                                    this.moderator.bTeam.score += 4;
+                                                  }
+                                                  else {
+                                                    server.sendAll("Disqualify B");
+//                                                    this.moderator.aTeam.score += 4;
+                                                  }
+                                                }
+                                              });
+                                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                                            },
+                                            child: Text(
+                                              "Disqualify!",
+                                              style: TextStyle(fontSize: 20,
+                                                  color: Colors.white),
+                                            ),
+                                            color: Colors.red,
+//                                            color: const Color(0xFF1BC0C5),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        SizedBox(
+                                          width: 320.0,
+                                          height: 60.0,
+                                          child: RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10.0),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                if(!paused){
+                                                  server.sendAll("Correct");
+                                                  if (roundName=="Toss-Up")
+                                                  {
+                                                    roundName="Bonus";
+                                                    doneReading=false;
+                                                    if(team=="A")
+                                                    {
+                                                      this.moderator.aTeam.score+=4;
+                                                    }
+                                                    else
+                                                    {
+                                                      this.moderator.bTeam.score+=4;
+                                                    }
+                                                  }
+                                                  else
+                                                  {
+                                                    if (index == questionSet.length - 1) {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => Result(this.moderator)),
+                                                      );
+                                                    }
+                                                    else{
+                                                      index+=1;
+                                                      roundName="Toss-Up";
+                                                      doneReading=false;
+                                                      if(team=="A")
+                                                      {
+                                                        this.moderator.aTeam.score+=10;
+                                                      }
+                                                      else
+                                                      {
+                                                        this.moderator.bTeam.score+=10;
+                                                      }
+                                                    }
+                                                  }
+                                                }
+//                                                if (!paused) {
+//                                                  server.sendAll("Distraction");
+//                                                  //need to do more work here
+//                                                  if (team == "A") {
+//                                                    this.moderator.bTeam.score += 4;
+//                                                  }
+//                                                  else {
+//                                                    this.moderator.aTeam.score += 4;
+//                                                  }
+//                                                }
+                                              });
+                                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                                            },
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Text(
+                                                  "Distraction!",
+                                                  style: TextStyle(fontSize: 20,
+                                                      color: Colors.white),
+                                                ),
+                                                Text(
+                                                  "(by non playing team)",
+                                                  style: TextStyle(fontSize: 10,
+                                                      color: Colors.white),
+                                                ),
+                                              ],
+                                            ),
+                                            color: Colors.red,
+//                                            color: const Color(0xFF1BC0C5),
+                                          ),
+                                        ),
+
 //                                        Spacer(),
 //                                        SizedBox(
 //                                          width: 320.0,

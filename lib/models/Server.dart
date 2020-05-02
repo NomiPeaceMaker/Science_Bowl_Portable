@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import "package:hex/hex.dart";
 import 'package:sciencebowlportable/models/Models.dart';
 import 'package:sciencebowlportable/globals.dart';
+import 'package:random_string/random_string.dart';
 import 'dart:convert';
 
 class Server {
@@ -66,10 +67,11 @@ class Server {
   String ip2key(String input)
   {
     input = fixip(input);
+    String random_part = randomAlphaNumeric(3);
     String key;
     if (input[1] == '9')
     {
-      key = ('G' + HEX.encode([int.parse(input[8] + input[9] + input[10])]) + HEX.encode([int.parse(input[12] + input[13] + input[14])]));
+      key = (random_part + HEX.encode([int.parse(input[12] + input[13] + input[14])]));
     }
     return key;
   }

@@ -6,6 +6,7 @@ import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/moderator_waiting_room.dart';
+import 'package:sciencebowlportable/screens/loading.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'dart:typed_data';
 
@@ -57,7 +58,6 @@ class _MatchSettingState extends State<MatchSettings> {
     moderator.gameDifficulty = "HighSchool";
     moderator.gameTime = 20;
     moderator.numberOfQuestion = 25;
-
 //    moderator.subjects = ["Math", "Physics"];
 //    Math Earth&Space Biology Chemistry Physics Energy
     moderator.subjectsdict = {
@@ -71,6 +71,7 @@ class _MatchSettingState extends State<MatchSettings> {
     moderator.subjects = [];
     moderator.tossUpTime = 5;
     moderator.bonusTime = 20;
+    moderator.difficultyLevel = 1;
   }
 
   onData(Uint8List data) {
@@ -246,11 +247,13 @@ class _MatchSettingState extends State<MatchSettings> {
                       onPressed: (int index) {
                         setState(() {
                           isSelectedDifficulty[index] =
-                          !isSelectedDifficulty[index];
+                              !isSelectedDifficulty[index];
                           isSelectedDifficulty[1 - index] = false;
                           moderator.gameDifficulty = isSelectedDifficulty[0]
                               ? "MiddleSchool"
                               : "HighSchool";
+                          moderator.difficultyLevel =
+                              isSelectedDifficulty[0] ? 0 : 1;
                         });
                       },
                       isSelected: isSelectedDifficulty,
@@ -296,7 +299,11 @@ class _MatchSettingState extends State<MatchSettings> {
                         ],
                         onPressed: (int index) {
                           setState(() {
-                            isSelectedSubject_1[index] = !isSelectedSubject_1[index];
+                            isSelectedSubject_1[index] =
+                                !isSelectedSubject_1[index];
+                            moderator.subjectsdict[index] =
+                                !moderator.subjectsdict[index];
+                            print(index);
                           });
                         },
                         isSelected: isSelectedSubject_1,
@@ -324,7 +331,10 @@ class _MatchSettingState extends State<MatchSettings> {
                         onPressed: (int index) {
                           setState(() {
                             isSelectedSubject_2[index] =
-                            !isSelectedSubject_2[index];
+                                !isSelectedSubject_2[index];
+                            moderator.subjectsdict[index + 3] =
+                                !moderator.subjectsdict[index + 3];
+                            print(index + 3);
                           });
                         },
                         isSelected: isSelectedSubject_2,
@@ -443,12 +453,32 @@ class _MatchSettingState extends State<MatchSettings> {
                       color: Colors.red,
                       iconSize: 30,
                       onPressed: () async {
+                        moderator.subjects = [];
+                        moderator.subjectsdict.forEach((key, value) {
+//                          print(key);
+                          if (value == true) {
+                            if (key == 0)
+                              moderator.subjects.add("Math");
+                            else if (key == 1)
+                              moderator.subjects.add("Earth_and_Space");
+                            else if (key == 2)
+                              moderator.subjects.add("Biology");
+                            else if (key == 3)
+                              moderator.subjects.add(
+                                "Chemistry",
+                              );
+                            else if (key == 4)
+                              moderator.subjects.add("Physics");
+                            else if (key == 5) moderator.subjects.add("Energy");
+                          }
+                        });
+
                         await server.start();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ModeratorWaitingRoom(
-                                  this.server, this.moderator)),
+                              builder: (context) =>
+                                  Loading(this.server, this.moderator)),
                         );
                         setState(() {});
                       },
