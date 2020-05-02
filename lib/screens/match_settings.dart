@@ -458,7 +458,7 @@ class _MatchSettingState extends State<MatchSettings> {
                             if (key == 0)
                               moderator.subjects.add("Math");
                             else if (key == 1)
-                              moderator.subjects.add("Earth&Space");
+                              moderator.subjects.add("Earth_and_Space");
                             else if (key == 2)
                               moderator.subjects.add("Biology");
                             else if (key == 3)
