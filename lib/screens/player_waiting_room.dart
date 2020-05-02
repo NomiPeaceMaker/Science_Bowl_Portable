@@ -22,11 +22,13 @@ class PlayerWaitingRoom extends StatefulWidget {
 
 class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   Client client;
-  Player player = Player("");
+  Player player;
   _PlayerWaitingRoomState(this.client);
-  List<StreamController<String>> playerJoinStreamControllers = new List(10);
-  List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
-  List<String> playerNamesList = List.generate(10, (_) => "");
+  List<StreamController<String>> _playerJoinStreamControllers;
+  List<bool> _playerSlotIsTakenList;
+  List<String> _playerNamesList;
+//  List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
+//  List<String> playerNamesList = List.generate(10, (_) => "");
 
 //  List<bool> redActive = List.generate(5, (_) => tr"'$a' '$b'"ue);
 //  List<bool> greenActive = List.generate(5, (_) => true);
@@ -35,10 +37,14 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   @override
   void initState() {
     super.initState();
+      player = Player("");
       player.userName = user.userName;
       player.email = user.email;
+      _playerSlotIsTakenList= List.generate(10, (_) => false);
+      _playerNamesList = List.generate(10, (_) => "");
+      _playerJoinStreamControllers = new List(10);
       for (var i = 0 ; i < 10; i++ ) {
-        playerJoinStreamControllers[i] = StreamController.broadcast();
+        _playerJoinStreamControllers[i] = StreamController.broadcast();
 //        greenPlayerJoinStreamController[i] = StreamController.broadcast();
       }
       Stream socketDataStream = socketDataStreamController.stream;
@@ -56,10 +62,10 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
           String previousState = data["previousState"];
           if (previousState!="") {
             int previousStateIndex = playerPositionIndexDict[previousState];
-            playerJoinStreamControllers[previousStateIndex].add("undoSelect");
+            _playerJoinStreamControllers[previousStateIndex].add("undoSelect");
           }
 //          print("turn button grey");
-          playerJoinStreamControllers[playerPositionIndex].add(userName);
+          _playerJoinStreamControllers[playerPositionIndex].add(userName);
           // test this out it might cause async problems
           player.playerID = data["playerID"];
         }
@@ -71,13 +77,14 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
             MaterialPageRoute(builder: (context) => Game(client, player)),
           );
         } else if (data["type"] == "waitingScreenState") {
-          playerSlotIsTakenList = json.decode(data["playerSlotIsTakenList"]);
-          playerNamesList = json.decode(data["playerNamesList"]);
-          playerSlotIsTakenList
+          print("got waitingScreenState");
+          _playerSlotIsTakenList = (json.decode(data["playerSlotIsTakenList"]) as List).cast<bool>();
+          _playerNamesList = (json.decode(data["playerNamesList"]) as List).cast<String>();
+          _playerSlotIsTakenList
               .asMap()
               .forEach(
                   (index, value) =>
-                  (value) ? playerJoinStreamControllers[index].add(playerNamesList[index]) : {}
+                  (value) ? _playerJoinStreamControllers[index].add(_playerNamesList[index]) : _playerJoinStreamControllers[index].add("undoSelect")
               );
 
         }
@@ -99,8 +106,8 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
 //      playerPositionIndex += 5;
       color = Colors.green;
     }
-    if (playerSlotIsTakenList[playerPositionIndex]) {
-      buttonText = playerNamesList[playerPositionIndex];
+    if (_playerSlotIsTakenList[playerPositionIndex]) {
+      buttonText = _playerNamesList[playerPositionIndex];
       buttonColor = Colors.grey;
     } else {
       buttonText = playerID;
@@ -112,13 +119,14 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
       height: 50,
       child:
       new StreamBuilder(
-          stream: playerJoinStreamControllers[playerPositionIndex].stream,
+          stream: _playerJoinStreamControllers[playerPositionIndex].stream,
           builder: (context, snapshot) {
             if (snapshot.data == "undoSelect") {
-              playerJoinStreamControllers[playerPositionIndex].add(null);
-              playerSlotIsTakenList[playerPositionIndex] = false;
+              _playerJoinStreamControllers[playerPositionIndex].add(null);
+              _playerSlotIsTakenList[playerPositionIndex] = false;
+              _playerNamesList[playerPositionIndex] = playerID;
               buttonColor = Colors.grey;
-              buttonText = playerNamesList[playerPositionIndex];
+              buttonText = _playerNamesList[playerPositionIndex];
               buttonColor = color;
               buttonText = playerID;
 //              buttonText = playerPosition;
@@ -127,11 +135,11 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
             else if (snapshot.data != null) {
 //              buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
 //              print("turn button grey inside widget");
-              playerJoinStreamControllers[playerPositionIndex].add(null);
-              playerSlotIsTakenList[playerPositionIndex] = true;
-              playerNamesList[playerPositionIndex] = snapshot.data;
+              _playerJoinStreamControllers[playerPositionIndex].add(null);
+              _playerSlotIsTakenList[playerPositionIndex] = true;
+              _playerNamesList[playerPositionIndex] = snapshot.data;
               buttonColor = Colors.grey;
-              buttonText = playerNamesList[playerPositionIndex];
+              buttonText = _playerNamesList[playerPositionIndex];
 //              buttonText = snapshot.data;
 //              buttonColor = (buttonColor==color) ? Colors.grey : color;
 //              redActive[teamNumber[playerPosition]] = !redActive[teamNumber[playerPosition]];
@@ -158,7 +166,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                   };
                   print("SENDING TO SERVER");
                   print(message);
-                  if (!playerSlotIsTakenList[playerPositionIndex]) {
+                  if (!_playerSlotIsTakenList[playerPositionIndex]) {
                     client.write(json.encode(message));
                   }
                 });
