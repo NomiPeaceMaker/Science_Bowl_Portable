@@ -1,0 +1,196 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:sciencebowlportable/globals.dart';
+import 'package:sciencebowlportable/utilities/styles.dart';
+import 'home.dart';
+
+class waitingRoom extends StatefulWidget {
+  @override
+  _waitingRoomState createState() => _waitingRoomState();
+}
+
+class _waitingRoomState extends State<waitingRoom> {
+  List<StreamController<String>> playerJoinStreamControllers;
+  List<bool> playerSlotIsTakenList;
+  List<String> playerNamesList;
+  StreamSubscription socketDataStreamSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    playerSlotIsTakenList= List.generate(10, (_) => false);
+    playerNamesList = List.generate(10, (_) => "");
+    playerJoinStreamControllers = new List(10);
+    for (var i = 0 ; i < 10; i++ ) {
+      playerJoinStreamControllers[i] = StreamController.broadcast();
+    }
+    Stream socketDataStream = socketDataStreamController.stream;
+  }
+
+  void onPressTeamSlot() {}
+  @required Align bottomScreenMessage() {}
+
+  SizedBox teamSlotWidget(String playerPosition, String team) {
+    var color, buttonColor, buttonText;
+    String playerID = '$team $playerPosition';
+    int playerPositionIndex = playerPositionIndexDict[playerID];
+    if (team == "A") {
+      color = Colors.red;
+    }  else if (team == "B") {
+      color = Colors.green;
+    }
+    if (playerSlotIsTakenList[playerPositionIndex]) {
+      buttonText = playerNamesList[playerPositionIndex];
+      buttonColor = Colors.grey;
+    } else {
+      buttonText = playerID;
+      buttonColor = color;
+    }
+
+    return new SizedBox(
+        width: 140.0,
+        height: 50,
+        child:
+        new StreamBuilder(
+            stream: playerJoinStreamControllers[playerPositionIndex].stream,
+            builder: (context, snapshot) {
+              if (snapshot.data == "undoSelect") {
+                playerJoinStreamControllers[playerPositionIndex].add(null);
+                playerSlotIsTakenList[playerPositionIndex] = false;
+                playerNamesList[playerPositionIndex] = playerID;
+                buttonColor = Colors.grey;
+                buttonText = playerNamesList[playerPositionIndex];
+                buttonColor = color;
+                buttonText = playerID;
+              }
+              else if (snapshot.data != null) {
+                playerJoinStreamControllers[playerPositionIndex].add(null);
+                playerSlotIsTakenList[playerPositionIndex] = true;
+                playerNamesList[playerPositionIndex] = snapshot.data;
+                buttonColor = Colors.grey;
+                buttonText = playerNamesList[playerPositionIndex];
+              }
+              return new FlatButton (
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                    buttonText,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                ),
+                color: buttonColor,
+                textColor: Colors.white,
+                onPressed: () {
+                  setState(() {
+                    onPressTeamSlot();
+                  });
+                },
+              );
+            })
+    );
+  }
+
+  Row playerRowWidget(String playerPosition) {
+    return new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          teamSlotWidget(playerPosition, "A"),
+          teamSlotWidget(playerPosition, "B"),
+        ]
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => _exitDialog(),
+        ),
+        backgroundColor: Color(0xffF8B400),
+        title: Text(
+          "JOIN",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
+        ),
+        centerTitle: true,
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(top: 20.0),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                "Slots Available",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xffCC0066),
+                    fontSize: 22),
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Text(
+                "Team A",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                    fontSize: 18),
+              ),
+              Text(
+                "Team B",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                    fontSize: 18),
+              ),
+            ],
+          ),
+          playerRowWidget("1"),
+          playerRowWidget("2",),
+          playerRowWidget("Captain"),
+          playerRowWidget("3"),
+          playerRowWidget("4"),
+          Container(
+            margin: EdgeInsets.only(bottom: 20.0),
+            child: bottomScreenMessage(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _exitDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Exit to Home Page"),
+            content: Text("Are you sure you want to exit to the home page?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("No", style: staystyle),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Exit", style: exitstyle),
+                onPressed: () {  Navigator.pushAndRemoveUntil(context,
+                    MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
+                    ),
+                    ModalRoute.withName('/'));},
+              ),
+            ],
+          );
+        });
+  }
+}

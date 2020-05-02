@@ -57,7 +57,18 @@ class _MatchSettingState extends State<MatchSettings> {
     moderator.gameDifficulty = "HighSchool";
     moderator.gameTime = 20;
     moderator.numberOfQuestion = 25;
-    moderator.subjects = ["Math", "Physics"];
+
+//    moderator.subjects = ["Math", "Physics"];
+//    Math Earth&Space Biology Chemistry Physics Energy
+    moderator.subjectsdict = {
+      0: false,
+      1: false,
+      2: false,
+      3: false,
+      4: false,
+      5: false
+    };
+    moderator.subjects = [];
     moderator.tossUpTime = 5;
     moderator.bonusTime = 20;
   }
