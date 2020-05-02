@@ -36,12 +36,7 @@ class _HostState extends State<Host> {
   bool paused = false;
 
   String roundName = "Toss-Up";
-//  String Qsubject = "Biology";
-//  String Qtype = "Short Answer";
-//  String Q =
-//      "What is the most common term used in genetics to decribe the observable physical charactersitics of an organism casued by the expression of a gene or a set of genes?";
-//  String A = "PHENOTYPE";
-//  bool buzzerOpen = false;
+  String playerName= "A Captain"; //change according to player in focus
   double timeToAnswer = 2.113;
   String team ="A"; //depends on who buzzed in
 //  String reading_txt = "Done Reading";
@@ -52,7 +47,7 @@ class _HostState extends State<Host> {
   Timer _buzzTimer;
   Timer _gameTimer;
   bool doneReading=false;
-
+  bool interrupt=true;
   int bonusTimer;
   int tossUpTimer; //5 secs for buzzer timer
   int _minutes; //customize match say aaye ga
@@ -96,7 +91,7 @@ class _HostState extends State<Host> {
         server.sendAll(data);
       }
       if (data == "BuzzIn") {
-        print("Recongizing");
+        print("Recognizing");
         server.sendAll("Recognized");
       }
     });
@@ -458,7 +453,7 @@ class _HostState extends State<Host> {
                           Padding(
                             padding: EdgeInsets.all(10),
                             child: Text(
-                              "Skip Question:",
+                              "Skip Question",
                               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                             ),
                           ),
@@ -480,6 +475,7 @@ class _HostState extends State<Host> {
                                   else {
                                     index += 1;
                                     roundName = "Toss-Up";
+                                    interrupt=false;
                                     doneReading=false;
                                   }
                                 }
@@ -518,6 +514,7 @@ class _HostState extends State<Host> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Text(
+                  (interrupt)? playerName + " interrupted!":
                   (doneReading && roundName=="Toss-Up")
                       ? "Buzzer Open: " + tossUpTimer.toString():
                   (doneReading && roundName=="Bonus")? "Buzzer Open: " + bonusTimer.toString():
@@ -525,7 +522,7 @@ class _HostState extends State<Host> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 padding: EdgeInsets.all(20.0),
-                color: doneReading ? Colors.grey : Colors.lightGreen,
+                color: interrupt ? Colors.brown :doneReading ? Colors.grey : Colors.lightGreen,
                 textColor: Colors.white,
                 onPressed: () {
                   setState(() {
@@ -586,6 +583,7 @@ class _HostState extends State<Host> {
                           if (roundName=="Toss-Up")
                           {
                             roundName="Bonus";
+                            interrupt=false;
                             doneReading=false;
                             if(team=="A")
                             {
@@ -604,10 +602,11 @@ class _HostState extends State<Host> {
                                 MaterialPageRoute(
                                     builder: (context) => Result(this.moderator)),
                               );
-                            }
+                              }
                             else{
                               index+=1;
                               roundName="Toss-Up";
+                              interrupt=false;
                               doneReading=false;
                               if(team=="A")
                               {
@@ -640,11 +639,19 @@ class _HostState extends State<Host> {
                           server.sendAll("Incorrect"); //should tell which team answered correctly? so incorrect team cant answer again
                           if(team=="A")
                             {
+                              if(interrupt)
+                                {
+                                  this.moderator.bTeam.score+=4;
+                                }
                               this.moderator.aTeam.canAnswer=false;
 //                              team="B";
                             }
                           else
                             {
+                              if(interrupt)
+                              {
+                                this.moderator.aTeam.score+=4;
+                              }
                               this.moderator.bTeam.canAnswer=false;
                             }
                           if(this.moderator.bTeam.canAnswer || this.moderator.aTeam.canAnswer)
@@ -658,6 +665,7 @@ class _HostState extends State<Host> {
                                   print("Team B cannot answer now");
                                 }
                               print("here");
+                              interrupt=false;
                               doneReading=false;
 //                              Scaffold.of(context).showSnackBar(
 //                                SnackBar(
@@ -682,6 +690,7 @@ class _HostState extends State<Host> {
                             else {
                               index += 1;
                               roundName = "Toss-Up";
+                              interrupt=false;
                               doneReading = false;
                               this.moderator.aTeam.canAnswer=true;
                               this.moderator.bTeam.canAnswer=true;
@@ -718,7 +727,7 @@ class _HostState extends State<Host> {
                                 //this right here
                                 child: Container(
 //                                  color: Colors.greenAccent,
-                                  height: (roundName=="Toss-Up")? 320 : 250,
+                                  height: (roundName=="Toss-Up")? 450 : 380,
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Column(
@@ -837,6 +846,120 @@ class _HostState extends State<Host> {
 //                                            color: const Color(0xFF1BC0C5),
                                           ),
                                         ) : Container(height:0, width:0),
+                                        Spacer(),
+                                        SizedBox(
+                                          width: 320.0,
+                                          height: 60.0,
+                                          child: RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10.0),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                if (!paused) {
+                                                  //need to do more work here
+                                                  if (team == "A") {
+                                                    server.sendAll("Disqualify A"); //answering before buzzing in or communication before buzzing in
+//                                                    this.moderator.bTeam.score += 4;
+                                                  }
+                                                  else {
+                                                    server.sendAll("Disqualify B");
+//                                                    this.moderator.aTeam.score += 4;
+                                                  }
+                                                }
+                                              });
+                                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                                            },
+                                            child: Text(
+                                              "Disqualify!",
+                                              style: TextStyle(fontSize: 20,
+                                                  color: Colors.white),
+                                            ),
+                                            color: Colors.red,
+//                                            color: const Color(0xFF1BC0C5),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        SizedBox(
+                                          width: 320.0,
+                                          height: 60.0,
+                                          child: RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10.0),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                if(!paused){
+                                                  server.sendAll("Correct");
+                                                  if (roundName=="Toss-Up")
+                                                  {
+                                                    roundName="Bonus";
+                                                    doneReading=false;
+                                                    if(team=="A")
+                                                    {
+                                                      this.moderator.aTeam.score+=4;
+                                                    }
+                                                    else
+                                                    {
+                                                      this.moderator.bTeam.score+=4;
+                                                    }
+                                                  }
+                                                  else
+                                                  {
+                                                    if (index == questionSet.length - 1) {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => Result(this.moderator)),
+                                                      );
+                                                    }
+                                                    else{
+                                                      index+=1;
+                                                      roundName="Toss-Up";
+                                                      doneReading=false;
+                                                      if(team=="A")
+                                                      {
+                                                        this.moderator.aTeam.score+=10;
+                                                      }
+                                                      else
+                                                      {
+                                                        this.moderator.bTeam.score+=10;
+                                                      }
+                                                    }
+                                                  }
+                                                }
+//                                                if (!paused) {
+//                                                  server.sendAll("Distraction");
+//                                                  //need to do more work here
+//                                                  if (team == "A") {
+//                                                    this.moderator.bTeam.score += 4;
+//                                                  }
+//                                                  else {
+//                                                    this.moderator.aTeam.score += 4;
+//                                                  }
+//                                                }
+                                              });
+                                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                                            },
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Text(
+                                                  "Distraction!",
+                                                  style: TextStyle(fontSize: 20,
+                                                      color: Colors.white),
+                                                ),
+                                                Text(
+                                                  "(by non playing team)",
+                                                  style: TextStyle(fontSize: 10,
+                                                      color: Colors.white),
+                                                ),
+                                              ],
+                                            ),
+                                            color: Colors.red,
+//                                            color: const Color(0xFF1BC0C5),
+                                          ),
+                                        ),
 //                                        Spacer(),
 //                                        SizedBox(
 //                                          width: 320.0,
