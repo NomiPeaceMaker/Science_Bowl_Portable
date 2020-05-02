@@ -25,9 +25,10 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   Player player = Player("");
   _PlayerWaitingRoomState(this.client);
   List<StreamController<String>> playerJoinStreamControllers = new List(10);
-  List<bool> playerSlotIsActiveList = List.generate(10, (_) => true);
+  List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
+  List<String> playerNamesList = List.generate(10, (_) => "");
 
-//  List<bool> redActive = List.generate(5, (_) => true);
+//  List<bool> redActive = List.generate(5, (_) => tr"'$a' '$b'"ue);
 //  List<bool> greenActive = List.generate(5, (_) => true);
 
   StreamSubscription socketDataStreamSubscription;
@@ -57,7 +58,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
           }
           playerJoinStreamControllers[playerPositionIndex].add(userName);
           // test this out it might cause async problems
-          player.playerID = data["playerPosition"];
+          player.playerID = data["playerID"];
         }
         else if (data["type"] == "startGame") {
           print("Moving on to game");
@@ -73,10 +74,10 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
     });
   }
   SizedBox teamSlotWidget(String playerPosition, String team) {
-    var color, buttonColor;
-    String buttonText;
+    var color, buttonColor, buttonText;
+    String playerID = '$team $playerPosition';
+    int playerPositionIndex = playerPositionIndexDict[playerID];
 //    String buttonText = '$team $playerPosition';
-    int playerPositionIndex = playerPositionIndexDict['$team $playerPosition'];
 //    print("team $team");
 //    print("player index $playerPositionIndex");
 //    print("stream $playerJoinStreamControllers[playerPositionIndex]");
@@ -86,9 +87,12 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
 //      playerPositionIndex += 5;
       color = Colors.green;
     }
-    if (!playerSlotIsActiveList[playerPositionIndex]) {
-      buttonText = '$team $playerPosition';
+    if (playerSlotIsTakenList[playerPositionIndex]) {
+      buttonText = playerNamesList[playerPositionIndex];
       buttonColor = Colors.grey;
+    } else {
+      buttonText = playerID;
+      buttonColor = color;
     }
 //    buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
     return new SizedBox(
@@ -100,14 +104,22 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
           builder: (context, snapshot) {
             if (snapshot.data == "undoSelect") {
               playerJoinStreamControllers[playerPositionIndex].add(null);
-              playerSlotIsActiveList[playerPositionIndex] = !playerSlotIsActiveList[playerPositionIndex];
+              playerSlotIsTakenList[playerPositionIndex] = false;
+              buttonColor = Colors.grey;
+              buttonText = playerNamesList[playerPositionIndex];
+              buttonColor = color;
+              buttonText = playerID;
+//              buttonText = playerPosition;
 //              buttonColor = color;
             }
             else if (snapshot.data != null) {
 //              buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
               playerJoinStreamControllers[playerPositionIndex].add(null);
-              playerSlotIsActiveList[playerPositionIndex] = !playerSlotIsActiveList[playerPositionIndex];
-              buttonText = snapshot.data;
+              playerSlotIsTakenList[playerPositionIndex] = true;
+              playerNamesList[playerPositionIndex] = snapshot.data;
+              buttonColor = Colors.grey;
+              buttonText = playerNamesList[playerPositionIndex];
+//              buttonText = snapshot.data;
 //              buttonColor = (buttonColor==color) ? Colors.grey : color;
 //              redActive[teamNumber[playerPosition]] = !redActive[teamNumber[playerPosition]];
             }
@@ -127,13 +139,15 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
                   var message = {
                     "type": "buzzer",
                     "userName": player.userName,
-                    "playerPosition": '$team $playerPosition',
+                    "playerID": playerID,
                     "playerPositionIndex": playerPositionIndex.toString(),
                     "previousState": player.playerID,
                   };
                   print("SENDING TO SERVER");
                   print(message);
-                  client.write(json.encode(message));
+                  if (!playerSlotIsTakenList[playerPositionIndex]) {
+                    client.write(json.encode(message));
+                  }
                 });
               },
             );

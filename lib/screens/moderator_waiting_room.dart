@@ -28,7 +28,8 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   Moderator moderator;
   List<Question> questionSet;
   List<StreamController<String>> playerJoinStreamControllers = new List(10);
-  List<bool> playerSlotIsActiveList = List.generate(10, (_) => true);
+  List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
+  List<String> playerNamesList = List.generate(10, (_) => "");
 
 //  List<bool> redActive = List.generate(5, (_) => true);
 //  List<bool> greenActive = List.generate(5, (_) => true);
@@ -52,21 +53,23 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
       ///////////////////////////////////////////////////////////////////
       print("got Data");
       print(data);
-      server.sendAll(data);
       data = json.decode(data);
 
-      Player player = Player(data["playerPosition"]);
+      Player player = Player(data["playerID"]);
       player.userName = data["userName"];
       player.email = data["email"];
       print("LISTENING AT WAITING SCREEN MODERATOR");
       if (data["type"] == "buzzer") {
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String previousState = data["previousState"];
-        if (previousState!=""){
-          int previousStateIndex = playerPositionIndexDict[previousState];
-          playerJoinStreamControllers[previousStateIndex].add("undoSelect");
+        if (!playerSlotIsTakenList[playerPositionIndex]) {
+          server.sendAll(data);
+          if (previousState!="") {
+            int previousStateIndex = playerPositionIndexDict[previousState];
+            playerJoinStreamControllers[previousStateIndex].add("undoSelect");
+          }
+          playerJoinStreamControllers[playerPositionIndex].add(player.userName);
         }
-        playerJoinStreamControllers[playerPositionIndex].add(player.userName);
       }
 
 //      int playerNumber = playerPositionIndexDict[data.substring(1)];
@@ -94,8 +97,9 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 
   SizedBox teamSlotWidget(String playerPosition, String team) {
     var color, buttonColor, buttonText;
-//    String buttonText = '$team $playerPosition';
-    int playerPositionIndex = playerPositionIndexDict['$team $playerPosition'];
+    String playerID = '$team $playerPosition';
+    int playerPositionIndex = playerPositionIndexDict[playerID];
+
     print("player position index");
     if (team == "Red") {
       color = Colors.red;
@@ -103,10 +107,12 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 //      playerPositionIndex += 5;
       color = Colors.green;
     }
-    buttonColor = color;
-    if (!playerSlotIsActiveList[playerPositionIndex]) {
-      buttonText = '$team $playerPosition';
+    if (playerSlotIsTakenList[playerPositionIndex]) {
+      buttonText = playerNamesList[playerPositionIndex];
       buttonColor = Colors.grey;
+    } else {
+      buttonText = playerID;
+      buttonColor = color;
     }
 //    buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
     return new SizedBox(
@@ -118,14 +124,18 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
             builder: (context, snapshot) {
               if (snapshot.data == "undoSelect") {
                 playerJoinStreamControllers[playerPositionIndex].add(null);
-                playerSlotIsActiveList[playerPositionIndex] = !playerSlotIsActiveList[playerPositionIndex];
+                playerSlotIsTakenList[playerPositionIndex] = false;
+                buttonColor = color;
+                buttonText = playerID;
 //                buttonColor = color;
               }
               else if (snapshot.data != null) {
 //                buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
                 playerJoinStreamControllers[playerPositionIndex].add(null);
-                playerSlotIsActiveList[playerPositionIndex] = !playerSlotIsActiveList[playerPositionIndex];
-                buttonText = snapshot.data;
+                playerSlotIsTakenList[playerPositionIndex] = true;
+                playerNamesList[playerPositionIndex] = snapshot.data;
+                buttonColor = Colors.grey;
+                buttonText = playerNamesList[playerPositionIndex];
 //                redActive[teamNumber[playerPosition]] = !redActive[teamNumber[playerPosition]];
               }
               return new FlatButton (
