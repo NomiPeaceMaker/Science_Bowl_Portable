@@ -138,7 +138,8 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(builder: (context) => Username()),
         );
-      } else {
+      }
+      else {
         //Filed to log in
         Navigator.push(
           context,
@@ -160,6 +161,7 @@ class _LoginState extends State<Login> {
           final FirebaseUser Fire_user =
               (await firebaseAuth.signInWithCredential(facebookAuthCred)).user;
           user.email = Fire_user.email;
+          print(user.email);
 
           return 1;
         } else
