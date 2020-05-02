@@ -287,29 +287,29 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   }
   _exitDialog() {
     showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Exit to Home Page"),
-            content: Text("Are you sure you want to exit to the home page?"),
-            actions: <Widget>[
-              FlatButton(
-                child: Text("No", style: staystyle),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                child: Text("Exit", style: exitstyle),
-                onPressed: () {  Navigator.pushAndRemoveUntil(context, 
-                  MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
-                  ),
-                  ModalRoute.withName('/'));},
-              ),
-            ],
-          );
-        });
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Exit to Home Page"),
+          content: Text("Are you sure you want to exit to the home page?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("No", style: staystyle),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text("Exit", style: exitstyle),
+              onPressed: () {  Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
+                ),
+                ModalRoute.withName('/'));},
+            ),
+          ],
+        );
+      });
   }
 }
 
