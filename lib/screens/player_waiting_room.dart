@@ -1,56 +1,66 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:sciencebowlportable/screens/player_buzzer.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
-import 'package:sciencebowlportable/screens/widgets.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 
 import 'home.dart';
 
 class PlayerWaitingRoom extends StatefulWidget {
   Client client;
-  Player player;
 
-  PlayerWaitingRoom(this.client, this.player);
+  PlayerWaitingRoom(this.client);
   @override
   _PlayerWaitingRoomState createState() {
-    return _PlayerWaitingRoomState(this.client, this.player);
+    return _PlayerWaitingRoomState(this.client);
   }
 }
 
 class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
   Client client;
-  Player player;
-  _PlayerWaitingRoomState(this.client, this.player);
-  var teamNumber = {"1": 0, "2":1, "Captain":2, "3":3, "4":4};
+  Player player = Player("");
+  _PlayerWaitingRoomState(this.client);
+  List<StreamController<String>> playerJoinStreamControllers = new List(10);
+  List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
+  List<String> playerNamesList = List.generate(10, (_) => "");
 
-  List<bool> redActive = List.generate(5, (_) => true);
-  List<bool> greenActive = List.generate(5, (_) => true);
+//  List<bool> redActive = List.generate(5, (_) => tr"'$a' '$b'"ue);
+//  List<bool> greenActive = List.generate(5, (_) => true);
 
   StreamSubscription socketDataStreamSubscription;
   @override
   void initState() {
     super.initState();
-      for (var i = 0 ; i < 5; i++ ) {
-        redPlayerJoinStreamController[i] = StreamController.broadcast();
-        greenPlayerJoinStreamController[i] = StreamController.broadcast();
+      player.userName = user.userName;
+      player.email = user.email;
+      for (var i = 0 ; i < 10; i++ ) {
+        playerJoinStreamControllers[i] = StreamController.broadcast();
+//        greenPlayerJoinStreamController[i] = StreamController.broadcast();
       }
-    Stream socketDataStream = socketDataStreamController.stream;
+      Stream socketDataStream = socketDataStreamController.stream;
       socketDataStreamSubscription = socketDataStream.listen((data) {
-        data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+        ///////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////
+        print("DATA FROM SERVER");
         print(data);
-        int playerNumber = teamNumber[data.substring(1)];
-        print(playerNumber);
-        if (data[0] == "R") {
-          redPlayerJoinStreamController[playerNumber].add("toggleButton");
-        } else if (data[0] == "G") {
-          greenPlayerJoinStreamController[playerNumber].add("toggleButton");
+        data = json.decode(data);
+        if (data["type"] == "buzzer") {
+          int playerPositionIndex = int.parse(data["playerPositionIndex"]);
+          String userName = data["userName"];
+          String previousState = data["previousState"];
+          if (previousState!="") {
+            int previousStateIndex = playerPositionIndexDict[previousState];
+            playerJoinStreamControllers[previousStateIndex].add("undoSelect");
+          }
+          playerJoinStreamControllers[playerPositionIndex].add(userName);
+          // test this out it might cause async problems
+          player.playerID = data["playerID"];
         }
-        if (data=="StartGame") {
+        else if (data["type"] == "startGame") {
           print("Moving on to game");
           socketDataStreamSubscription.cancel();
           Navigator.push(
@@ -58,70 +68,100 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
             MaterialPageRoute(builder: (context) => Game(client, player)),
           );
         }
+
+        ///////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////
     });
   }
-  Row playerRowWidget(String num) {
+  SizedBox teamSlotWidget(String playerPosition, String team) {
+    var color, buttonColor, buttonText;
+    String playerID = '$team $playerPosition';
+    int playerPositionIndex = playerPositionIndexDict[playerID];
+//    String buttonText = '$team $playerPosition';
+//    print("team $team");
+//    print("player index $playerPositionIndex");
+//    print("stream $playerJoinStreamControllers[playerPositionIndex]");
+    if (team == "Red") {
+      color = Colors.red;
+    }  else if (team == "Green") {
+//      playerPositionIndex += 5;
+      color = Colors.green;
+    }
+    if (playerSlotIsTakenList[playerPositionIndex]) {
+      buttonText = playerNamesList[playerPositionIndex];
+      buttonColor = Colors.grey;
+    } else {
+      buttonText = playerID;
+      buttonColor = color;
+    }
+//    buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
+    return new SizedBox(
+      width: 140.0,
+      height: 50,
+      child:
+      new StreamBuilder(
+          stream: playerJoinStreamControllers[playerPositionIndex].stream,
+          builder: (context, snapshot) {
+            if (snapshot.data == "undoSelect") {
+              playerJoinStreamControllers[playerPositionIndex].add(null);
+              playerSlotIsTakenList[playerPositionIndex] = false;
+              buttonColor = Colors.grey;
+              buttonText = playerNamesList[playerPositionIndex];
+              buttonColor = color;
+              buttonText = playerID;
+//              buttonText = playerPosition;
+//              buttonColor = color;
+            }
+            else if (snapshot.data != null) {
+//              buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
+              playerJoinStreamControllers[playerPositionIndex].add(null);
+              playerSlotIsTakenList[playerPositionIndex] = true;
+              playerNamesList[playerPositionIndex] = snapshot.data;
+              buttonColor = Colors.grey;
+              buttonText = playerNamesList[playerPositionIndex];
+//              buttonText = snapshot.data;
+//              buttonColor = (buttonColor==color) ? Colors.grey : color;
+//              redActive[teamNumber[playerPosition]] = !redActive[teamNumber[playerPosition]];
+            }
+            return new FlatButton (
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Text(
+                  buttonText,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+              ),
+              color: buttonColor,
+              textColor: Colors.white,
+              onPressed: () {
+                setState(() {
+                  print("Constructing message");
+                  var message = {
+                    "type": "buzzer",
+                    "userName": player.userName,
+                    "playerID": playerID,
+                    "playerPositionIndex": playerPositionIndex.toString(),
+                    "previousState": player.playerID,
+                  };
+                  print("SENDING TO SERVER");
+                  print(message);
+                  if (!playerSlotIsTakenList[playerPositionIndex]) {
+                    client.write(json.encode(message));
+                  }
+                });
+              },
+            );
+          })
+    );
+  }
+
+  Row playerRowWidget(String playerPosition) {
       print(client);
       return new Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            new SizedBox(
-                width: 140.0,
-                height: 50,
-                child:
-                  new StreamBuilder(
-                      stream: redPlayerJoinStreamController[teamNumber[num]].stream,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == 'toggleButton') {
-                          print("toggle");
-                          print(num);
-                          redActive[teamNumber[num]] = !redActive[teamNumber[num]];
-                        }
-                        return new FlatButton (
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Text(
-                              'Red $num',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                          ),
-                          color: redActive[teamNumber[num]] ? Colors.red : Colors.grey,
-                          textColor: Colors.white,
-                          onPressed: () {
-                            setState(() {
-                              client.write("R$num");
-//                              redActive[teamNumber[num]] = !redActive[teamNumber[num]];
-                            });
-                            },
-                        );
-                      })
-            ),
-          SizedBox(
-              width: 140.0,
-              height: 50,
-              child: new StreamBuilder(
-                stream: greenPlayerJoinStreamController[teamNumber[num]].stream,
-                builder: (context, snapshot) {
-                if (snapshot.data == 'toggleButton'){
-                  greenActive[teamNumber[num]] = !greenActive[teamNumber[num]];
-                }
-                return new FlatButton (
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                      'Green $num',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: greenActive[teamNumber[num]] ? Colors.green : Colors.grey,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    client.write("G$num");
-                    setState(() {
-                    });
-                  },
-                );})
-          ),
+            teamSlotWidget(playerPosition, "Red"),
+            teamSlotWidget(playerPosition, "Green"),
         ]
     );
   }

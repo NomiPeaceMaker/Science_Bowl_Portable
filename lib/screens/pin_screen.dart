@@ -2,7 +2,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Client.dart';
-import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/screens/player_waiting_room.dart';
 
@@ -17,7 +16,6 @@ class Pin extends StatefulWidget {
 
 class _PinState extends State<Pin> {
   String gamePin;
-  Player player = Player("");
   Client client;
   bool connected = false;
 
@@ -25,13 +23,9 @@ class _PinState extends State<Pin> {
   TextEditingController controller = TextEditingController();
 
   onData(Uint8List data) {
-    String msg = String.fromCharCodes(data).replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+    String msg = String.fromCharCodes(data);
     print("Message Recieved from server $msg");
     socketDataStreamController.add(msg);
-
-    if (msg == "sendPlayerID") {
-      client.write(player.playerID);
-    }
     if (msg == "Connected") {
       print("Coonected to server, recieved message!");
       connected = true;
@@ -114,7 +108,7 @@ class _PinState extends State<Pin> {
                   }
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PlayerWaitingRoom(this.client, this.player)),
+                    MaterialPageRoute(builder: (context) => PlayerWaitingRoom(this.client)),
                   );
                 }
               ),
