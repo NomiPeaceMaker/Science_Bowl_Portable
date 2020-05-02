@@ -52,7 +52,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
           int playerPositionIndex = int.parse(data["playerPositionIndex"]);
           String userName = data["userName"];
           String previousState = data["previousState"];
-          if (previousState!=""){
+          if (previousState!="") {
             int previousStateIndex = playerPositionIndexDict[previousState];
             playerJoinStreamControllers[previousStateIndex].add("undoSelect");
           }
