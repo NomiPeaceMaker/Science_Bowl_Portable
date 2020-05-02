@@ -114,9 +114,9 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
     var color, buttonColor, buttonText;
     String playerID = '$team $playerPosition';
     int playerPositionIndex = playerPositionIndexDict[playerID];
-    if (team == "Red") {
+    if (team == "A") {
       color = Colors.red;
-    } else if (team == "Green") {
+    } else if (team == "B") {
 //      playerPositionIndex += 5;
       color = Colors.green;
     }
@@ -186,8 +186,8 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        teamSlotWidget(playerPosition, "Red"),
-        teamSlotWidget(playerPosition, "Green"),
+        teamSlotWidget(playerPosition, "A"),
+        teamSlotWidget(playerPosition, "B"),
       ]
     );
   }
@@ -234,13 +234,13 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               Text(
-                "Red Team",
+                "Team A",
                 style: TextStyle(
                     fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18
                 ),
               ),
               Text(
-                "Green Team",
+                "Team B",
                 style: TextStyle(
                     fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18
                 ),

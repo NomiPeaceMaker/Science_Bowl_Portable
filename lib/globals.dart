@@ -25,14 +25,14 @@ StreamController<String> socketDataStreamController = StreamController.broadcast
 
 var playerPositionIndexDict =
 {
-  "Red 1": 0,
-  "Red 2":1,
-  "Red Captain":2,
-  "Red 3":3,
-  "Red 4":4,
-  "Green 1": 5,
-  "Green 2": 6,
-  "Green Captain": 7,
-  "Green 3":8,
-  "Green 4":9
+  "A 1": 0,
+  "A 2":1,
+  "A Captain":2,
+  "A 3":3,
+  "A 4":4,
+  "B 1": 5,
+  "B 2": 6,
+  "B Captain": 7,
+  "B 3":8,
+  "B 4":9
 };

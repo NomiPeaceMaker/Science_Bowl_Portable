@@ -100,9 +100,9 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
 //    print("team $team");
 //    print("player index $playerPositionIndex");
 //    print("stream $playerJoinStreamControllers[playerPositionIndex]");
-    if (team == "Red") {
+    if (team == "A") {
       color = Colors.red;
-    }  else if (team == "Green") {
+    }  else if (team == "B") {
 //      playerPositionIndex += 5;
       color = Colors.green;
     }
@@ -181,8 +181,8 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
       return new Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            teamSlotWidget(playerPosition, "Red"),
-            teamSlotWidget(playerPosition, "Green"),
+            teamSlotWidget(playerPosition, "A"),
+            teamSlotWidget(playerPosition, "B"),
         ]
     );
   }
@@ -224,14 +224,14 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               Text(
-                "Red Team",
+                "Team A",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.red,
                     fontSize: 18),
               ),
               Text(
-                "Green Team",
+                "Team B",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.green,
