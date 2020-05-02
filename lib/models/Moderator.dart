@@ -13,8 +13,8 @@ class Moderator extends User {
   //change directory to wherever json files are:
 //  Future<List<Question>> questionSet=parser("C:/Users/Zohair/Desktop/Anusheh's Documents/Software Engineering/Development/Science_Bowl_Portable/jsonQuestions/");
 
-  Team redTeam = Team("red");
-  Team greenTeam = Team("green");
+//  Team redTeam = Team("red");
+//  Team greenTeam = Team("green");
 
   Team aTeam = Team("A");
   Team bTeam = Team("B");

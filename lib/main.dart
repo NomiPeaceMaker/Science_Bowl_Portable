@@ -27,10 +27,10 @@ class _MyApp extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     
-    if(initScreen == 1){ // IF THIS IS NOT THE FIRST TIME RUNNING
+    if(initScreen == 1) { // IF THIS IS NOT THE FIRST TIME RUNNING
       {route0 = <String, WidgetBuilder>{
-//        '/': (context) => Login(),
-        '/': (context) => MyHomePage(),
+        '/': (context) => Login(),
+//        '/': (context) => MyHomePage(),
         // When navigating to the "/second" route, build the SecondScreen widget.
       '/home': (context) => MyHomePage(),
     };
@@ -39,8 +39,8 @@ class _MyApp extends State<MyApp> {
     else // IF THIS IS THE FIRST TIME RUNNING
     {
       {route0 = <String, WidgetBuilder>{
-//        '/': (context) => OnboardingScreen(),
-        '/': (context) => MyHomePage(),
+        '/': (context) => OnboardingScreen(),
+//        '/': (context) => MyHomePage(),
           // When navigating to the "/second" route, build the SecondScreen widget.
         '/home': (context) => MyHomePage(),
       };
