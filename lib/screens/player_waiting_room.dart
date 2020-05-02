@@ -48,7 +48,9 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
         print("DATA FROM SERVER");
         print(data);
         data = json.decode(data);
+        String d = data["type"];
         if (data["type"] == "buzzer") {
+//          print("got a buzzer response");
           int playerPositionIndex = int.parse(data["playerPositionIndex"]);
           String userName = data["userName"];
           String previousState = data["previousState"];
@@ -56,6 +58,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
             int previousStateIndex = playerPositionIndexDict[previousState];
             playerJoinStreamControllers[previousStateIndex].add("undoSelect");
           }
+//          print("turn button grey");
           playerJoinStreamControllers[playerPositionIndex].add(userName);
           // test this out it might cause async problems
           player.playerID = data["playerID"];
@@ -67,8 +70,17 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
             context,
             MaterialPageRoute(builder: (context) => Game(client, player)),
           );
-        }
+        } else if (data["type"] == "waitingScreenState") {
+          playerSlotIsTakenList = json.decode(data["playerSlotIsTakenList"]);
+          playerNamesList = json.decode(data["playerNamesList"]);
+          playerSlotIsTakenList
+              .asMap()
+              .forEach(
+                  (index, value) =>
+                  (value) ? playerJoinStreamControllers[index].add(playerNamesList[index]) : {}
+              );
 
+        }
         ///////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////
     });
@@ -114,6 +126,7 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
             }
             else if (snapshot.data != null) {
 //              buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
+//              print("turn button grey inside widget");
               playerJoinStreamControllers[playerPositionIndex].add(null);
               playerSlotIsTakenList[playerPositionIndex] = true;
               playerNamesList[playerPositionIndex] = snapshot.data;

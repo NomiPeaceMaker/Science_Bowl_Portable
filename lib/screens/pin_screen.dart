@@ -1,6 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
+import 'dart:convert';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/screens/player_waiting_room.dart';
@@ -23,10 +24,11 @@ class _PinState extends State<Pin> {
   TextEditingController controller = TextEditingController();
 
   onData(Uint8List data) {
-    String msg = String.fromCharCodes(data);
-    print("Message Recieved from server $msg");
+    var msg = String.fromCharCodes(data);
     socketDataStreamController.add(msg);
-    if (msg == "Connected") {
+    var msgJson = json.decode(msg);
+    print("Message Recieved from server $msg");
+    if (msgJson["type"] == "Connected") {
       print("Coonected to server, recieved message!");
       connected = true;
     }

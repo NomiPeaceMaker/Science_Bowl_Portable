@@ -48,7 +48,7 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 //      greenPlayerJoinStreamController[i] = StreamController.broadcast();
     }
 
-    socketDataStreamSubscription = socketDataStream.listen((data){
+    socketDataStreamSubscription = socketDataStream.listen((data) {
       ///////////////////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////////////
       print("got Data");
@@ -65,13 +65,19 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
         print("IS PLAYER SLOT TAKEN");
         if (!playerSlotIsTakenList[playerPositionIndex]) {
           print("SENDING data to all");
-          server.sendAll(data);
+          server.sendAll(json.encode(data));
           if (previousState!="") {
             int previousStateIndex = playerPositionIndexDict[previousState];
             playerJoinStreamControllers[previousStateIndex].add("undoSelect");
           }
           playerJoinStreamControllers[playerPositionIndex].add(player.userName);
         }
+      } else if (data["type"]=="newUserConnected") {
+        var waitingScreenState = {"type": "waitingScreenState"};
+        waitingScreenState["playerSlotIsTakenList"] = json.encode(playerSlotIsTakenList);
+        waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
+        print(waitingScreenState);
+        server.sendAll(json.encode(waitingScreenState));
       }
 
 //      int playerNumber = playerPositionIndexDict[data.substring(1)];
@@ -101,8 +107,6 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
     var color, buttonColor, buttonText;
     String playerID = '$team $playerPosition';
     int playerPositionIndex = playerPositionIndexDict[playerID];
-
-    print("player position index");
     if (team == "Red") {
       color = Colors.red;
     } else if (team == "Green") {

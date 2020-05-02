@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import "package:hex/hex.dart";
 import 'package:sciencebowlportable/models/Models.dart';
 import 'package:sciencebowlportable/globals.dart';
+import 'dart:convert';
 
 class Server {
 
@@ -37,7 +38,7 @@ class Server {
     for (Socket socket in sockets) {
       print(message);
       print(socket.address);
-      socket.write( message );
+      socket.write(message);
     }
   }
 
@@ -51,7 +52,8 @@ class Server {
   onRequest(Socket socket) {
     print("New User");
     print(socket);
-    socket.write("Connected");
+    socket.write(json.encode({"type" : "Connected"}));
+    socketDataStreamController.add(json.encode({"type" : "newUserConnected"}));
     print("Sending connect message to client.");
     if (!sockets.contains(socket)) {
       sockets.add(socket);
@@ -60,7 +62,6 @@ class Server {
       this.onData(data);
     });
   }
-
 
   String ip2key(String input)
   {
