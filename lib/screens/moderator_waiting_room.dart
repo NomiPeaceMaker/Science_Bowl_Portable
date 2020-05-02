@@ -17,7 +17,7 @@ class ModeratorWaitingRoom extends StatefulWidget {
   List<Question> questionSet;
 
   @override
-  ModeratorWaitingRoom(this.server, this.moderator);
+  ModeratorWaitingRoom(this.server, this.moderator,this.questionSet);
   _ModeratorWaitingRoomState createState() {
     return _ModeratorWaitingRoomState(this.server, this.moderator,this.questionSet);
   }
@@ -91,10 +91,13 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 //    R1controller = new StreamController();
 //    R1stream = R1controller.stream;
 //    super.initState();
-      moderator.questionSet.then((list){
-      questionSet=list;
-      print("Retrieved questions");
-    });
+//      moderator.questionSet().then((list){
+//      questionSet=list;
+//      print("Retrieved questions");
+//    });
+//    print(questionSet);
+//    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
   }
 
   SizedBox teamSlotWidget(String playerPosition, String team) {

@@ -102,6 +102,7 @@ class _PinState extends State<Pin> {
                     print(key2ip(gamePin,subnet));
                     client = Client(
                       hostname: key2ip(gamePin, subnet),
+
                       port: PORT,
                       onData: this.onData,
                       onError: this.onError,
@@ -117,6 +118,7 @@ class _PinState extends State<Pin> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => PlayerWaitingRoom(this.client)),
+
                   );
                 }
               ),
