@@ -50,16 +50,14 @@ class Client {
   }
 }
 
-String key2ip(String input)
+String key2ip(String input, String subnet)
 {
   String ip;
-  String first;
   String second;
-  if (input[0] == 'G')
-  {
-    first = (HEX.decode(input[1]+input[2]))[0].toString();
-    second = (HEX.decode(input[3]+input[4]))[0].toString();
-    ip = '192.168.' + first + '.' + second;
-  }
+  
+  //input[0]+input[1]+input[2] = string of 3 random letter/numbers
+  second = (HEX.decode(input[3]+input[4]))[0].toString();
+  ip = subnet + '.' + second;
+
   return ip;
 }
