@@ -7,15 +7,15 @@ import 'home.dart';
 
 class waitingRoom extends StatefulWidget {
   @override
-  _waitingRoomState createState() => _waitingRoomState();
+  waitingRoomState createState() => waitingRoomState();
 }
 
-class _waitingRoomState extends State<waitingRoom> {
+class waitingRoomState<T extends waitingRoom> extends State<T> {
   List<StreamController<String>> playerJoinStreamControllers;
   List<bool> playerSlotIsTakenList;
   List<String> playerNamesList;
   StreamSubscription socketDataStreamSubscription;
-
+  var playerPositionIndexDict;
   @override
   void initState() {
     super.initState();
@@ -25,13 +25,28 @@ class _waitingRoomState extends State<waitingRoom> {
     for (var i = 0 ; i < 10; i++ ) {
       playerJoinStreamControllers[i] = StreamController.broadcast();
     }
-    Stream socketDataStream = socketDataStreamController.stream;
+    playerPositionIndexDict =
+    {
+      "A 1": 0,
+      "A 2":1,
+      "A Captain":2,
+      "A 3":3,
+      "A 4":4,
+      "B 1": 5,
+      "B 2": 6,
+      "B Captain": 7,
+      "B 3":8,
+      "B 4":9
+    };
   }
 
-  void onPressTeamSlot() {}
   @required Align bottomScreenMessage() {}
+  void onPressTeamSlot(String playerID, int playerPositionIndex) {}
+  Container moderatorPinBar() {
+    return new Container();
+  }
 
-  SizedBox teamSlotWidget(String playerPosition, String team) {
+    SizedBox teamSlotWidget(String playerPosition, String team) {
     var color, buttonColor, buttonText;
     String playerID = '$team $playerPosition';
     int playerPositionIndex = playerPositionIndexDict[playerID];
@@ -83,7 +98,7 @@ class _waitingRoomState extends State<waitingRoom> {
                 textColor: Colors.white,
                 onPressed: () {
                   setState(() {
-                    onPressTeamSlot();
+                    onPressTeamSlot(playerID, playerPositionIndex);
                   });
                 },
               );
@@ -120,6 +135,7 @@ class _waitingRoomState extends State<waitingRoom> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
+          moderatorPinBar(),
           Container(
             margin: EdgeInsets.only(top: 20.0),
             child: Align(
