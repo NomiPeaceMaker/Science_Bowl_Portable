@@ -48,6 +48,7 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
     Container pinBar() {
       return new Container();
     }
+
     SizedBox teamSlotWidget(String playerPosition, String team) {
     var color, buttonColor, buttonText;
     String playerID = '$team $playerPosition';

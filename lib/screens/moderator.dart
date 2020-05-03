@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
+import 'dart:convert';
 import 'dart:async'; //for timer
 //import "dart:math";
 import 'package:sciencebowlportable/globals.dart';
@@ -84,23 +85,13 @@ class _HostState extends State<Host> {
     Stream socketDataStream = socketDataStreamController.stream;
 //    _startGameTimer();
     socketDataStreamSubscription = socketDataStream.listen((data) {
-      print("d-'$data'-d");
-      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
-      print("d-'$data'-d");
-
-      if (data[0] == "R") {
-        print("BUZZ IN R");
-        print("Recognized");
-        server.sendAll(data);
-      } else if (data[0] == "G") {
-        print("BUZZ IN G");
-        print("Recognized");
-        server.sendAll(data);
-      }
-      if (data == "BuzzIn") {
-        print("Recognizing");
-
-        server.sendAll("Recognized");
+      print("DATA RECIEVED FROM PLAYER");
+      print(data);
+      data = json.decode(data);
+      if (data["type"] == "BuzzIn") {
+        ////////check time, wait for others to buzz in/////////////
+        server.sendAll(json.encode({"type": "Recognized"}));
+//        server.sendAll("Recognized");
       }
     });
   }
@@ -560,7 +551,7 @@ class _HostState extends State<Host> {
                 textColor: Colors.white,
                 onPressed: (!doneReading && !paused && !buzzedIn && !decisionTime && !interrupt)?() {
                   setState(() {
-                      server.sendAll("BuzzerAvailable");
+                      server.sendAll(json.encode({"type": "BuzzerAvailable"}));
                       doneReading=true;
                       _startBuzzTimer();
                   });
@@ -614,7 +605,7 @@ class _HostState extends State<Host> {
                     onPressed: (decisionTime || interrupt || buzzedIn) ? () {
                       setState(() {
                         if(!paused){
-                          server.sendAll("Correct");
+                          server.sendAll(json.encode({"type": "Correct"}));;
                           this.moderator.aTeam.canAnswer=true;
                           this.moderator.bTeam.canAnswer=true;
                           if (roundName=="Toss-Up")
@@ -682,7 +673,7 @@ class _HostState extends State<Host> {
                         if(!paused) {
 //                          print(this.moderator.aTeam.canAnswer);
 //                          print(this.moderator.bTeam.canAnswer);
-                          server.sendAll("Incorrect"); //should tell which team answered correctly? so incorrect team cant answer again
+                          server.sendAll(json.encode({"type": "Incorrect"}));; //should tell which team answered correctly? so incorrect team cant answer again
                           if (this.moderator.aTeam.canAnswer && this.moderator.bTeam.canAnswer && roundName=="Toss-Up") {
                             if (team == "A") {
                               if (interrupt) {
@@ -859,7 +850,7 @@ class _HostState extends State<Host> {
                                             onPressed: () {
                                               setState(() {
                                                 if (!paused) {
-                                                  server.sendAll("Blurt");
+                                                  server.sendAll(json.encode({"type": "Blurt"}));;
                                                   //need to do more work here
                                                   if (team == "A") {
                                                     this.moderator.bTeam.score += 4;
@@ -910,7 +901,7 @@ class _HostState extends State<Host> {
                                             onPressed: () {
                                               setState(() {
                                                 if (!paused) {
-                                                  server.sendAll("Consultation");
+                                                  server.sendAll(json.encode({"type": "Consultation"}));
                                                   //need to do more work here
                                                   if (team == "A") {
                                                     this.moderator.bTeam.score += 4;
@@ -963,12 +954,16 @@ class _HostState extends State<Host> {
                                                   //need to do more work here
                                                   if (this.moderator.aTeam.canAnswer && this.moderator.bTeam.canAnswer && roundName=="Toss-Up") {
                                                     if (team == "A") {
-                                                      server.sendAll("Disqualify A");
+                                                      server.sendAll(json.encode({"type": "Disqualify", "team": "A"}));
+
+//                                                      server.sendAll("Disqualify A");
                                                       this.moderator.aTeam.canAnswer = false;
                                                       //                              team="B";
                                                     }
                                                     else {
-                                                      server.sendAll("Disqualify B");
+                                                      server.sendAll(json.encode({"type": "Disqualify", "team": "B"}));
+
+//                                                      server.sendAll("Disqualify B");
                                                       this.moderator.bTeam.canAnswer = false;
                                                     }
                                                     buzzedIn=false;
@@ -1055,7 +1050,9 @@ class _HostState extends State<Host> {
                                             onPressed: () {
                                               setState(() {
                                                 if(!paused){
-                                                  server.sendAll("Distraction");
+                                                  server.sendAll(json.encode({"type": "Distraction"}));
+
+//                                                  server.sendAll("Distraction");
                                                   if (roundName=="Toss-Up")
                                                   {
                                                     roundName="Bonus";

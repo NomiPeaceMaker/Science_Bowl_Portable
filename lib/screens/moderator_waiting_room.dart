@@ -44,7 +44,8 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
       player.userName = data["userName"];
       player.email = data["email"];
       print("LISTENING AT WAITING SCREEN MODERATOR");
-      if (data["type"] == "buzzer") {
+      if (data["type"] == "selectSlot") {
+        print(playerSlotIsTakenList);
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String previousState = data["previousState"];
         if (!playerSlotIsTakenList[playerPositionIndex]) {

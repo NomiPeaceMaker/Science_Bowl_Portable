@@ -40,7 +40,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       ///////////////////////////////////////////////////////////////////
       print(data);
       data = json.decode(data);
-      if (data["type"] == "buzzer") {
+      if (data["type"] == "selectSlot") {
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String userName = data["userName"];
         String previousState = data["previousState"];
@@ -51,8 +51,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         playerJoinStreamControllers[playerPositionIndex].add(userName);
         // test this out it might cause async problems
         player.playerID = data["playerID"];
-      }
-      else if (data["type"] == "startGame") {
+      } else if (data["type"] == "startGame") {
         print("Moving on to game");
         socketDataStreamSubscription.cancel();
         Navigator.push(
@@ -86,7 +85,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   void onPressTeamSlot(String playerID, int playerPositionIndex) {
     print("Constructing message");
     var message = {
-      "type": "buzzer",
+      "type": "selectSlot",
       "userName": player.userName,
       "playerID": playerID,
       "playerPositionIndex": playerPositionIndex.toString(),
