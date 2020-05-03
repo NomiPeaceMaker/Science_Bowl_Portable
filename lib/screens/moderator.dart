@@ -58,6 +58,7 @@ class _HostState extends State<Host> {
   String buf = "0";
   bool decisionTime=false;
   bool buzzedIn=false;
+  int skipsLeft=5;
 //  moderator.userName = user.userName; //user info store
 //  moderator.email = user.email; //user info store
 //  moderator.gameDifficulty = "HighSchool"; //will be used for querying not for display
@@ -422,7 +423,7 @@ class _HostState extends State<Host> {
                     Padding(
                       padding: EdgeInsets.all(20),
                       child: Text(
-                        (roundName=="Toss-Up")?"Q"+(index+1).toString()+"."+questionSet[index].tossupQuestion : "Q"+(index+1).toString()+"."+questionSet[index].bonusQuestion,
+                        (roundName=="Toss-Up")?"Q"+(index+1-(5-skipsLeft)).toString()+"."+questionSet[index].tossupQuestion : "Q"+(index+1-(5-skipsLeft)).toString()+"."+questionSet[index].bonusQuestion,
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -475,12 +476,13 @@ class _HostState extends State<Host> {
                         children: <Widget>[
                           Padding(
                             padding: EdgeInsets.all(10),
-                            child: Text(
-                              "Skip Question",
+                            child: (roundName=="Toss-Up")?Text(
+                              "Skip Question   "+skipsLeft.toString()+"/5",
 
                               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-                            ),
+                            ): Container(width: 0.0, height: 0.0,),
                           ),
+                          (roundName=="Toss-Up")?
                           IconButton(
                             icon: new Icon(Icons.navigate_next),
                             alignment: Alignment.bottomRight,
@@ -488,7 +490,7 @@ class _HostState extends State<Host> {
                             color: Colors.green,
                             onPressed: () {
                               setState(() {
-                                if (!paused) {
+                                if (!paused && skipsLeft>0 && roundName=="Toss-Up") {
                                   if (index == questionSet.length - 1) {
                                     Navigator.push(
                                       context,
@@ -497,6 +499,7 @@ class _HostState extends State<Host> {
                      );
                                   }
                                   else {
+                                    skipsLeft-=1;
                                     index += 1;
                                     buzzedIn=false;
                                     roundName = "Toss-Up";
@@ -507,7 +510,7 @@ class _HostState extends State<Host> {
                                 }
                               });
                             }, //next qs
-                          ),
+                          ): Container(width: 0.0, height: 0.0,),
                         ],
                       ),
                     )
@@ -887,7 +890,7 @@ class _HostState extends State<Host> {
                                               }
                                             },
                                             child: Text(
-                                              "Blurt!",
+                                              "Blurt",
                                               style: TextStyle(fontSize: 20,
                                                   color: Colors.white),
                                             ),
@@ -938,7 +941,7 @@ class _HostState extends State<Host> {
                                               }
                                             },
                                             child: Text(
-                                              "Consultation!",
+                                              "Consultation",
                                               style: TextStyle(fontSize: 20,
                                                   color: Colors.white),
                                             ),
@@ -1033,7 +1036,7 @@ class _HostState extends State<Host> {
                                               Navigator.of(context, rootNavigator: true).pop('dialog');
                                             },
                                             child: Text(
-                                              "Disqualify!",
+                                              "Disqualify",
                                               style: TextStyle(fontSize: 20,
                                                   color: Colors.white),
                                             ),
@@ -1117,7 +1120,7 @@ class _HostState extends State<Host> {
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
                                                 Text(
-                                                  "Distraction!",
+                                                  "Distraction",
                                                   style: TextStyle(fontSize: 20,
                                                       color: Colors.white),
                                                 ),
