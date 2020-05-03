@@ -33,7 +33,7 @@ class Client {
       );
       connected = true;
     } on Exception catch (exception) {
-      onData(Uint8List.fromList("Error : $exception".codeUnits));
+      onError(("Error : $exception"));
     }
   }
 
