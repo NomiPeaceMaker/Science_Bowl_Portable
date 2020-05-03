@@ -34,12 +34,9 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
     appBarText = "HOST";
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data) {
-      ///////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////
       print("got Data");
       print(data);
       data = json.decode(data);
-
       Player player = Player(data["playerID"]);
       player.userName = data["userName"];
       player.email = data["email"];
@@ -76,8 +73,6 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         playerJoinStreamControllers[playerPositionIndex].add("undoSelect");
       }
-      ///////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////
     });
   }
 
@@ -160,7 +155,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
       context: context,
       barrierDismissible: true,
       builder: (context) {
-        return AlertDialog(
+        return AlertDialog (
           title: Text("Captains Need to Join"),
           content: Text("Both team captians need to join before we can start the game. Please ask them to join before presseing start game."),
           actions: <Widget>[
@@ -170,7 +165,6 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
                 Navigator.of(context).pop();
               },
             ),
-
           ],
         );
       });

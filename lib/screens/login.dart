@@ -7,6 +7,7 @@ import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/screens/username.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // void main() => runApp(Login());
 final databaseReference = Firestore.instance;
@@ -135,6 +136,7 @@ class _LoginState extends State<Login> {
       if (result == 1) {
         setState(() {
           loggedIn = true;
+          
         });
         if (user.userName == 'Guest' || user.userName == null)
         {
@@ -150,13 +152,12 @@ class _LoginState extends State<Login> {
           );
         }
       } else {
-        //Filed to log in
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Username()),
-        );
+        //Filed to log in HMake it work without loging in Hack
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => Username()),
+        // );
       }
-      // firstusername();
     });
   }
 
@@ -171,7 +172,10 @@ class _LoginState extends State<Login> {
           final FirebaseUser Fire_user =
               (await firebaseAuth.signInWithCredential(facebookAuthCred)).user;
           user.email = Fire_user.email;
-
+          user_email = user.email;
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString("user_email", user_email);
+          print('The email address is: ${user.email}');
           return 1;
         } else
           return 0;
@@ -185,7 +189,10 @@ class _LoginState extends State<Login> {
           final FirebaseUser Fire_user =
               (await firebaseAuth.signInWithCredential(googleAuthCred)).user;
           user.email = Fire_user.email;
-          print(user.email);
+          user_email = user.email;
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString("user_email", user_email);
+          print('The email address is: ${user.email}');
           final snapShot = await Firestore.instance.collection('User').document(user.email).get();
           if (!snapShot.exists){
             print("creating user");
