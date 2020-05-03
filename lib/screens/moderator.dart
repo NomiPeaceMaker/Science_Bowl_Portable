@@ -3,17 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:convert';
-import 'dart:async'; //for timer
-//import "dart:math";
+import 'dart:async';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/login.dart';
 import 'package:sciencebowlportable/screens/result.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
-//import 'package:after_layout/after_layout.dart';
-//import "package:path/path.dart" show dirname;
-//import 'dart:io' show Platform;
 
 class Host extends StatefulWidget {
   Server server;
@@ -37,10 +33,8 @@ class _HostState extends State<Host> {
   bool paused = false;
   String roundName = "Toss-Up";
   String playerName= "A Captain"; //change according to player in focus
-
   double timeToAnswer = 2.113;
   String team ="A"; //depends on who buzzed in
-//  String reading_txt = "Done Reading";
   int index=0;
 //timer variables
   bool unavailable = false;
@@ -51,23 +45,13 @@ class _HostState extends State<Host> {
   bool interrupt=true;
 
   int bonusTimer;
-  int tossUpTimer; //5 secs for buzzer timer
-  int _minutes; //customize match say aaye ga
+  int tossUpTimer;
+  int _minutes;
   int _seconds = 0;
   String buf = "0";
   bool decisionTime=false;
   bool buzzedIn=false;
   int skipsLeft=5;
-//  moderator.userName = user.userName; //user info store
-//  moderator.email = user.email; //user info store
-//  moderator.gameDifficulty = "HighSchool"; //will be used for querying not for display
-//  moderator.gameTime = 20; //display
-//  moderator.numberOfQuestion = 25; //querying
-//  moderator.subjects = ["Math", "Physics"]; //querying
-//  moderator.tossUpTime = 5; //display
-//  moderator.bonusTime = 20; //display
-
-//  Future<List<Question>> questionSet=moderator.questionSet;
   initState() {
     bonusTimer=moderator.bonusTime;
     tossUpTimer = moderator.tossUpTime; //5 secs for buzzer timer
@@ -76,11 +60,9 @@ class _HostState extends State<Host> {
     this.moderator.aTeam.score=0;
     this.moderator.aTeam.canAnswer=true;
     this.moderator.bTeam.canAnswer=true;
-//    print(questionSet);
     _startGameTimer();
     super.initState();
     Stream socketDataStream = socketDataStreamController.stream;
-//    _startGameTimer();
     socketDataStreamSubscription = socketDataStream.listen((data) {
       print("DATA RECIEVED FROM PLAYER");
       print(data);
@@ -101,7 +83,6 @@ class _HostState extends State<Host> {
     }
     _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-//        doneReading=true;
         if (roundName=="Toss-Up") {
           if (tossUpTimer > 0) {
             tossUpTimer--;
@@ -109,24 +90,6 @@ class _HostState extends State<Host> {
           else {
             _buzzTimer.cancel();
             decisionTime=true;
-//            setState(() {
-//              if (index == questionSet.length - 1) {
-//                Navigator.push(
-//                  context,
-//                  MaterialPageRoute(
-//                      builder: (context) => Result(this.moderator)),
-//                );
-//              }
-//              else{
-//                index+=1;
-//                roundName="Toss-Up";
-//                doneReading=false;
-//                interrupt=false;
-//                if (isBuzzerActive) {
-//                  unavailable = true;
-//                }
-//              }
-//            });
           }
         }
         else
@@ -146,12 +109,7 @@ class _HostState extends State<Host> {
               }
               else{
                 _buzzTimer.cancel();
-//                buzzedIn=false;
                 decisionTime=true;
-//                doneReading=false;
-//                interrupt=false;
-//                index+=1;
-//                roundName="Toss-Up";
                 if (isBuzzerActive) {
                   unavailable = true;
                 }
@@ -174,9 +132,6 @@ class _HostState extends State<Host> {
         {
           _gameTimer.cancel();
         }
-//        if (_minutes < 0) {
-//          _gameTimer.cancel();
-//        }
         if (_seconds > 0) {
           _seconds--;
           if (_seconds < 10) {
@@ -210,21 +165,18 @@ class _HostState extends State<Host> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            Container(
-              height: 55.0,
-              color: Color(0xffF8B400),
-              child: Center(
-                child: Text(
-                  "Settings",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 18),
+            ListTile(
+              leading: Icon(Icons.dehaze),
+              title: Text(
+                "Settings",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
                 ),
               ),
             ),
             ListTile(
-              leading: Icon(Icons.offline_pin, color: Color(0xffF8B400)),
+              leading: Icon(Icons.offline_pin),
               title: Text(
                 "Game PIN:\n $pin",
                 style: TextStyle(
@@ -247,7 +199,6 @@ class _HostState extends State<Host> {
                   }),
               leading: Icon(
                 Icons.exit_to_app,
-                color: Color(0xffF8B400),
               ),
             ),
           ],
@@ -424,21 +375,6 @@ class _HostState extends State<Host> {
                       ):
                       Container(width: 0.0, height: 0.0,),
                     ),
-//                    ((roundName=="Toss-Up") && !questionSet[index].tossupIsShortAns) || ((roundName=="Bonus") && !questionSet[index].bonusIsShortAns) ?
-//                    ListView(
-//                      children: ((roundName=="Toss-Up") && !questionSet[index].tossupIsShortAns)? <Widget>[
-//                        Text(questionSet[index].tossupMCQOptions[0]),
-//                        Text(questionSet[index].tossupMCQOptions[1]),
-//                        Text(questionSet[index].tossupMCQOptions[2]),
-//                        Text(questionSet[index].tossupMCQOptions[3])
-//                      ] : <Widget>[
-//
-//                        Text(questionSet[index].bonusMCQOptions[0]),
-//                        Text(questionSet[index].bonusMCQOptions[1]),
-//                        Text(questionSet[index].bonusMCQOptions[2]),
-//                        Text(questionSet[index].bonusMCQOptions[3])
-//                      ]
-//                    ) : Container(width: 0, height: 0),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                       child: Text(
@@ -466,7 +402,7 @@ class _HostState extends State<Host> {
                             icon: new Icon(Icons.navigate_next),
                             alignment: Alignment.bottomRight,
                             iconSize: 32,
-                            color: Colors.green,
+                            color: Colors.grey,
                             onPressed: () {
                               setState(() {
                                 if (!paused && skipsLeft>0 && roundName=="Toss-Up") {
@@ -495,29 +431,13 @@ class _HostState extends State<Host> {
                     )
                   ],
                 )),
-            //          Card(
-            //            margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-            //            color: BuzzerOpen ? Colors.grey : Colors.lightGreen,
-            //            shape: RoundedRectangleBorder(
-            //              borderRadius: BorderRadius.circular(10.0),
-            //            ),
-            //            child: BuzzerOpen ?
-            //              Row(
-            //                mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //                children: <Widget>[
-            //                  new Icon(Icons.fiber_manual_record, color: Colors.white, size: 50),
-            //                  Text("Buzzer Open", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
-            //                  Text(timeToAnswer.toStringAsFixed(2), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
-            //                ]):
-            //              new Icon(Icons.check, color: Colors.white, size: 50)
-            //          ),
             Card(
               margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
               color: doneReading ? Colors.grey : Colors.lightGreen,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child: FlatButton(
+              child: RaisedButton(
                 shape: RoundedRectangleBorder(
                   side: BorderSide(color: Colors.white, width: 3.0),
                   borderRadius: BorderRadius.circular(10.0),
@@ -545,36 +465,13 @@ class _HostState extends State<Host> {
                   });
                 }: null,
               ),
-//              Row(
-//                mainAxisSize: MainAxisSize.min,
-//                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                  crossAxisAlignment: CrossAxisAlignment.start,
-//                  children: <Widget>[
-//                    new IconButton(
-//                      icon: new Icon(Icons.fiber_manual_record, color: Colors.white, size: 50,),
-//                      alignment: Alignment.bottomRight,
-//                      onPressed: () {
-//                        setState(() {
-//                              if (!BuzzerOpen)
-//                                {
-//                                  BuzzerOpen=true;
-//                                  _startBuzzTimer();
-//                                }
-//                            }
-//                            );
-//                          }
-//                    ),
-//                    Text(BuzzerOpen ? "Buzzer Open: "+_counter.toString() : "Done Reading", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
-////                    new Icon(Icons.cancel, color: Colors.white, size: 25)
-//                  ],
-//              ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  FlatButton(
+                  RaisedButton(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(color: Colors.white, width: 3.0),
                       borderRadius: BorderRadius.circular(10.0),
@@ -642,7 +539,7 @@ class _HostState extends State<Host> {
                       );
                     } : null,
                   ),
-                  FlatButton(
+                  RaisedButton(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(color: Colors.white, width: 3.0),
                       borderRadius: BorderRadius.circular(10.0),
@@ -658,8 +555,6 @@ class _HostState extends State<Host> {
                     onPressed: (decisionTime || interrupt || buzzedIn) ? () {
                       setState(() {
                         if(!paused) {
-//                          print(this.moderator.aTeam.canAnswer);
-//                          print(this.moderator.bTeam.canAnswer);
                           server.sendAll(json.encode({"type": "Incorrect"}));; //should tell which team answered correctly? so incorrect team cant answer again
                           if (this.moderator.aTeam.canAnswer && this.moderator.bTeam.canAnswer && roundName=="Toss-Up") {
                             if (team == "A") {
@@ -740,7 +635,7 @@ class _HostState extends State<Host> {
                       );
                     }: null,
                   ),
-                  FlatButton(
+                  RaisedButton(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(color: Colors.white, width: 3.0),
                       borderRadius: BorderRadius.circular(10.0),
@@ -793,38 +688,6 @@ class _HostState extends State<Host> {
                                           ),
                                           alignment: Alignment.center,
                                         ),
-//                                        SizedBox(
-//                                          width: 320.0,
-//                                          height: 60.0,
-//                                          child: RaisedButton(
-//                                            shape: RoundedRectangleBorder(
-//                                              borderRadius: BorderRadius.circular(10.0),
-//                                            ),
-//                                            onPressed: () {
-//                                              setState(() {
-//                                                if (!paused) {
-//                                                  server.sendAll("Interrupt");
-//                                                  //need to do more work here
-//                                                  if (team == "A") {
-//                                                    this.moderator.bTeam.score += 4;
-//                                                  }
-//                                                  else {
-//                                                    this.moderator.aTeam.score += 4;
-//                                                  }
-//                                                }
-//                                              });
-//                                              Navigator.of(context, rootNavigator: true).pop('dialog');
-//                                            },
-//                                            child: Text(
-//                                              "Interrupt!",
-//                                              style: TextStyle(fontSize: 20,
-//                                                  color: Colors.white),
-//                                            ),
-////                                            color: const Color(0xFF1BC0C5),
-//                                            color: Colors.red,
-//                                          ),
-//                                        ),
-//                                        Spacer(),
                                         SizedBox(
                                           width: 320.0,
                                           height: 60.0,
@@ -870,7 +733,6 @@ class _HostState extends State<Host> {
                                                   color: Colors.white),
                                             ),
                                             color: Colors.red,
-//                                            color: const Color(0xFF1BC0C5),
                                           ),
                                         ),
                                         (roundName=="Toss-Up") ? Spacer() : Container(height:0, width:0),
@@ -886,7 +748,6 @@ class _HostState extends State<Host> {
                                               setState(() {
                                                 if (!paused) {
                                                   server.sendAll(json.encode({"type": "Consultation"}));
-                                                  //need to do more work here
                                                   if (team == "A") {
                                                     this.moderator.bTeam.score += 4;
                                                   }
@@ -920,7 +781,6 @@ class _HostState extends State<Host> {
                                                   color: Colors.white),
                                             ),
                                             color: Colors.red,
-//                                            color: const Color(0xFF1BC0C5),
                                           ),
                                         ) : Container(height:0, width:0),
                                         Spacer(),
@@ -938,15 +798,11 @@ class _HostState extends State<Host> {
                                                   if (this.moderator.aTeam.canAnswer && this.moderator.bTeam.canAnswer && roundName=="Toss-Up") {
                                                     if (team == "A") {
                                                       server.sendAll(json.encode({"type": "Disqualify", "team": "A"}));
-
-//                                                      server.sendAll("Disqualify A");
                                                       this.moderator.aTeam.canAnswer = false;
                                                       //                              team="B";
                                                     }
                                                     else {
                                                       server.sendAll(json.encode({"type": "Disqualify", "team": "B"}));
-
-//                                                      server.sendAll("Disqualify B");
                                                       this.moderator.bTeam.canAnswer = false;
                                                     }
                                                     buzzedIn=false;
@@ -1019,7 +875,6 @@ class _HostState extends State<Host> {
                                                   color: Colors.white),
                                             ),
                                             color: Colors.red,
-//                                            color: const Color(0xFF1BC0C5),
                                           ),
                                         ),
                                         Spacer(),
@@ -1034,8 +889,6 @@ class _HostState extends State<Host> {
                                               setState(() {
                                                 if(!paused){
                                                   server.sendAll(json.encode({"type": "Distraction"}));
-
-//                                                  server.sendAll("Distraction");
                                                   if (roundName=="Toss-Up")
                                                   {
                                                     roundName="Bonus";
@@ -1083,16 +936,6 @@ class _HostState extends State<Host> {
                                                     }
                                                   }
                                                 }
-//                                                if (!paused) {
-//                                                  server.sendAll("Distraction");
-//                                                  //need to do more work here
-//                                                  if (team == "A") {
-//                                                    this.moderator.bTeam.score += 4;
-//                                                  }
-//                                                  else {
-//                                                    this.moderator.aTeam.score += 4;
-//                                                  }
-//                                                }
                                               });
                                               Navigator.of(context, rootNavigator: true).pop('dialog');
                                             },
@@ -1112,28 +955,8 @@ class _HostState extends State<Host> {
                                               ],
                                             ),
                                             color: Colors.red,
-//                                            color: const Color(0xFF1BC0C5),
                                           ),
                                         ),
-
-//                                        Spacer(),
-//                                        SizedBox(
-//                                          width: 320.0,
-//                                          child: RaisedButton(
-//                                            shape: RoundedRectangleBorder(
-//                                              borderRadius: BorderRadius.circular(10.0),
-//                                            ),
-//                                            onPressed: () {
-//                                              Navigator.of(context, rootNavigator: true).pop('dialog');
-//                                            },
-//                                            child: Text(
-//                                              "Cancel",
-//                                              style: TextStyle(
-//                                                  color: Colors.white),
-//                                            ),
-//                                          color: Colors.red,
-//                                          ),
-//                                        )
                                       ],
                                     ),
                                   ),
