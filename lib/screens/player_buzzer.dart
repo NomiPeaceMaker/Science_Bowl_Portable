@@ -188,25 +188,25 @@ class _GameState extends State<Game> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            Container(
-              height: 55.0,
-              color: Color(0xffF8B400),
-              child: Center(
-                child: Text("Settings",
-//                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+            ListTile(
+              leading: Icon(Icons.dehaze),
+              title: Text(
+                "Settings",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
                 ),
               ),
             ),
+//            ListTile(
+//              leading: Icon(Icons.offline_pin, color: Color(0xffF8B400)),
+//              title: Text("Game PIN:\n $gamePin",
+////              textAlign: TextAlign.center,
+//                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
+//              ),
+//            ),
             ListTile(
-              leading: Icon(Icons.offline_pin, color: Color(0xffF8B400)),
-              title: Text("Game PIN:\n $gamePin",
-//              textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app, color: Color(0xffF8B400),),
+              leading: Icon(Icons.exit_to_app,),
               title: GestureDetector(
                   child: Text("Exit Game",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
@@ -281,8 +281,8 @@ class _GameState extends State<Game> {
             child: Container(
                 margin: EdgeInsets.only(left: 20.0, right: 20.0),
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.height*0.25,
-                  height: MediaQuery.of(context).size.height*0.25,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  height: MediaQuery.of(context).size.height*0.3,
                   child: Card(
                     elevation: 10.0,
                     color: Colors.yellow[50],
@@ -291,10 +291,12 @@ class _GameState extends State<Game> {
                     ),
                     child: Padding(
                       padding: EdgeInsets.all(10),
-                      child: Text(
-                        "Question pictures will be displayed here.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey),
+                      child: Center(
+                        child: Text(
+                          "Question pictures will be displayed here.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       ),
                     )
                   ),
@@ -302,10 +304,11 @@ class _GameState extends State<Game> {
               ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0),
+            padding: EdgeInsets.symmetric(vertical: 5.0),
             child: Container(
 //              height: 30.0,
-              width: MediaQuery.of(context).size.height*0.25,
+              height: MediaQuery.of(context).size.height*0.1,
+              width: MediaQuery.of(context).size.width*0.7,
               //            color: Colors.
               child: Card(
                 child: Padding(
@@ -326,8 +329,8 @@ class _GameState extends State<Game> {
           ),
 
           SizedBox(
-            width:MediaQuery.of(context).size.width*0.6,
-            height:MediaQuery.of(context).size.width*0.6,
+            width:MediaQuery.of(context).size.height*0.25,
+            height:MediaQuery.of(context).size.height*0.25,
             child:  StreamBuilder(
               stream: BuzzerStreamController.stream,
               builder: (context, snapshot) {

@@ -57,6 +57,9 @@ class Server {
 //  }
 
   onRequest(Socket socket) {
+    
+    
+
     print("New User");
     print(socket);
     socket.write(json.encode({"type" : "Connected"}));
@@ -76,7 +79,7 @@ class Server {
         this.onData(data);
       }
     });
-//
+// THIS IS WHERE YOU ASK THEM FOR PIN!!!!!
 //    socket.drain().then((_) {
 //      print('Player left');
 //      socket.close();

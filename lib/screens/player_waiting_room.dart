@@ -59,7 +59,11 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
           context,
           MaterialPageRoute(builder: (context) => Game(client, player)),
         );
-      } else if (data["type"] == "waitingScreenState") {
+      } else if (data["pin"] == "what_is_pin") {
+        print("HOST ASKED: WHAT IS THE PIN??");
+        
+      }
+       else if (data["type"] == "waitingScreenState") {
         print("got waitingScreenState");
         playerSlotIsTakenList =
             (json.decode(data["playerSlotIsTakenList"]) as List).cast<bool>();

@@ -102,6 +102,7 @@ class _PinState extends State<Pin> {
                     // subnet = subnet.substring(0,8);
                     print(subnet); // SUBNET is now the same as the "G" Character in the thing but better.
                     print(gamePin);
+                    pin = gamePin;
                     print(key2ip(gamePin,subnet));
                     client = Client(
                       hostname: key2ip(gamePin, subnet),

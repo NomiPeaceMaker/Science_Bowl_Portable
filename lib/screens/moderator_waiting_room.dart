@@ -123,6 +123,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
 
   @override
   Container pinBar() {
+    pin = moderator.gamePin;
     return new Container(
       margin: EdgeInsets.only(top: 10.0),
       child: new Align(
