@@ -3,6 +3,7 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/screens/username.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -134,10 +135,19 @@ class _LoginState extends State<Login> {
         setState(() {
           loggedIn = true;
         });
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Username()),
-        );
+        if (user.userName == 'Guest' || user.userName == null)
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Username()),
+          );
+        }
+        else{
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyHomePage()),
+          );
+        }
       } else {
         //Filed to log in
         Navigator.push(

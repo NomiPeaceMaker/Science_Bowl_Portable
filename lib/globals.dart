@@ -12,7 +12,7 @@ import 'package:sciencebowlportable/models/User.dart';
 //List<StreamSubscription> greenPlayerJoinStreamSubscription;
 
 String Wifi_ip = "none";
-
+String username_set;
 int PORT = 4040;
 bool isModerator = false;
 String pin = "0000";
