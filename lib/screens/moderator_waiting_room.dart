@@ -197,96 +197,121 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.cancel, color: Colors.white),
-          onPressed: () => _exitDialog(),
-        ),
-        backgroundColor: Color(0xffF8B400),
-        title: Text(
-          "HOST",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
-        ),
-        centerTitle: true,
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top: 20.0),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Text(
-                      "You're hosting,\n${user.userName}",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 18),
-                  ),
-                  Text(
-                      "Game Pin:\n${moderator.gamePin}",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 18),
-                  ),
-                ],
-              )
-            ),
+    return WillPopScope(
+      onWillPop: () =>_exitDialog(),
+
+          child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.cancel, color: Colors.white),
+            onPressed: () => _exitDialog(),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text(
-                "Team A",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18
-                ),
-              ),
-              Text(
-                "Team B",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18
-                ),
-              ),
-            ],
+          backgroundColor: Color(0xffF8B400),
+          title: Text(
+            "HOST",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0),
           ),
-          moderatorRowWidget("1"),
-          moderatorRowWidget("2"),
-          moderatorRowWidget("Captain"),
-          moderatorRowWidget("3"),
-          moderatorRowWidget("4"),
-          Container(
-            margin: EdgeInsets.only(bottom: 20.0),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                width: 140.0,
-                height: 60.0,
-                child: FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  child: Text(
-                      "Start Game",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                  ),
-                  color: Colors.pink,
-                  textColor: Colors.white,
-                  onPressed: () => {
-                    socketDataStreamSubscription.cancel(),
-                      server.sendAll(json.encode({"type":"startGame"})),
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
-                      ),
-                  },
-                ),
+          centerTitle: true,
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 20.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text(
+                        "You're hosting,\n${user.userName}",
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 18),
+                    ),
+                    Text(
+                        "Game Pin:\n${moderator.gamePin}",
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 18),
+                    ),
+                  ],
+                )
               ),
             ),
-          ),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Text(
+                  "Team A",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18
+                  ),
+                ),
+                Text(
+                  "Team B",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18
+                  ),
+                ),
+              ],
+            ),
+            moderatorRowWidget("1"),
+            moderatorRowWidget("2"),
+            moderatorRowWidget("Captain"),
+            moderatorRowWidget("3"),
+            moderatorRowWidget("4"),
+            Container(
+              margin: EdgeInsets.only(bottom: 20.0),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  width: 140.0,
+                  height: 60.0,
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    child: Text(
+                        "Start Game",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                    ),
+                    color: Colors.pink,
+                    textColor: Colors.white,
+                    onPressed: () => {
+                      socketDataStreamSubscription.cancel(),
+                        server.sendAll(json.encode({"type":"startGame"})),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
+                        ),
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  _captainLeftDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Captains Need to Join"),
+          content: Text("Both team captians need to join before we can start the game. Please ask them to join before presseing start game."),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Okay", style: staystyle),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+           
+          ],
+        );
+      });
   }
   _exitDialog() {
     showDialog(

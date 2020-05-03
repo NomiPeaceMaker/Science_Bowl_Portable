@@ -18,6 +18,7 @@ enum settings { help, report }
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
+  
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -25,6 +26,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   DateTime currentBackPressTime;
   settings _selection;
+  bool _connectedToWifi = true;
+
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -186,7 +190,8 @@ class _MyHomePageState extends State<MyHomePage> {
           color: Color(0xFF20BABA),
           onPressed: ()  async {
             if (needsInternet) {
-              if (await _checkWifiConnectivity()) {
+              await _checkWifiConnectivity();
+              if (_connectedToWifi) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => landingPage),
@@ -231,12 +236,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (result == ConnectivityResult.wifi) {
       print("Connected to Wifi");
-      return true;
+      _connectedToWifi = true;
       // Wifi_ip = await (Connectivity.getWifiIP());
 
     } else {
       print("NO wifi detected");
-      return false;
+      _connectedToWifi = false;
     }
   }
 }
