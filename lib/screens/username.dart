@@ -3,6 +3,7 @@ import 'package:sciencebowlportable/globals.dart';
 // import 'package:science_bowl_portable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/globals.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void firstusername() => runApp(Username());
 
@@ -108,8 +109,13 @@ class _usernameState extends State<Username> {
                       color: Color(0xffCC0066),
                       fontSize: 20,
                       fontWeight: FontWeight.bold)),
-                onPressed: (){
+                onPressed: () async {
                   user.userName = myController.text;
+                  user.userName = temp_username;
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  username_set = temp_username;
+                  print (temp_username);
+                  await prefs.setString("username_set", temp_username);
                   user.userName = temp_username;
                   print(user.userName);
                   Navigator.pushNamed(context, '/home');

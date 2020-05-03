@@ -59,11 +59,20 @@ class LoadingState extends State<Loading> {
     return new Scaffold(
       backgroundColor: Color(0xFFF8B400),
       body: Center(
-        child: SpinKitWave(
+        child: Column (
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Setting things up for you...\n\n\n",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white,
+                fontSize: 24),
+        ),
+          SpinKitWave(
           color: Colors.white,
           size: 80,
-        ),
+          )
+        ],
       ),
+    ),
     );
   }
 }
