@@ -17,7 +17,7 @@ class ModeratorWaitingRoom extends StatefulWidget {
   List<Question> questionSet;
 
   @override
-  ModeratorWaitingRoom(this.server, this.moderator);
+  ModeratorWaitingRoom(this.server, this.moderator,this.questionSet);
   _ModeratorWaitingRoomState createState() {
     return _ModeratorWaitingRoomState(this.server, this.moderator,this.questionSet);
   }
@@ -27,9 +27,9 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   Server server;
   Moderator moderator;
   List<Question> questionSet;
-  List<StreamController<String>> playerJoinStreamControllers = new List(10);
-  List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
-  List<String> playerNamesList = List.generate(10, (_) => "");
+  List<StreamController<String>> _playerJoinStreamControllers;
+  List<bool> _playerSlotIsTakenList;
+  List<String> _playerNamesList;
 
 //  List<bool> redActive = List.generate(5, (_) => true);
 //  List<bool> greenActive = List.generate(5, (_) => true);
@@ -40,15 +40,17 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 
   initState() {
     Stream socketDataStream = socketDataStreamController.stream;
+    _playerSlotIsTakenList= List.generate(10, (_) => false);
+    _playerNamesList = List.generate(10, (_) => "");
 //    List<StreamController<String>> redPlayerJoinStreamController = new List.filled(5, StreamController.broadcast());
 //    List<StreamController<String>> greenPlayerJoinStreamController = new List.filled(5, StreamController.broadcast());
-
+    _playerJoinStreamControllers  = new List(10);
     for( var i = 0 ; i < 10; i++ ) {
-      playerJoinStreamControllers[i] = StreamController.broadcast();
+      _playerJoinStreamControllers[i] = StreamController.broadcast();
 //      greenPlayerJoinStreamController[i] = StreamController.broadcast();
     }
 
-    socketDataStreamSubscription = socketDataStream.listen((data){
+    socketDataStreamSubscription = socketDataStream.listen((data) {
       ///////////////////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////////////
       print("got Data");
@@ -63,15 +65,26 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String previousState = data["previousState"];
         print("IS PLAYER SLOT TAKEN");
-        if (!playerSlotIsTakenList[playerPositionIndex]) {
+        if (!_playerSlotIsTakenList[playerPositionIndex]) {
           print("SENDING data to all");
-          server.sendAll(data);
+          server.sendAll(json.encode(data));
           if (previousState!="") {
             int previousStateIndex = playerPositionIndexDict[previousState];
-            playerJoinStreamControllers[previousStateIndex].add("undoSelect");
+            _playerJoinStreamControllers[previousStateIndex].add("undoSelect");
           }
-          playerJoinStreamControllers[playerPositionIndex].add(player.userName);
+          _playerJoinStreamControllers[playerPositionIndex].add(player.userName);
         }
+      } else if (data["type"]=="newUserConnected") {
+//        print("BEFORE SENDING STATES TO ALL");
+//        print(_playerSlotIsTakenList);
+//        print(_playerNamesList);
+
+        print("New user  connected, sending it waiting rooms states");
+        var waitingScreenState = {"type": "waitingScreenState"};
+        waitingScreenState["playerSlotIsTakenList"] = json.encode(_playerSlotIsTakenList);
+        waitingScreenState["playerNamesList"] = json.encode(_playerNamesList);
+        print(waitingScreenState);
+        server.sendAll(json.encode(waitingScreenState));
       }
 
 //      int playerNumber = playerPositionIndexDict[data.substring(1)];
@@ -91,26 +104,27 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
 //    R1controller = new StreamController();
 //    R1stream = R1controller.stream;
 //    super.initState();
-      moderator.questionSet.then((list){
-      questionSet=list;
-      print("Retrieved questions");
-    });
+//      moderator.questionSet().then((list){
+//      questionSet=list;
+//      print("Retrieved questions");
+//    });
+//    print(questionSet);
+//    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
   }
 
   SizedBox teamSlotWidget(String playerPosition, String team) {
     var color, buttonColor, buttonText;
     String playerID = '$team $playerPosition';
     int playerPositionIndex = playerPositionIndexDict[playerID];
-
-    print("player position index");
-    if (team == "Red") {
+    if (team == "A") {
       color = Colors.red;
-    } else if (team == "Green") {
+    } else if (team == "B") {
 //      playerPositionIndex += 5;
       color = Colors.green;
     }
-    if (playerSlotIsTakenList[playerPositionIndex]) {
-      buttonText = playerNamesList[playerPositionIndex];
+    if (_playerSlotIsTakenList[playerPositionIndex]) {
+      buttonText = _playerNamesList[playerPositionIndex];
       buttonColor = Colors.grey;
     } else {
       buttonText = playerID;
@@ -122,23 +136,35 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
         height: 50,
         child:
         new StreamBuilder(
-            stream: playerJoinStreamControllers[playerPositionIndex].stream,
+            stream: _playerJoinStreamControllers[playerPositionIndex].stream,
             builder: (context, snapshot) {
               if (snapshot.data == "undoSelect") {
-                playerJoinStreamControllers[playerPositionIndex].add(null);
-                playerSlotIsTakenList[playerPositionIndex] = false;
+                _playerJoinStreamControllers[playerPositionIndex].add(null);
+                _playerSlotIsTakenList[playerPositionIndex] = false;
+                _playerNamesList[playerPositionIndex] = playerID;
                 buttonColor = color;
                 buttonText = playerID;
 //                buttonColor = color;
+
+
+//                print("AT UNDO SELECT");
+//                print(_playerSlotIsTakenList);
+//                print(_playerNamesList);
+
               }
               else if (snapshot.data != null) {
 //                buttonColor = playerSlotIsActiveList[playerPositionIndex] ? color : Colors.grey;
-                playerJoinStreamControllers[playerPositionIndex].add(null);
-                playerSlotIsTakenList[playerPositionIndex] = true;
-                playerNamesList[playerPositionIndex] = snapshot.data;
+                _playerJoinStreamControllers[playerPositionIndex].add(null);
+                _playerSlotIsTakenList[playerPositionIndex] = true;
+                _playerNamesList[playerPositionIndex] = snapshot.data;
                 buttonColor = Colors.grey;
-                buttonText = playerNamesList[playerPositionIndex];
+                buttonText = _playerNamesList[playerPositionIndex];
 //                redActive[teamNumber[playerPosition]] = !redActive[teamNumber[playerPosition]];
+
+//                print("AT PLAYER SELECT SLOT");
+//                print(_playerSlotIsTakenList);
+//                print(_playerNamesList);
+
               }
               return new FlatButton (
                 shape: RoundedRectangleBorder(
@@ -163,8 +189,8 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        teamSlotWidget(playerPosition, "Red"),
-        teamSlotWidget(playerPosition, "Green"),
+        teamSlotWidget(playerPosition, "A"),
+        teamSlotWidget(playerPosition, "B"),
       ]
     );
   }
@@ -211,13 +237,13 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               Text(
-                "Red Team",
+                "Team A",
                 style: TextStyle(
                     fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18
                 ),
               ),
               Text(
-                "Green Team",
+                "Team B",
                 style: TextStyle(
                     fontWeight: FontWeight.bold, color: Colors.green, fontSize: 18
                 ),
@@ -264,29 +290,29 @@ class _ModeratorWaitingRoomState extends State<ModeratorWaitingRoom> {
   }
   _exitDialog() {
     showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Exit to Home Page"),
-            content: Text("Are you sure you want to exit to the home page?"),
-            actions: <Widget>[
-              FlatButton(
-                child: Text("No", style: staystyle),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                child: Text("Exit", style: exitstyle),
-                onPressed: () {  Navigator.pushAndRemoveUntil(context, 
-                  MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
-                  ),
-                  ModalRoute.withName('/'));},
-              ),
-            ],
-          );
-        });
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Exit to Home Page"),
+          content: Text("Are you sure you want to exit to the home page?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("No", style: staystyle),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text("Exit", style: exitstyle),
+              onPressed: () {  Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
+                ),
+                ModalRoute.withName('/'));},
+            ),
+          ],
+        );
+      });
   }
 }
 

@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
@@ -35,10 +36,9 @@ class _HostState extends State<Host> {
   _HostState(this.server, this.moderator,this.questionSet);
   bool paused = false;
 
-
-
   String roundName = "Toss-Up";
   String playerName= "A Captain"; //change according to player in focus
+
   double timeToAnswer = 2.113;
   String team ="A"; //depends on who buzzed in
 //  String reading_txt = "Done Reading";
@@ -50,6 +50,7 @@ class _HostState extends State<Host> {
   Timer _gameTimer;
   bool doneReading=false;
   bool interrupt=true;
+
   int bonusTimer;
   int tossUpTimer; //5 secs for buzzer timer
   int _minutes; //customize match say aaye ga
@@ -75,6 +76,7 @@ class _HostState extends State<Host> {
     this.moderator.aTeam.score=0;
     this.moderator.aTeam.canAnswer=true;
     this.moderator.bTeam.canAnswer=true;
+
 //    print(questionSet);
     _startGameTimer();
     super.initState();
@@ -96,6 +98,7 @@ class _HostState extends State<Host> {
       }
       if (data == "BuzzIn") {
         print("Recognizing");
+
         server.sendAll("Recognized");
       }
     });
@@ -103,6 +106,7 @@ class _HostState extends State<Host> {
 
   void _startBuzzTimer() {
     bonusTimer=moderator.bonusTime;
+
     tossUpTimer = this.moderator.tossUpTime;
     if (_buzzTimer != null) {
       _buzzTimer.cancel();
@@ -167,6 +171,7 @@ class _HostState extends State<Host> {
             });
           }
         }
+
       });
     });
   }
@@ -182,6 +187,7 @@ class _HostState extends State<Host> {
         {
           _gameTimer.cancel();
         }
+
 //        if (_minutes < 0) {
 //          _gameTimer.cancel();
 //        }
@@ -291,6 +297,7 @@ class _HostState extends State<Host> {
                     {
                       _startBuzzTimer();
                     }
+
                   });
                 }
                 else {
@@ -367,6 +374,7 @@ class _HostState extends State<Host> {
                     ),
                     Text(
                       this.moderator.bTeam.score.toString(),
+
                       textAlign: TextAlign.right,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -427,11 +435,13 @@ class _HostState extends State<Host> {
                         style: TextStyle(fontSize: 16),
                       )
                           : (roundName=="Bonus" && !questionSet[index].bonusIsShortAns) ?
+
                       Text(
                         questionSet[index].bonusMCQOptions[0]+"\n"+questionSet[index].bonusMCQOptions[1]+"\n"+questionSet[index].bonusMCQOptions[2]+"\n"+questionSet[index].bonusMCQOptions[3],
                         style: TextStyle(fontSize: 16),
                       ):
                       Container(width: 0.0, height: 0.0,),
+
                     ),
 //                    ((roundName=="Toss-Up") && !questionSet[index].tossupIsShortAns) || ((roundName=="Bonus") && !questionSet[index].bonusIsShortAns) ?
 //                    ListView(
@@ -460,12 +470,14 @@ class _HostState extends State<Host> {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
                       child: Row(
+
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Padding(
                             padding: EdgeInsets.all(10),
                             child: Text(
                               "Skip Question",
+
                               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
                             ),
                           ),
@@ -482,7 +494,7 @@ class _HostState extends State<Host> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Result(this.moderator)),
-                                    );
+                     );
                                   }
                                   else {
                                     index += 1;
@@ -589,6 +601,7 @@ class _HostState extends State<Host> {
                       "Correct",
                       style:
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+
                     ),
                     padding: EdgeInsets.all(20.0),
                     disabledColor: Colors.grey,
@@ -728,6 +741,7 @@ class _HostState extends State<Host> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => Result(this.moderator)),
+
                               );
                             }
                             else {
@@ -743,7 +757,6 @@ class _HostState extends State<Host> {
                           }
                       }
                       }
-
                       );
                     }: null,
                   ),
@@ -756,6 +769,7 @@ class _HostState extends State<Host> {
                       "Penalty",
                       style:
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+
                     ),
                     padding: EdgeInsets.all(20.0),
                     disabledColor: Colors.grey,
@@ -849,6 +863,7 @@ class _HostState extends State<Host> {
                                                   }
                                                   else {
                                                     this.moderator.aTeam.score += 4;
+
                                                   }
                                                 }
                                               });
@@ -899,6 +914,7 @@ class _HostState extends State<Host> {
                                                   }
                                                   else {
                                                     this.moderator.aTeam.score += 4;
+
                                                   }
                                                 }
                                               });
@@ -1116,6 +1132,7 @@ class _HostState extends State<Host> {
 //                                            color: const Color(0xFF1BC0C5),
                                           ),
                                         ),
+
 //                                        Spacer(),
 //                                        SizedBox(
 //                                          width: 320.0,
