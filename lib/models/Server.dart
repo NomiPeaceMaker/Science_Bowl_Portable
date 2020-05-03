@@ -51,11 +51,26 @@ class Server {
 //  }
 
   onRequest(Socket socket) {
+    
+    
+
     print("New User");
     print(socket);
     socket.write(json.encode({"type" : "Connected"}));
     socketDataStreamController.add(json.encode({"type" : "newUserConnected"}));
     print("Sending connect message to client.");
+    if (!sockets.contains(socket)) {
+      sockets.add(socket);
+    }
+    socket.listen((Uint8List data) {
+      this.onData(data);
+    });
+    // Recieve something here before you send something back
+
+    // ASKING FOR Pin
+    socket.write(json.encode({"pin" : "what_is_pin"}));
+    socketDataStreamController.add(json.encode({"pin" : "what_is_pin"}));
+    print("Asking client for pin");
     if (!sockets.contains(socket)) {
       sockets.add(socket);
     }

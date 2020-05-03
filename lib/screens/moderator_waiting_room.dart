@@ -43,6 +43,10 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
       player.userName = data["userName"];
       player.email = data["email"];
       print("LISTENING AT WAITING SCREEN MODERATOR");
+      if (data["pin"]== pin)
+        {
+          // SEND ERROR "PIN INCORRECT"
+        }
       if (data["type"] == "buzzer") {
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String previousState = data["previousState"];
@@ -57,12 +61,13 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
           playerJoinStreamControllers[playerPositionIndex].add(player.userName);
         }
       } else if (data["type"]=="newUserConnected") {
-        print("New user  connected, sending it waiting rooms states");
-        var waitingScreenState = {"type": "waitingScreenState"};
-        waitingScreenState["playerSlotIsTakenList"] = json.encode(playerSlotIsTakenList);
-        waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
-        print(waitingScreenState);
-        server.sendAll(json.encode(waitingScreenState));
+        
+          print("New user  connected, sending it waiting rooms states");
+          var waitingScreenState = {"type": "waitingScreenState"};
+          waitingScreenState["playerSlotIsTakenList"] = json.encode(playerSlotIsTakenList);
+          waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
+          print(waitingScreenState);
+          server.sendAll(json.encode(waitingScreenState));    
       }
       ///////////////////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////////////
@@ -122,6 +127,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
   }
   @override
   Container pinBar() {
+    pin = moderator.gamePin;
     return new Container(
       margin: EdgeInsets.only(top: 10.0),
       child: new Align(

@@ -15,7 +15,7 @@ String Wifi_ip = "none";
 String username_set;
 int PORT = 4040;
 bool isModerator = false;
-String pin = "0000";
+String pin;
 //String name1 = 'nomi';
 //User user = User('nomipeacemaker', 'nomipeacemaker@gmail.com');
 User user = new User();
