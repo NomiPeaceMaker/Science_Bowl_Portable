@@ -3,14 +3,20 @@ import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/screens/onboarding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sciencebowlportable/screens/login.dart';
+import 'package:sciencebowlportable/globals.dart';
+import 'package:flutter/services.dart';
 
 int initScreen = 0;
-
 Future <void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   initScreen = await prefs.getInt("initScreen");
+  user.userName = await prefs.getString("username_set");
   print('initScreen $initScreen');
+  SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
   
   runApp(MyApp());
 }
@@ -28,23 +34,20 @@ class _MyApp extends State<MyApp> {
   Widget build(BuildContext context) {
     
     if(initScreen == 1) { // IF THIS IS NOT THE FIRST TIME RUNNING
-      {route0 = <String, WidgetBuilder>{
-        '/': (context) => Login(),
-//        '/': (context) => MyHomePage(),
-        // When navigating to the "/second" route, build the SecondScreen widget.
-      '/home': (context) => MyHomePage(),
-    };
+        route0 = <String, WidgetBuilder> {
+//          '/': (context) => Login(),
+          '/': (context) => MyHomePage(),
+          // When navigating to the "/second" route, build the SecondScreen widget.
+        '/home': (context) => MyHomePage(),
+        };
     }
-    }
-    else // IF THIS IS THE FIRST TIME RUNNING
-    {
-      {route0 = <String, WidgetBuilder>{
-        '/': (context) => OnboardingScreen(),
-//        '/': (context) => MyHomePage(),
+    else { // IF THIS IS THE FIRST TIME RUNNING
+      route0 = <String, WidgetBuilder>{
+//        '/': (context) => OnboardingScreen(),
+        '/': (context) => MyHomePage(),
           // When navigating to the "/second" route, build the SecondScreen widget.
         '/home': (context) => MyHomePage(),
       };
-      }
     }
     return MaterialApp(
       title: 'Flutter Demo',

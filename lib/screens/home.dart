@@ -13,11 +13,13 @@ import 'package:connectivity/connectivity.dart';
 import 'package:move_to_background/move_to_background.dart';
 
 
+
 enum settings { help, report }
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
+  
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -25,9 +27,15 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   DateTime currentBackPressTime;
   settings _selection;
+  bool _connectedToWifi = true;
+  final ableColor = Color(0xFF20BABA);
+  Color buttonColor = Color(0xFF20BABA);
+
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    
     return new WillPopScope(
       
       child: MaterialApp(
@@ -152,9 +160,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ])),
                         ])),
                   ]),
-                  _button("HOST GAME", true, MatchSettings()),
-                  _button("JOIN GAME", true, Pin()),
-                  _button("HOW TO PLAY", false, HowToPlay()) // This shouldn't need internet but it doesnt work without so ig
+                  _button("HOST GAME", MatchSettings()),
+                  _button("JOIN GAME", Pin()),
+                  _noInternetbutton("HOW TO PLAY", HowToPlay()) // This shouldn't need internet but it doesnt work without so ig
                 ])),
           ),
         ),
@@ -166,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  _button(String title, bool needsInternet, landingPage) {
+  _button(String title, landingPage) {
     return Padding(
         padding: EdgeInsets.symmetric(
             vertical: SizeConfig.safeBlockVertical * 3.5,
@@ -183,10 +191,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(color: Colors.white, fontSize: 22.0)),
             ),
           ),
-          color: Color(0xFF20BABA),
+          color: buttonColor,
+          
           onPressed: ()  async {
-            if (needsInternet) {
-              if (await _checkWifiConnectivity()) {
+              await _checkWifiConnectivity();
+              setState(() {
+                if (_connectedToWifi) {buttonColor = ableColor;}
+                else {buttonColor = disableColor;}
+              });
+              if (_connectedToWifi) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => landingPage),
@@ -194,14 +207,36 @@ class _MyHomePageState extends State<MyHomePage> {
                 } else {
                   _noInternetDialog();
                 }
+            }
+        ));
+  }
 
-              } else {
+   _noInternetbutton(String title, landingPage) {
+    return Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: SizeConfig.safeBlockVertical * 3.5,
+            horizontal: SizeConfig.safeBlockHorizontal * 5),
+        child: RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(45.0),
+          ),
+          child: SizedBox(
+            height: SizeConfig.blockSizeVertical * 21,
+            width: SizeConfig.blockSizeVertical * 50,
+            child: Center(
+              child: Text(title,
+                  style: TextStyle(color: Colors.white, fontSize: 22.0)),
+            ),
+          ),
+          color: ableColor,
+          
+          onPressed: ()   {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => landingPage),
                 ); 
-              }
-            }
+                }
+
         ));
   }
 
@@ -231,12 +266,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (result == ConnectivityResult.wifi) {
       print("Connected to Wifi");
-      return true;
-      // Wifi_ip = await (Connectivity.getWifiIP());
+      _connectedToWifi = true;
 
     } else {
       print("NO wifi detected");
-      return false;
+      _connectedToWifi = false;
     }
   }
 }

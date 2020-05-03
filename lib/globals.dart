@@ -12,7 +12,7 @@ import 'package:sciencebowlportable/models/User.dart';
 //List<StreamSubscription> greenPlayerJoinStreamSubscription;
 
 String Wifi_ip = "none";
-
+String username_set;
 int PORT = 4040;
 bool isModerator = false;
 String pin = "0000";
@@ -22,17 +22,3 @@ User user = new User();
 bool isLoggedIn = false;
 
 StreamController<String> socketDataStreamController = StreamController.broadcast();
-
-var playerPositionIndexDict =
-{
-  "A 1": 0,
-  "A 2":1,
-  "A Captain":2,
-  "A 3":3,
-  "A 4":4,
-  "B 1": 5,
-  "B 2": 6,
-  "B Captain": 7,
-  "B 3":8,
-  "B 4":9
-};

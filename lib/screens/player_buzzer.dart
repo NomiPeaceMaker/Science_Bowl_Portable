@@ -5,6 +5,7 @@ import "dart:math";
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
+import 'dart:convert';
 
 
 class Game extends StatefulWidget {
@@ -123,33 +124,27 @@ class _GameState extends State<Game> {
 //    BuzzerStreamController = StreamController.broadcast();
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data){
-      print("before: d-'$data'-d");
-      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
-      print("after: d-'$data'-d");
+      print("DATA RECIEVED FROM MODERATOR");
+      print(data);
+      data = json.decode(data);
 
-      if (data[0] == "Recognized") {
-        print("Server: Player has been officially recognised.");
-        BuzzerStreamController.add("s");
-      } else if (data[0] == "G") {
-        print("G joined");
-      }
-      if (data=="Recognized") {
+      if (data["type"] == "Recognized") {
         print("Server: Player has been officially recognised.");
         BuzzerStreamController.add("Recognized");
       }
-      if (data=="BuzzerAvailable") {
+      if (data["type"] == "BuzzerAvailable") {
         print("BUZZERR AVAIALEKLEKJF");
         unavailable = false;
         BuzzerStreamController.add("Available");
       }
-      if (data=="Incorrect") {
+      if (data["type"] == "Incorrect") {
         BuzzerStreamController.add("Incorrect");
       }
-      if (data=="Correct") {
+      if (data["type"] == "Correct") {
         BuzzerStreamController.add("Correct");
       }
 
-      if (data=="Penalty") {
+      if (data["type"] == "Penalty") {
         BuzzerStreamController.add("Penalty");
       }
     });
@@ -384,10 +379,7 @@ class _GameState extends State<Game> {
                   ),
                   onPressed: (){
                     setState(() {
-                      client.write("BuzzIn");
-                      print("I'm Buzzing in");
-                      print("YOU BEEN RECOGNIZED!");
-
+                      client.write(json.encode({"type":"BuzzIn", "playerID":player.playerID}));
                       if (!unavailable)
                       {
                         if (element=="Recognized") {

@@ -18,7 +18,6 @@ class Pin extends StatefulWidget {
 
 class _PinState extends State<Pin> {
   String gamePin;
-  Player player = Player("");
   Client client;
   bool connected = false;
 
@@ -27,12 +26,18 @@ class _PinState extends State<Pin> {
 
   onData(Uint8List data) {
     var msg = String.fromCharCodes(data);
-    socketDataStreamController.add(msg);
     var msgJson = json.decode(msg);
-    print("Message Recieved from server $msg");
+//    print("Message Recieved from server $msg");
     if (msgJson["type"] == "Connected") {
-      print("Coonected to server, recieved message!");
-      connected = true;
+      print("GOT CONNECTED MESSAGE FROM SERVER");
+      client.write(json.encode({"type":"uniqueID", "ID": user.userName}));
+    }
+//      print("Connected to server, recieved message!");
+//      socketDataStreamController.add("");
+//      connected = true;
+//    } else {
+    else {
+      socketDataStreamController.add(msg);
     }
     setState(() {});
   }
@@ -105,7 +110,7 @@ class _PinState extends State<Pin> {
                       onError: this.onError,
                     );
                   });
-                  if (connected) {
+                  if (client.connected) {
                     print("connected");
                   } else {
                     print("waiting for connection");
