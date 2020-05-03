@@ -10,10 +10,11 @@ class waitingRoom extends StatefulWidget {
   waitingRoomState createState() => waitingRoomState();
 }
 
+List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
+List<String> playerNamesList = List.generate(10, (_) => "");
+
 class waitingRoomState<T extends waitingRoom> extends State<T> {
-  List<StreamController<String>> playerJoinStreamControllers;
-  List<bool> playerSlotIsTakenList;
-  List<String> playerNamesList;
+  List<StreamController<String>> playerJoinStreamControllers = new List(10);
   StreamSubscription socketDataStreamSubscription;
   String appBarText;
 
@@ -21,9 +22,6 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
   @override
   void initState() {
     super.initState();
-    playerSlotIsTakenList= List.generate(10, (_) => false);
-    playerNamesList = List.generate(10, (_) => "");
-    playerJoinStreamControllers = new List(10);
     for (var i = 0 ; i < 10; i++ ) {
       playerJoinStreamControllers[i] = StreamController.broadcast();
     }
