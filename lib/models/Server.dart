@@ -79,26 +79,11 @@ class Server {
         this.onData(data);
       }
     });
-<<<<<<< HEAD
-    // Recieve something here before you send something back
-
-    // ASKING FOR Pin
-    socket.write(json.encode({"pin" : "what_is_pin"}));
-    socketDataStreamController.add(json.encode({"pin" : "what_is_pin"}));
-    print("Asking client for pin");
-    if (!sockets.contains(socket)) {
-      sockets.add(socket);
-    }
-    socket.listen((Uint8List data) {
-      this.onData(data);
-    });
-=======
-//
+// THIS IS WHERE YOU ASK THEM FOR PIN!!!!!
 //    socket.drain().then((_) {
 //      print('Player left');
 //      socket.close();
 //    });
->>>>>>> f1b758f38ab50472ebde967391b4cefb0d927c95
   }
 
   String ip2key(String input)
