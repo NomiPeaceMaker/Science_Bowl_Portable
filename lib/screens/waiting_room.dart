@@ -17,6 +17,7 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
   List<StreamController<String>> playerJoinStreamControllers = new List(10);
   StreamSubscription socketDataStreamSubscription;
   String appBarText;
+  var userSlotsDict = {};
 
   var playerPositionIndexDict;
   @override

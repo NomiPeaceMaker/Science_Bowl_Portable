@@ -38,17 +38,20 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
     socketDataStreamSubscription = socketDataStream.listen((data) {
       ///////////////////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////////////
+      print("player waiting room");
       print(data);
       data = json.decode(data);
       if (data["type"] == "selectSlot") {
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String userName = data["userName"];
-        String previousState = data["previousState"];
-        if (previousState != "") {
+        String previousState = userSlotsDict[data["uniqueID"]];
+//        String previousState = data["previousState"];
+        if (previousState != null) {
           int previousStateIndex = playerPositionIndexDict[previousState];
           playerJoinStreamControllers[previousStateIndex].add("undoSelect");
         }
         playerJoinStreamControllers[playerPositionIndex].add(userName);
+        userSlotsDict[data["uniqueID"]] = data["playerID"];
         // test this out it might cause async problems
         player.playerID = data["playerID"];
       } else if (data["type"] == "startGame") {
@@ -88,11 +91,10 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       "type": "selectSlot",
       "userName": player.userName,
       "playerID": playerID,
+      "uniqueID": player.userName,
       "playerPositionIndex": playerPositionIndex.toString(),
       "previousState": player.playerID,
     };
-    print("SENDING TO SERVER");
-    print(message);
     if (!playerSlotIsTakenList[playerPositionIndex]) {
       client.write(json.encode(message));
     }
@@ -119,10 +121,9 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       "type": "playerLeaving",
       "userName": player.userName,
       "playerID": player.playerID,
+      "uniqueID": player.userName,
       "playerPositionIndex": playerPositionIndexDict[player.playerID].toString(),
     };
-    print("SENDING TO SERVER");
-    print(message);
     client.write(json.encode(message));
   }
 
@@ -146,5 +147,4 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         );
       });
   }
-
 }
