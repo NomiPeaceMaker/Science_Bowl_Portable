@@ -74,7 +74,7 @@ class Server {
         sockets[msg["ID"]] = socket;
         print(msg["ID"]);
         print(socket);
-        socketDataStreamController.add(json.encode({"type" : "newUserConnected", "uniqueID":msg["ID"]}));
+//        socketDataStreamController.add(json.encode({"type" : "newUserConnected", "uniqueID":msg["ID"]}));
       } else {
         this.onData(data);
       }
