@@ -7,7 +7,6 @@ import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/moderator_waiting_room.dart';
 import 'package:sciencebowlportable/screens/loading.dart';
-
 import 'package:sciencebowlportable/models/Server.dart';
 import 'dart:typed_data';
 
@@ -60,6 +59,7 @@ class _MatchSettingState extends State<MatchSettings> {
     moderator.gameTime = 20;
     moderator.numberOfQuestion = 25;
 //    moderator.subjects = ["Math", "Physics"];
+//    Math Earth&Space Biology Chemistry Physics Energy
     moderator.subjectsdict = {
       0: false,
       1: false,
@@ -299,10 +299,8 @@ class _MatchSettingState extends State<MatchSettings> {
                         ],
                         onPressed: (int index) {
                           setState(() {
-                            isSelectedSubject_1[index] =
-                                !isSelectedSubject_1[index];
-                            moderator.subjectsdict[index] =
-                                !moderator.subjectsdict[index];
+                            isSelectedSubject_1[index] = !isSelectedSubject_1[index];
+                            moderator.subjectsdict[index] = !moderator.subjectsdict[index];
                             print(index);
                           });
                         },
