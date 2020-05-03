@@ -10,18 +10,19 @@ class waitingRoom extends StatefulWidget {
   waitingRoomState createState() => waitingRoomState();
 }
 
+List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
+List<String> playerNamesList = List.generate(10, (_) => "");
+
 class waitingRoomState<T extends waitingRoom> extends State<T> {
-  List<StreamController<String>> playerJoinStreamControllers;
-  List<bool> playerSlotIsTakenList;
-  List<String> playerNamesList;
+  List<StreamController<String>> playerJoinStreamControllers = new List(10);
   StreamSubscription socketDataStreamSubscription;
+  String appBarText;
+  var userSlotsDict = {};
+
   var playerPositionIndexDict;
   @override
   void initState() {
     super.initState();
-    playerSlotIsTakenList= List.generate(10, (_) => false);
-    playerNamesList = List.generate(10, (_) => "");
-    playerJoinStreamControllers = new List(10);
     for (var i = 0 ; i < 10; i++ ) {
       playerJoinStreamControllers[i] = StreamController.broadcast();
     }
@@ -42,9 +43,11 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
 
     @required Align bottomScreenMessage() {}
     void onPressTeamSlot(String playerID, int playerPositionIndex) {}
+    void onExit() {}
     Container pinBar() {
       return new Container();
     }
+
     SizedBox teamSlotWidget(String playerPosition, String team) {
     var color, buttonColor, buttonText;
     String playerID = '$team $playerPosition';
@@ -128,7 +131,7 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
           ),
           backgroundColor: Color(0xffF8B400),
           title: Text(
-            "JOIN",
+            appBarText,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
           ),
           centerTitle: true,
@@ -202,10 +205,14 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
               ),
               FlatButton(
                 child: Text("Exit", style: exitstyle),
-                onPressed: () {  Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
-                    ),
-                    ModalRoute.withName('/'));},
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),),
+                    ModalRoute.withName('/')
+                  );
+                  onExit();
+                },
               ),
             ],
           );

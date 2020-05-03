@@ -15,7 +15,8 @@ class Server {
   DynamicCallback onError;
   ServerSocket server;
   bool running = false;
-  List<Socket> sockets = [];
+  var sockets = <String, Socket>{};
+//  List<Socket> sockets = [];
 
   start() async {
     print("STARTIED LISTENING!");
@@ -36,11 +37,16 @@ class Server {
   }
 
   sendAll(String message) {
-    for (Socket socket in sockets) {
-      print(message);
-      print(socket.address);
-      socket.write(message);
-    }
+    print("SEND ALL CALLED");
+    sockets.forEach((userID, socket) => {
+      print("SENDING $message TO $userID"),
+      socket.write(message),
+    });
+//    for (Socket socket in sockets) {
+//      print(message);
+//      print(socket.address);
+//      socket.write(message);
+//    }
   }
 
 //  broadCast(String message) {
@@ -57,14 +63,23 @@ class Server {
     print("New User");
     print(socket);
     socket.write(json.encode({"type" : "Connected"}));
-    socketDataStreamController.add(json.encode({"type" : "newUserConnected"}));
-    print("Sending connect message to client.");
-    if (!sockets.contains(socket)) {
-      sockets.add(socket);
-    }
+//    print("Sending connect message to client.");
+//    if (!sockets.contains(socket)) {
+//      sockets.add(socket);
+//    }
     socket.listen((Uint8List data) {
-      this.onData(data);
+      var msg = json.decode(String.fromCharCodes(data));
+      if (msg["type"]=="uniqueID") {
+        print("GOT UNIQUE ID MESSAGE FROM client");
+        sockets[msg["ID"]] = socket;
+        print(msg["ID"]);
+        print(socket);
+        socketDataStreamController.add(json.encode({"type" : "newUserConnected", "uniqueID":msg["ID"]}));
+      } else {
+        this.onData(data);
+      }
     });
+<<<<<<< HEAD
     // Recieve something here before you send something back
 
     // ASKING FOR Pin
@@ -77,6 +92,13 @@ class Server {
     socket.listen((Uint8List data) {
       this.onData(data);
     });
+=======
+//
+//    socket.drain().then((_) {
+//      print('Player left');
+//      socket.close();
+//    });
+>>>>>>> f1b758f38ab50472ebde967391b4cefb0d927c95
   }
 
   String ip2key(String input)

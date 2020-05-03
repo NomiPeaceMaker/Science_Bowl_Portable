@@ -138,7 +138,7 @@ class _MatchSettingState extends State<MatchSettings> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                 child: Text(
-                  "MACTH SETTINGS",
+                  "MATCH SETTINGS",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,

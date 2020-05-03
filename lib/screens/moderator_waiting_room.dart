@@ -31,6 +31,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
   @override
   initState() {
     super.initState();
+    appBarText = "HOST";
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data) {
       ///////////////////////////////////////////////////////////////////
@@ -43,31 +44,37 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
       player.userName = data["userName"];
       player.email = data["email"];
       print("LISTENING AT WAITING SCREEN MODERATOR");
-      if (data["pin"]== pin)
-        {
-          // SEND ERROR "PIN INCORRECT"
-        }
-      if (data["type"] == "buzzer") {
+      if (data["type"] == "selectSlot") {
+        print(playerSlotIsTakenList);
+
+        String previousState = userSlotsDict[data["uniqueID"]];
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
-        String previousState = data["previousState"];
-        print("IS PLAYER SLOT TAKEN");
+//        String previousState = data["previousState"];
         if (!playerSlotIsTakenList[playerPositionIndex]) {
-          print("SENDING data to all");
           server.sendAll(json.encode(data));
-          if (previousState!="") {
+          if (previousState!=null) {
             int previousStateIndex = playerPositionIndexDict[previousState];
             playerJoinStreamControllers[previousStateIndex].add("undoSelect");
           }
           playerJoinStreamControllers[playerPositionIndex].add(player.userName);
+          userSlotsDict[data["uniqueID"]] = data["playerID"];
         }
       } else if (data["type"]=="newUserConnected") {
-        
-          print("New user  connected, sending it waiting rooms states");
-          var waitingScreenState = {"type": "waitingScreenState"};
-          waitingScreenState["playerSlotIsTakenList"] = json.encode(playerSlotIsTakenList);
-          waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
-          print(waitingScreenState);
-          server.sendAll(json.encode(waitingScreenState));    
+//        userSlotsDict["email"] = data["email"];
+//        userSlotsDict["playerID"] = data["playerID"];
+        userSlotsDict[data["uniqueID"]] = null;
+        var waitingScreenState = {"type": "waitingScreenState"};
+        waitingScreenState["playerSlotIsTakenList"] = json.encode(playerSlotIsTakenList);
+        waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
+        print(waitingScreenState);
+        server.sendAll(json.encode(waitingScreenState));
+      } else if (data["type"] == "playerLeaving") {
+        var uniqueID = data["uniqueID"];
+        server.sockets[uniqueID].close();
+        server.sockets.removeWhere((key, _) => key == uniqueID);
+        socketDataStreamController.add(json.encode({"type": "newUserConnected"}));
+        int playerPositionIndex = int.parse(data["playerPositionIndex"]);
+        playerJoinStreamControllers[playerPositionIndex].add("undoSelect");
       }
       ///////////////////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////////////
@@ -93,38 +100,32 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
           color: Colors.pink,
           textColor: Colors.white,
           onPressed: () => {
-            socketDataStreamSubscription.cancel(),
-            server.sendAll(json.encode({"type":"startGame"})),
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
-            ),
+            if (playerSlotIsTakenList[2] && playerSlotIsTakenList[7]) {
+              socketDataStreamSubscription.cancel(),
+              server.sendAll(json.encode({"type":"startGame"})),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
+              ),
+            } else {
+              _captainLeftDialog(),
+              /////////// for testing /////////////////////////////////
+              ////////// comment this out for real game ///////////////
+              socketDataStreamSubscription.cancel(),
+              server.sendAll(json.encode({"type":"startGame"})),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
+              ),
+              ////////////////////////////////////////////////////////
+              ///////////////////////////////////////////////////////
+            }
           },
         ),
       ),
     );
   }
 
-  _captainLeftDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Captains Need to Join"),
-          content: Text("Both team captians need to join before we can start the game. Please ask them to join before presseing start game."),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Okay", style: staystyle),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-           
-          ],
-        );
-      });
-  }
   @override
   Container pinBar() {
     pin = moderator.gamePin;
@@ -147,4 +148,32 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
         )
       ),
     );}
+
+  @override
+  void onExit() {
+    server.sendAll(json.encode({"type": "moderatorLeaving"}));
+    server.stop();
+  }
+
+  _captainLeftDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Captains Need to Join"),
+          content: Text("Both team captians need to join before we can start the game. Please ask them to join before presseing start game."),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Okay", style: staystyle),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+
+          ],
+        );
+      });
+  }
+
 }
