@@ -99,12 +99,16 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
               ),
             } else {
               _captainLeftDialog(),
-//              socketDataStreamSubscription.cancel(),
-//              server.sendAll(json.encode({"type":"startGame"})),
-//              Navigator.push(
-//                context,
-//                MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
-//              ),
+              /////////// for testing /////////////////////////////////
+              ////////// comment this out for real game ///////////////
+              socketDataStreamSubscription.cancel(),
+              server.sendAll(json.encode({"type":"startGame"})),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
+              ),
+              ////////////////////////////////////////////////////////
+              ///////////////////////////////////////////////////////
             }
           },
         ),
