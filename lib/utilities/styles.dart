@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+final disableColor = Colors.grey[400];
+
 final appBarStyle = TextStyle(
   color: Colors.white,
   fontFamily: 'Roboto',
