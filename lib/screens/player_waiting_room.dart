@@ -189,76 +189,80 @@ class _PlayerWaitingRoomState extends State<PlayerWaitingRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => _exitDialog(),
+    return WillPopScope(
+      onWillPop: () =>_exitDialog(),  //ask if user wants to really quit
+
+          child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => _exitDialog(),
+          ),
+          backgroundColor: Color(0xffF8B400),
+          title: Text(
+            "JOIN",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
+          ),
+          centerTitle: true,
         ),
-        backgroundColor: Color(0xffF8B400),
-        title: Text(
-          "JOIN",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
-        ),
-        centerTitle: true,
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top: 20.0),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Text(
-                "Slots Available",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xffCC0066),
-                    fontSize: 22),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 20.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Text(
+                  "Slots Available",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xffCC0066),
+                      fontSize: 22),
+                ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text(
-                "Team A",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                    fontSize: 18),
-              ),
-              Text(
-                "Team B",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
-                    fontSize: 18),
-              ),
-            ],
-          ),
-          playerRowWidget("1"),
-          playerRowWidget("2",),
-          playerRowWidget("Captain"),
-          playerRowWidget("3"),
-          playerRowWidget("4"),
-          Container(
-            margin: EdgeInsets.only(bottom: 20.0),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Text(
-                "Please wait for the Moderator\nto Start the Game",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueGrey,
-                    fontSize: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Text(
+                  "Team A",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                      fontSize: 18),
+                ),
+                Text(
+                  "Team B",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                      fontSize: 18),
+                ),
+              ],
+            ),
+            playerRowWidget("1"),
+            playerRowWidget("2",),
+            playerRowWidget("Captain"),
+            playerRowWidget("3"),
+            playerRowWidget("4"),
+            Container(
+              margin: EdgeInsets.only(bottom: 20.0),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  "Please wait for the Moderator\nto Start the Game",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueGrey,
+                      fontSize: 18),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
