@@ -484,7 +484,7 @@ class _HostState extends State<Host> {
                     padding: EdgeInsets.all(20.0),
                     disabledColor: Colors.grey,
                     disabledTextColor: Colors.white,
-                    color: (decisionTime || interrupt || buzzedIn) ? Colors.lightBlue: Colors.grey,
+                    color: (decisionTime || interrupt || buzzedIn) ? Colors.lightGreen : Colors.grey,
                     textColor: Colors.white,
                     onPressed: (decisionTime || interrupt || buzzedIn) ? () {
                       setState(() {
