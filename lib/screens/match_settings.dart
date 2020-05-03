@@ -17,8 +17,8 @@ class MatchSettings extends StatefulWidget {
   _MatchSettingState createState() => _MatchSettingState();
 }
 
-List<bool> isSelectedDifficulty = [false, true];
-List<bool> isSelectedSubject_1 = List.generate(3, (_) => false);
+//List<bool> isSelectedDifficulty = [false, true];
+List<bool> isSelectedSubject_1 = List.generate(2, (_) => false);
 List<bool> isSelectedSubject_2 = List.generate(3, (_) => false);
 
 class _MatchSettingState extends State<MatchSettings> {
@@ -58,20 +58,20 @@ class _MatchSettingState extends State<MatchSettings> {
     moderator.gameDifficulty = "HighSchool";
     moderator.gameTime = 20;
     moderator.numberOfQuestion = 25;
-//    moderator.subjects = ["Math", "Physics"];
-//    Math Earth&Space Biology Chemistry Physics Energy
+    moderator.subjects=[];
     moderator.subjectsdict = {
       0: false,
       1: false,
       2: false,
       3: false,
       4: false,
-      5: false
     };
     moderator.subjects = [];
     moderator.tossUpTime = 5;
     moderator.bonusTime = 20;
     moderator.difficultyLevel = 1;
+    isSelectedSubject_1 = List.generate(2, (_) => false);
+    isSelectedSubject_2 = List.generate(3, (_) => false);
   }
 
   onData(Uint8List data) {
@@ -152,7 +152,7 @@ class _MatchSettingState extends State<MatchSettings> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
                   child: Text(
-                    "Time",
+                    "Time (mins)",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -161,7 +161,7 @@ class _MatchSettingState extends State<MatchSettings> {
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 3),
                     child: SizedBox(
                         width: 65,
                         height: 40,
@@ -190,7 +190,7 @@ class _MatchSettingState extends State<MatchSettings> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
                   child: Text(
-                    "Questions",
+                    "Questions (#)",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -199,7 +199,7 @@ class _MatchSettingState extends State<MatchSettings> {
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 3),
                     child: SizedBox(
                         width: 65,
                         height: 40,
@@ -222,43 +222,43 @@ class _MatchSettingState extends State<MatchSettings> {
               ]),
 
               //Difficulty
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <
-                  Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
-                  child: Text(
-                    "Difficulty",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.white),
-                  ),
-                ),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
-                    child: ToggleButtons(
-                      fillColor: Colors.white,
-                      selectedColor: Colors.amber,
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                      //                        constraints: BoxConstraints(minWidth: 65, minHeight: 40),
-                      children: <Widget>[Text("Mid"), Text("High")],
-                      onPressed: (int index) {
-                        setState(() {
-                          isSelectedDifficulty[index] =
-                              !isSelectedDifficulty[index];
-                          isSelectedDifficulty[1 - index] = false;
-                          moderator.gameDifficulty = isSelectedDifficulty[0]
-                              ? "MiddleSchool"
-                              : "HighSchool";
-                          moderator.difficultyLevel =
-                              isSelectedDifficulty[0] ? 0 : 1;
-                        });
-                      },
-                      isSelected: isSelectedDifficulty,
-                    ))
-              ]),
+//              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <
+//                  Widget>[
+//                Padding(
+//                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+//                  child: Text(
+//                    "Difficulty",
+//                    textAlign: TextAlign.left,
+//                    style: TextStyle(
+//                        fontWeight: FontWeight.bold,
+//                        fontSize: 18,
+//                        color: Colors.white),
+//                  ),
+//                ),
+//                Padding(
+//                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+//                    child: ToggleButtons(
+//                      fillColor: Colors.white,
+//                      selectedColor: Colors.amber,
+//                      color: Colors.white,
+//                      borderRadius: BorderRadius.circular(10.0),
+//                      //                        constraints: BoxConstraints(minWidth: 65, minHeight: 40),
+//                      children: <Widget>[Text("Mid"), Text("High")],
+//                      onPressed: (int index) {
+//                        setState(() {
+//                          isSelectedDifficulty[index] =
+//                              !isSelectedDifficulty[index];
+//                          isSelectedDifficulty[1 - index] = false;
+//                          moderator.gameDifficulty = isSelectedDifficulty[0]
+//                              ? "MiddleSchool"
+//                              : "HighSchool";
+//                          moderator.difficultyLevel =
+//                              isSelectedDifficulty[0] ? 0 : 1;
+//                        });
+//                      },
+//                      isSelected: isSelectedDifficulty,
+//                    ))
+//              ]),
 
               // Include Subjects
               Padding(
@@ -284,18 +284,18 @@ class _MatchSettingState extends State<MatchSettings> {
                         //                        constraints: BoxConstraints(minWidth: 65, minHeight: 40),
                         children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 30),
                             //                    padding: EdgeInsets.only(left:10, right:10),
                             child: Text("Math"),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text("Earth&Space"),
+                            padding: EdgeInsets.symmetric(horizontal: 25),
+                            child: Text("Earth and Space"),
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text("Biology"),
-                          ),
+//                          Padding(
+//                            padding: EdgeInsets.symmetric(horizontal: 20),
+//                            child: Text("Biology"),
+//                          ),
                         ],
                         onPressed: (int index) {
                           setState(() {
@@ -313,26 +313,31 @@ class _MatchSettingState extends State<MatchSettings> {
                         borderRadius: BorderRadius.circular(10.0),
                         //                        constraints: BoxConstraints(minWidth: 65, minHeight: 40),
                         children: <Widget>[
+
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: Text("Biology"),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
                             child: Text("Chemistry"),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 15),
                             child: Text("Physics"),
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text("Energy"),
-                          ),
+//                          Padding(
+//                            padding: EdgeInsets.symmetric(horizontal: 20),
+//                            child: Text("Energy"),
+//                          ),
                         ],
                         onPressed: (int index) {
                           setState(() {
                             isSelectedSubject_2[index] =
                                 !isSelectedSubject_2[index];
-                            moderator.subjectsdict[index + 3] =
-                                !moderator.subjectsdict[index + 3];
-                            print(index + 3);
+                            moderator.subjectsdict[index + 2] =
+                                !moderator.subjectsdict[index + 2];
+                            print(index + 2);
                           });
                         },
                         isSelected: isSelectedSubject_2,
@@ -356,7 +361,7 @@ class _MatchSettingState extends State<MatchSettings> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
                   child: Text(
-                    "Toss-Up",
+                    "Toss-Up (secs)",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -365,7 +370,7 @@ class _MatchSettingState extends State<MatchSettings> {
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 3),
                     child: SizedBox(
                         width: 65,
                         height: 40,
@@ -393,7 +398,7 @@ class _MatchSettingState extends State<MatchSettings> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
                   child: Text(
-                    "Bonus",
+                    "Bonus (secs)",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -402,7 +407,7 @@ class _MatchSettingState extends State<MatchSettings> {
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 3),
                     child: SizedBox(
                         width: 65,
                         height: 40,
@@ -451,7 +456,6 @@ class _MatchSettingState extends State<MatchSettings> {
                       color: Colors.red,
                       iconSize: 30,
                       onPressed: () async {
-                        moderator.subjects = [];
                         moderator.subjectsdict.forEach((key, value) {
 //                          print(key);
                           if (value == true) {
@@ -467,7 +471,6 @@ class _MatchSettingState extends State<MatchSettings> {
                               );
                             else if (key == 4)
                               moderator.subjects.add("Physics");
-                            else if (key == 5) moderator.subjects.add("Energy");
                           }
                         });
 

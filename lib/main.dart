@@ -10,8 +10,7 @@ int initScreen = 0;
 Future <void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  initScreen = await prefs.getInt("initScreen");
-  user.userName = await prefs.getString("username_set");
+   user.userName = await prefs.getString("username_set");
   print('initScreen $initScreen');
   SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
@@ -35,16 +34,16 @@ class _MyApp extends State<MyApp> {
     
     if(initScreen == 1) { // IF THIS IS NOT THE FIRST TIME RUNNING
         route0 = <String, WidgetBuilder> {
-//          '/': (context) => Login(),
-          '/': (context) => MyHomePage(),
+          '/': (context) => Login(),
+//          '/': (context) => MyHomePage(),
           // When navigating to the "/second" route, build the SecondScreen widget.
         '/home': (context) => MyHomePage(),
         };
     }
     else { // IF THIS IS THE FIRST TIME RUNNING
       route0 = <String, WidgetBuilder>{
-//        '/': (context) => OnboardingScreen(),
-        '/': (context) => MyHomePage(),
+        '/': (context) => OnboardingScreen(),
+//        '/': (context) => MyHomePage(),
           // When navigating to the "/second" route, build the SecondScreen widget.
         '/home': (context) => MyHomePage(),
       };
