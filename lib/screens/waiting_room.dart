@@ -40,12 +40,11 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
     };
   }
 
-  @required Align bottomScreenMessage() {}
-  void onPressTeamSlot(String playerID, int playerPositionIndex) {}
-  Container moderatorPinBar() {
-    return new Container();
-  }
-
+    @required Align bottomScreenMessage() {}
+    void onPressTeamSlot(String playerID, int playerPositionIndex) {}
+    Container pinBar() {
+      return new Container();
+    }
     SizedBox teamSlotWidget(String playerPosition, String team) {
     var color, buttonColor, buttonText;
     String playerID = '$team $playerPosition';
@@ -135,9 +134,9 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          moderatorPinBar(),
+          pinBar(),
           Container(
-            margin: EdgeInsets.only(top: 20.0),
+            margin: EdgeInsets.only(top: 5.0),
             child: Align(
               alignment: Alignment.topCenter,
               child: Text(

@@ -99,9 +99,9 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
   }
 
   @override
-  Container moderatorPinBar() {
+  Container pinBar() {
     return new Container(
-      margin: EdgeInsets.only(top: 20.0),
+      margin: EdgeInsets.only(top: 10.0),
       child: new Align(
         alignment: Alignment.topCenter,
         child: new Row(
