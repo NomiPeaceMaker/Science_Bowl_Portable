@@ -31,6 +31,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
   @override
   initState() {
     super.initState();
+    appBarText = "HOST";
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data) {
       ///////////////////////////////////////////////////////////////////
@@ -46,9 +47,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
       if (data["type"] == "buzzer") {
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String previousState = data["previousState"];
-        print("IS PLAYER SLOT TAKEN");
         if (!playerSlotIsTakenList[playerPositionIndex]) {
-          print("SENDING data to all");
           server.sendAll(json.encode(data));
           if (previousState!="") {
             int previousStateIndex = playerPositionIndexDict[previousState];
@@ -57,12 +56,15 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
           playerJoinStreamControllers[playerPositionIndex].add(player.userName);
         }
       } else if (data["type"]=="newUserConnected") {
-        print("New user  connected, sending it waiting rooms states");
         var waitingScreenState = {"type": "waitingScreenState"};
         waitingScreenState["playerSlotIsTakenList"] = json.encode(playerSlotIsTakenList);
         waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
         print(waitingScreenState);
         server.sendAll(json.encode(waitingScreenState));
+      }  else if (data["type"] == "playerLeaving") {
+        socketDataStreamController.add(json.encode({"type": "newUserConnected"}));
+        int playerPositionIndex = int.parse(data["playerPositionIndex"]);
+        playerJoinStreamControllers[playerPositionIndex].add("undoSelect");
       }
       ///////////////////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////////////
@@ -88,38 +90,28 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
           color: Colors.pink,
           textColor: Colors.white,
           onPressed: () => {
-            socketDataStreamSubscription.cancel(),
-            server.sendAll(json.encode({"type":"startGame"})),
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
-            ),
+            if (playerSlotIsTakenList[2] && playerSlotIsTakenList[7]) {
+              socketDataStreamSubscription.cancel(),
+              server.sendAll(json.encode({"type":"startGame"})),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
+              ),
+            } else {
+              _captainLeftDialog(),
+//              socketDataStreamSubscription.cancel(),
+//              server.sendAll(json.encode({"type":"startGame"})),
+//              Navigator.push(
+//                context,
+//                MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
+//              ),
+            }
           },
         ),
       ),
     );
   }
 
-  _captainLeftDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Captains Need to Join"),
-          content: Text("Both team captians need to join before we can start the game. Please ask them to join before presseing start game."),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Okay", style: staystyle),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-           
-          ],
-        );
-      });
-  }
   @override
   Container pinBar() {
     return new Container(
@@ -141,4 +133,32 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
         )
       ),
     );}
+
+  @override
+  void onExit() {
+    server.sendAll(json.encode({"type": "moderatorLeaving"}));
+    server.stop();
+  }
+
+  _captainLeftDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Captains Need to Join"),
+          content: Text("Both team captians need to join before we can start the game. Please ask them to join before presseing start game."),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Okay", style: staystyle),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+
+          ],
+        );
+      });
+  }
+
 }

@@ -7,6 +7,7 @@ import 'package:sciencebowlportable/screens/waiting_room.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
+import 'package:sciencebowlportable/utilities/styles.dart';
 
 class PlayerWaitingRoom extends waitingRoom {
   Client client;
@@ -29,6 +30,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   @override
   void initState() {
     super.initState();
+    appBarText = "JOIN";
     player = Player("");
     player.userName = user.userName;
     player.email = user.email;
@@ -71,6 +73,9 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
                 playerNamesList[index]) : playerJoinStreamControllers[index]
                 .add("undoSelect")
         );
+      } else if (data["type"] == "moderatorLeaving") {
+        client.disconnect();
+        _moderatorEndedGameDialog();
       }
       ///////////////////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////////////
@@ -95,7 +100,6 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   }
 
   @override
-
   Align bottomScreenMessage() {
     return new Align(
       alignment: Alignment.bottomCenter,
@@ -109,4 +113,39 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       ),
     );
   }
+
+  @override
+  void onExit() {
+    var message = {
+      "type": "playerLeaving",
+      "userName": player.userName,
+      "playerID": player.playerID,
+      "playerPositionIndex": playerPositionIndexDict[player.playerID].toString(),
+    };
+    print("SENDING TO SERVER");
+    print(message);
+    client.write(json.encode(message));
+  }
+
+  _moderatorEndedGameDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Moderator Ended Game"),
+          content: Text("The moderator has ended the game. Press Okay to go back to back to home screen."),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Okay", style: staystyle),
+              onPressed: () {
+                Navigator.popUntil(context, ModalRoute.withName('/home'));
+              },
+            ),
+
+          ],
+        );
+      });
+  }
+
 }

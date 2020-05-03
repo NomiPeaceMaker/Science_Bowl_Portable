@@ -15,6 +15,8 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
   List<bool> playerSlotIsTakenList;
   List<String> playerNamesList;
   StreamSubscription socketDataStreamSubscription;
+  String appBarText;
+
   var playerPositionIndexDict;
   @override
   void initState() {
@@ -42,6 +44,7 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
 
     @required Align bottomScreenMessage() {}
     void onPressTeamSlot(String playerID, int playerPositionIndex) {}
+    void onExit() {}
     Container pinBar() {
       return new Container();
     }
@@ -128,7 +131,7 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
           ),
           backgroundColor: Color(0xffF8B400),
           title: Text(
-            "JOIN",
+            appBarText,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
           ),
           centerTitle: true,
@@ -202,10 +205,14 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
               ),
               FlatButton(
                 child: Text("Exit", style: exitstyle),
-                onPressed: () {  Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
-                    ),
-                    ModalRoute.withName('/'));},
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),),
+                    ModalRoute.withName('/')
+                  );
+                  onExit();
+                },
               ),
             ],
           );

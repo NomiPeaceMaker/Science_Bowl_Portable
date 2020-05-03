@@ -62,6 +62,11 @@ class Server {
     socket.listen((Uint8List data) {
       this.onData(data);
     });
+
+    socket.drain().then((_) {
+      print('Player left');
+      socket.close();
+    });
   }
 
   String ip2key(String input)
