@@ -31,7 +31,7 @@ class _PinState extends State<Pin> {
     var msgJson = json.decode(msg);
     print("Message Recieved from server $msg");
     if (msgJson["type"] == "Connected") {
-      print("Coonected to server, recieved message!");
+      print("Connected to server, recieved message!");
       connected = true;
     }
     setState(() {});

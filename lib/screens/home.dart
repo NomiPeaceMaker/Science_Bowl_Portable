@@ -13,6 +13,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:move_to_background/move_to_background.dart';
 
 
+
 enum settings { help, report }
 
 class MyHomePage extends StatefulWidget {
@@ -34,6 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    
     return new WillPopScope(
       
       child: MaterialApp(

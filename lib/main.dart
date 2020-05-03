@@ -4,6 +4,8 @@ import 'package:sciencebowlportable/screens/onboarding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sciencebowlportable/screens/login.dart';
 import 'package:sciencebowlportable/globals.dart';
+import 'package:flutter/services.dart';
+
 int initScreen = 0;
 Future <void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,6 +13,10 @@ Future <void> main() async {
   initScreen = await prefs.getInt("initScreen");
   user.userName = await prefs.getString("username_set");
   print('initScreen $initScreen');
+  SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
   
   runApp(MyApp());
 }
