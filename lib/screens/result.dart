@@ -89,7 +89,7 @@ class _ResultState extends State<Result> {
                       children: <Widget>[
                         Column(
                           children: <Widget>[
-                            Text('A Team',
+                            Text("Team A",
                                 style: TextStyle(
                                   color: Colors.red,
                                   fontSize: 20.0,
@@ -105,7 +105,7 @@ class _ResultState extends State<Result> {
                         ),
                         SizedBox(width: 50.0),
                         Column(children: <Widget>[
-                          Text('B Team',
+                          Text('Team B',
                               style: TextStyle(
                                 color: Colors.lightGreen,
                                 fontSize: 20.0,
