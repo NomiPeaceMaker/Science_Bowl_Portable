@@ -36,8 +36,6 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
     player.email = user.email;
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data) {
-      ///////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////
       print("player waiting room");
       print(data);
       data = json.decode(data);
@@ -79,8 +77,6 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         client.disconnect();
         _moderatorEndedGameDialog();
       }
-      ///////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////
     });
   }
 
@@ -93,7 +89,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       "playerID": playerID,
       "uniqueID": player.userName,
       "playerPositionIndex": playerPositionIndex.toString(),
-      "previousState": player.playerID,
+//      "previousState": player.playerID,
     };
     if (!playerSlotIsTakenList[playerPositionIndex]) {
       client.write(json.encode(message));
@@ -142,7 +138,6 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
                 Navigator.popUntil(context, ModalRoute.withName('/home'));
               },
             ),
-
           ],
         );
       });
