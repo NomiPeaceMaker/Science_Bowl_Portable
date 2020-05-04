@@ -57,6 +57,7 @@ class _PinState extends State<Pin> {
     setState(() {});
   }
 
+
   onError(dynamic error) {
     print("error $error");
     _incorrectPinDialog();

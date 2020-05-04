@@ -218,15 +218,13 @@ class _GameState extends State<Game> {
       else if (data["type"] == "Correct") {
         BuzzerStreamController.add("Correct");
       }
-
       else if (data["type"] == "Penalty") {
         BuzzerStreamController.add("Penalty");
       }
-      else if(data["type"]=="moderatorLeaving")
-        {
-          client.disconnect();
-          moderatorLeftGameDialog();
-        }
+      else if(data["type"]=="moderatorLeaving") {
+        client.disconnect();
+        moderatorLeftGameDialog();
+      }
     });
   }
 
