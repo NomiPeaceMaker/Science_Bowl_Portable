@@ -37,13 +37,12 @@ class _PinState extends State<Pin> {
 //    print("Message Recieved from server $msg");
     if (msgJson["type"] == "Connected") {
       print("GOT CONNECTED MESSAGE FROM SERVER");
-      client.write(json.encode({"type":"uniqueID", "ID": user.userName}));
-      client.write(json.encode({"type":"pin", "pin": pin, "uniqueID": user.userName}));
+      client.write(json.encode({"type":"uniqueID", "ID": user.email}));
+      client.write(json.encode({"type":"pin", "pin": pin, "uniqueID": user.email}));
     } if (msgJson["type"] == "pinState") {
       print("clinet recieved accept pin message");
-
       if (msgJson["pinState"] == "Accepted") {
-        client.write(json.encode({"type": "movingToWaitingRoom", "uniqueID": user.userName}));
+        client.write(json.encode({"type": "movingToWaitingRoom", "uniqueID": user.email}));
         Navigator.push(
           context,
           MaterialPageRoute(
