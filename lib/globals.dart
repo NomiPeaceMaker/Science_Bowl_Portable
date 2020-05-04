@@ -1,4 +1,5 @@
 library science_bowl_portable.globals;
+import 'package:sciencebowlportable/models/Game.dart';
 import 'dart:async';
 import 'package:sciencebowlportable/models/User.dart';
 
@@ -16,6 +17,7 @@ String username_set;
 int PORT = 4040;
 bool isModerator = false;
 String pin;
+Game game=new Game();
 String user_email = null;
 //String name1 = 'nomi';
 //User user = User('nomipeacemaker', 'nomipeacemaker@gmail.com');

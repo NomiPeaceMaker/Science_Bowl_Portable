@@ -18,19 +18,21 @@ class MatchSettings extends StatefulWidget {
 }
 
 //List<bool> isSelectedDifficulty = [false, true];
-List<bool> isSelectedSubject_1 = List.generate(2, (_) => false);
-List<bool> isSelectedSubject_2 = List.generate(3, (_) => false);
-bool subject_selected = false;
 
 class _MatchSettingState extends State<MatchSettings> {
   Server server;
   Moderator moderator = Moderator();
+  List<bool> isSelectedSubject_1;
+  List<bool> isSelectedSubject_2;
+  bool subject_selected;
+
 
   List<String> serverLogs = [];
   TextEditingController controller = TextEditingController();
 
   initState() {
     super.initState();
+
     print("INITIALIZING STATE");
     server = Server(
       onData: this.onData,
@@ -42,22 +44,22 @@ class _MatchSettingState extends State<MatchSettings> {
         for (var addr in interface.addresses) {
           print('${addr.address}');
           print(server.ip2key('${addr.address}'));
-          moderator.gamePin = server.ip2key('${addr.address}');
+          game.gamePin = server.ip2key('${addr.address}');
         }
       }
     }
 
     printIps().then((value) {
-      print(moderator.gamePin);
-      pin = moderator.gamePin;
+      print(game.gamePin);
+      pin = game.gamePin;
     }, onError: (error) {
       print(error);
     });
 
     moderator.userName = user.userName;
     moderator.email = user.email;
-    moderator.gameDifficulty = "HighSchool";
-    moderator.gameTime = 20;
+    game.gameDifficulty = "HighSchool";
+    game.gameTime = 20;
     moderator.numberOfQuestion = 25;
     moderator.subjects = [];
     moderator.subjectsdict = {
@@ -68,8 +70,8 @@ class _MatchSettingState extends State<MatchSettings> {
       4: false,
     };
     moderator.subjects = [];
-    moderator.tossUpTime = 5;
-    moderator.bonusTime = 20;
+    game.tossUpTime = 5;
+    game.bonusTime = 20;
     moderator.difficultyLevel = 1;
     isSelectedSubject_1 = List.generate(2, (_) => false);
     isSelectedSubject_2 = List.generate(3, (_) => false);
@@ -172,27 +174,27 @@ class _MatchSettingState extends State<MatchSettings> {
                             if (text != "") {
                               var value = int.tryParse(text);
                               if (value == null) {
-                                moderator.gameTime = 20;
+                                game.gameTime = 20;
                                 setState(() {});
                                 _notIntDialog();
                               }
                             }
-                            moderator.gameTime = int.parse(text);
-                            print(moderator.gameTime);
+                            game.gameTime = int.parse(text);
+                            print(game.gameTime);
 
-                            print(moderator.gameTime);
-                            if (moderator.gameTime < 1) {
-                              moderator.gameTime = 20;
+                            print(game.gameTime);
+                            if (game.gameTime < 1) {
+                              game.gameTime = 20;
                               setState(() {});
                               _lessThanOneDialog();
-                            } else if (moderator.gameTime > 30) {
-                              moderator.gameTime = 20;
+                            } else if (game.gameTime > 30) {
+                              game.gameTime = 20;
                               setState(() {});
                               _gameTimeLimit();
                             }
                           },
                           controller: TextEditingController()
-                            ..text = moderator.gameTime.toString(),
+                            ..text = game.gameTime.toString(),
 //                      initialValue: "20",
                           decoration: InputDecoration(
                               filled: true,
@@ -236,6 +238,8 @@ class _MatchSettingState extends State<MatchSettings> {
                           _notIntDialog();
                           }}
                             moderator.numberOfQuestion = int.parse(text);
+                            game.numberOfQuestion = int.parse(text);
+
                             if (moderator.numberOfQuestion < 1) {
                               moderator.numberOfQuestion = 25;
                               setState(() {});
@@ -420,23 +424,23 @@ class _MatchSettingState extends State<MatchSettings> {
                             if (text != "") {
                             var value = int.tryParse(text);
                             if (value == null) {
-                            moderator.tossUpTime = 5;
+                            game.tossUpTime = 5;
                             setState(() {});
                             _notIntDialog();
                             }}
-                            moderator.tossUpTime = int.parse(text);
-                            if (moderator.tossUpTime < 1) {
-                              moderator.tossUpTime = 5;
+                           game.tossUpTime = int.parse(text);
+                            if (game.tossUpTime < 1) {
+                              game.tossUpTime = 5;
                               setState(() {});
                               _lessThanOneDialog();
-                            } else if (moderator.tossUpTime > 59) {
-                              moderator.tossUpTime = 5;
+                            } else if (game.tossUpTime > 59) {
+                              game.tossUpTime = 5;
                               setState(() {});
                               _secondsLimit();
                             }
                           },
                           controller: TextEditingController()
-                            ..text = moderator.tossUpTime.toString(),
+                            ..text = game.tossUpTime.toString(),
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -474,23 +478,23 @@ class _MatchSettingState extends State<MatchSettings> {
                             if (text != "") {
                               var value = int.tryParse(text);
                               if (value == null) {
-                                moderator.bonusTime = 20;
+                                game.bonusTime = 20;
                                 setState(() {});
                                 _notIntDialog();
                               }}
-                            moderator.bonusTime = int.parse(text);
-                               if (moderator.bonusTime < 1) {
-                              moderator.bonusTime = 20;
+                            game.bonusTime = int.parse(text);
+                               if (game.bonusTime < 1) {
+                              game.bonusTime = 20;
                               setState(() {});
                               _lessThanOneDialog();
-                            } else if (moderator.bonusTime > 59) {
-                              moderator.bonusTime = 20;
+                            } else if (game.bonusTime > 59) {
+                              game.bonusTime = 20;
                               setState(() {});
                               _secondsLimit();
                             }
                           },
                           controller: TextEditingController()
-                            ..text = moderator.bonusTime.toString(),
+                            ..text = game.bonusTime.toString(),
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -519,6 +523,8 @@ class _MatchSettingState extends State<MatchSettings> {
                       color: Colors.transparent,
                       textColor: Colors.red,
                       onPressed: () {
+                        setState(() {});
+//                        (context as Element).reassemble();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -551,10 +557,10 @@ class _MatchSettingState extends State<MatchSettings> {
 
                         await server.start();
                         subjectValidation();
-                        print(moderator.gameTime);
-                        print(moderator.numberOfQuestion);
-                        print(moderator.tossUpTime);
-                        print(moderator.bonusTime);
+                        print(game.gameTime);
+                        print(game.numberOfQuestion);
+                        print(game.tossUpTime);
+                        print(game.bonusTime);
 //                        bool validInputs = validations();
                         if (subject_selected == true) {
                           Navigator.push(

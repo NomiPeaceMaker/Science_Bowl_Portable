@@ -56,7 +56,14 @@ Future<List<Question>> retrieveQuestions(
         temp.bonusQuestion = splits.sublist(2).join(" ");
         temp.subjectType = decoder["subjectType"];
       }
-
+    if (temp.tossupQuestion.indexOf("–")!=-1)
+      {
+        temp.tossupQuestion=temp.tossupQuestion.substring(temp.tossupQuestion.indexOf("–")+2);
+      }
+    if (temp.bonusQuestion.indexOf("–")!=-1)
+    {
+      temp.bonusQuestion=temp.bonusQuestion.substring(temp.bonusQuestion.indexOf("–")+2);
+    }
     temp.tossupIsShortAns = decoder["tossup_isShortAns"];
     if (decoder["tossup_MCQoptions"] != null) {
       List<String> tossupOptions = decoder["tossup_MCQoptions"].split("\n");

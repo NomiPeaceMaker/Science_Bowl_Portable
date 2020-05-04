@@ -4,10 +4,12 @@ import 'package:sciencebowlportable/models/Questions.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//all data regarding questions will be here only and not in the Game object as that is global
 
 class Moderator extends User {
-  String gameDifficulty, gamePin;
-  int numberOfQuestion, tossUpTime, bonusTime, gameTime;
+//  String gameDifficulty, gamePin;
+//  int numberOfQuestion, tossUpTime, bonusTime, gameTime;
+  int numberOfQuestion;
   var subjects;
 
   //change directory to wherever json files are:
@@ -16,8 +18,8 @@ class Moderator extends User {
 //  Team redTeam = Team("red");
 //  Team greenTeam = Team("green");
 
-  Team aTeam = Team("A");
-  Team bTeam = Team("B");
+//  Team aTeam = Team("A");
+//  Team bTeam = Team("B");
 
   int difficultyLevel;
   var subjectsdict;
