@@ -68,11 +68,12 @@ class _LoginState extends State<Login> {
                               SizedBox(
                                   height: SizeConfig.safeBlockVertical * 50,
                                   width: SizeConfig.safeBlockHorizontal * 90,
-                                  child: TypewriterAnimatedTextKit(
+                                  child: TyperAnimatedTextKit(
+//                                    pause: Duration(milliseconds: 2000),
+                                  speed: Duration(milliseconds: 50),
                                     alignment: Alignment.topLeft,
                                     text: ["Welcome to Science Bowl Portable"],
                                     isRepeatingAnimation: false,
-                                    // duration: Duration(milliseconds: 2000),
                                     textStyle: TextStyle(
                                       fontSize: 60,
                                       fontWeight: FontWeight.bold,
@@ -157,6 +158,7 @@ class _LoginState extends State<Login> {
       print(result);
       if (result == 1) {
         setState(() {
+
           loggedIn = true;
         });
 
@@ -191,8 +193,9 @@ class _LoginState extends State<Login> {
               FacebookAuthProvider.getCredential(accessToken: accessToken);
           final FirebaseUser Fire_user =
               (await firebaseAuth.signInWithCredential(facebookAuthCred)).user;
-          user.email = Fire_user.email;
-
+          setState(() {
+            user.email = Fire_user.email;
+          });
           user_email = user.email;
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString("user_email", user_email);
@@ -203,14 +206,22 @@ class _LoginState extends State<Login> {
         break;
       case "G":
         try {
+
           GoogleSignInAccount googleSignInAccount = await _handleGoogleSignIn();
           final googleAuth = await googleSignInAccount.authentication;
           final googleAuthCred = GoogleAuthProvider.getCredential(
               idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
           final FirebaseUser Fire_user =
               (await firebaseAuth.signInWithCredential(googleAuthCred)).user;
-          user.email = Fire_user.email;
-          user_email = user.email;
+
+//          FirebaseUser currentuser=await FirebaseAuth.instance.currentUser();
+//          print("Current user is ${currentuser.displayName}");
+//          print("Current user email is ${currentuser.email}");
+
+//          user.email = Fire_user.email;
+          setState(() {
+            user.email = Fire_user.email;
+          });
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString("user_email", user_email);
           print('The email address is: ${user.email}');
@@ -247,7 +258,7 @@ class _LoginState extends State<Login> {
 
   Future<GoogleSignInAccount> _handleGoogleSignIn() async {
     GoogleSignIn googleSignIn = GoogleSignIn(
-        scopes: ['email', 'https://www.googleapis.com/auth/contacts.readonly']);
+        scopes: ['email']);
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     return googleSignInAccount;
   }
