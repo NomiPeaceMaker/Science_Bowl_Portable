@@ -5,6 +5,7 @@ import "dart:math";
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
+import 'dart:convert';
 
 
 class Game extends StatefulWidget {
@@ -22,25 +23,28 @@ class _GameState extends State<Game> {
   Player player;
 
 //  double timeLeft = 300; //5 mins
-  int _minutes=5;
-  int _seconds=0;
   Color txtClr = Colors.white;
-  int aScore = 0;
-  String gamePin="NP5629";
-  int bScore = 0;
+  int aScore = 0; //should be from player or team
+  String gamePin=game.gamePin;
+  int bScore = 0; //should be from player or team
   Color bzrBorder=Colors.white;
   Color buzzerClr=Color(0xFFf84b4b);
   String buzzerTxt="Buzz In!";
   String roundName="Toss-up";
   String playerName = "A Captain";
   bool isBuzzerActive=false;
-  String buf="0";
   bool unavailable=true;
   String team="A"; //true for red, false for green
   int _counter = 5;
   Timer _buzzTimer;
   Timer _gameTimer;
   var element="";
+
+  int _minutes=game.gameTime;
+  int _seconds=0;
+  String buf="0";
+  int bonusTimer=game.bonusTime;
+  int tossUpTimer=game.tossUpTime;
 
   _GameState(this.client, this.player){
     _startBuzzTimer();
@@ -123,33 +127,27 @@ class _GameState extends State<Game> {
 //    BuzzerStreamController = StreamController.broadcast();
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data){
-      print("before: d-'$data'-d");
-      data = data.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
-      print("after: d-'$data'-d");
+      print("DATA RECIEVED FROM MODERATOR");
+      print(data);
+      data = json.decode(data);
 
-      if (data[0] == "Recognized") {
-        print("Server: Player has been officially recognised.");
-        BuzzerStreamController.add("s");
-      } else if (data[0] == "G") {
-        print("G joined");
-      }
-      if (data=="Recognized") {
+      if (data["type"] == "Recognized") {
         print("Server: Player has been officially recognised.");
         BuzzerStreamController.add("Recognized");
       }
-      if (data=="BuzzerAvailable") {
+      if (data["type"] == "BuzzerAvailable") {
         print("BUZZERR AVAIALEKLEKJF");
         unavailable = false;
         BuzzerStreamController.add("Available");
       }
-      if (data=="Incorrect") {
+      if (data["type"] == "Incorrect") {
         BuzzerStreamController.add("Incorrect");
       }
-      if (data=="Correct") {
+      if (data["type"] == "Correct") {
         BuzzerStreamController.add("Correct");
       }
 
-      if (data=="Penalty") {
+      if (data["type"] == "Penalty") {
         BuzzerStreamController.add("Penalty");
       }
     });
@@ -193,25 +191,25 @@ class _GameState extends State<Game> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            Container(
-              height: 55.0,
-              color: Color(0xffF8B400),
-              child: Center(
-                child: Text("Settings",
-//                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+            ListTile(
+              leading: Icon(Icons.dehaze),
+              title: Text(
+                "Settings",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
                 ),
               ),
             ),
+//            ListTile(
+//              leading: Icon(Icons.offline_pin, color: Color(0xffF8B400)),
+//              title: Text("Game PIN:\n $gamePin",
+////              textAlign: TextAlign.center,
+//                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
+//              ),
+//            ),
             ListTile(
-              leading: Icon(Icons.offline_pin, color: Color(0xffF8B400)),
-              title: Text("Game PIN:\n $gamePin",
-//              textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app, color: Color(0xffF8B400),),
+              leading: Icon(Icons.exit_to_app,),
               title: GestureDetector(
                   child: Text("Exit Game",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,),
@@ -286,8 +284,8 @@ class _GameState extends State<Game> {
             child: Container(
                 margin: EdgeInsets.only(left: 20.0, right: 20.0),
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.height*0.25,
-                  height: MediaQuery.of(context).size.height*0.25,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  height: MediaQuery.of(context).size.height*0.3,
                   child: Card(
                     elevation: 10.0,
                     color: Colors.yellow[50],
@@ -296,10 +294,12 @@ class _GameState extends State<Game> {
                     ),
                     child: Padding(
                       padding: EdgeInsets.all(10),
-                      child: Text(
-                        "Question pictures will be displayed here.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey),
+                      child: Center(
+                        child: Text(
+                          "Question pictures will be displayed here.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       ),
                     )
                   ),
@@ -307,10 +307,11 @@ class _GameState extends State<Game> {
               ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0),
+            padding: EdgeInsets.symmetric(vertical: 5.0),
             child: Container(
 //              height: 30.0,
-              width: MediaQuery.of(context).size.height*0.25,
+              height: MediaQuery.of(context).size.height*0.1,
+              width: MediaQuery.of(context).size.width*0.7,
               //            color: Colors.
               child: Card(
                 child: Padding(
@@ -331,8 +332,8 @@ class _GameState extends State<Game> {
           ),
 
           SizedBox(
-            width:MediaQuery.of(context).size.width*0.6,
-            height:MediaQuery.of(context).size.width*0.6,
+            width:MediaQuery.of(context).size.height*0.25,
+            height:MediaQuery.of(context).size.height*0.25,
             child:  StreamBuilder(
               stream: BuzzerStreamController.stream,
               builder: (context, snapshot) {
@@ -384,10 +385,7 @@ class _GameState extends State<Game> {
                   ),
                   onPressed: (){
                     setState(() {
-                      client.write("BuzzIn");
-                      print("I'm Buzzing in");
-                      print("YOU BEEN RECOGNIZED!");
-
+                      client.write(json.encode({"type":"BuzzIn", "playerID":player.playerID}));
                       if (!unavailable)
                       {
                         if (element=="Recognized") {

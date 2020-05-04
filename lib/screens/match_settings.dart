@@ -17,9 +17,10 @@ class MatchSettings extends StatefulWidget {
   _MatchSettingState createState() => _MatchSettingState();
 }
 
-List<bool> isSelectedDifficulty = [false, true];
-List<bool> isSelectedSubject_1 = List.generate(3, (_) => false);
+//List<bool> isSelectedDifficulty = [false, true];
+List<bool> isSelectedSubject_1 = List.generate(2, (_) => false);
 List<bool> isSelectedSubject_2 = List.generate(3, (_) => false);
+bool subject_selected = false;
 
 class _MatchSettingState extends State<MatchSettings> {
   Server server;
@@ -41,37 +42,38 @@ class _MatchSettingState extends State<MatchSettings> {
         for (var addr in interface.addresses) {
           print('${addr.address}');
           print(server.ip2key('${addr.address}'));
-          moderator.gamePin = server.ip2key('${addr.address}');
+          game.gamePin = server.ip2key('${addr.address}');
         }
       }
     }
 
     printIps().then((value) {
-      print(moderator.gamePin);
-      pin = moderator.gamePin;
+      print(game.gamePin);
+      pin = game.gamePin;
     }, onError: (error) {
       print(error);
     });
 
     moderator.userName = user.userName;
     moderator.email = user.email;
-    moderator.gameDifficulty = "HighSchool";
-    moderator.gameTime = 20;
+    game.gameDifficulty = "HighSchool";
+    game.gameTime = 20;
     moderator.numberOfQuestion = 25;
-//    moderator.subjects = ["Math", "Physics"];
-//    Math Earth&Space Biology Chemistry Physics Energy
+    moderator.subjects = [];
     moderator.subjectsdict = {
       0: false,
       1: false,
       2: false,
       3: false,
       4: false,
-      5: false
     };
     moderator.subjects = [];
-    moderator.tossUpTime = 5;
-    moderator.bonusTime = 20;
+    game.tossUpTime = 5;
+    game.bonusTime = 20;
     moderator.difficultyLevel = 1;
+    isSelectedSubject_1 = List.generate(2, (_) => false);
+    isSelectedSubject_2 = List.generate(3, (_) => false);
+    subject_selected = false;
   }
 
   onData(Uint8List data) {
@@ -138,7 +140,7 @@ class _MatchSettingState extends State<MatchSettings> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                 child: Text(
-                  "MACTH SETTINGS",
+                  "MATCH SETTINGS",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
@@ -152,7 +154,7 @@ class _MatchSettingState extends State<MatchSettings> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
                   child: Text(
-                    "Time",
+                    "Time (mins)",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -161,15 +163,36 @@ class _MatchSettingState extends State<MatchSettings> {
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 3),
                     child: SizedBox(
                         width: 65,
                         height: 40,
                         child: TextField(
                           onChanged: (text) {
-                            moderator.gameTime = int.parse(text);
+                            if (text != "") {
+                              var value = int.tryParse(text);
+                              if (value == null) {
+                                game.gameTime = 20;
+                                setState(() {});
+                                _notIntDialog();
+                              }
+                            }
+                            game.gameTime = int.parse(text);
+                            print(game.gameTime);
+
+                            print(game.gameTime);
+                            if (game.gameTime < 1) {
+                              game.gameTime = 20;
+                              setState(() {});
+                              _lessThanOneDialog();
+                            } else if (game.gameTime > 30) {
+                              game.gameTime = 20;
+                              setState(() {});
+                              _gameTimeLimit();
+                            }
                           },
-                          controller: TextEditingController()..text = '20',
+                          controller: TextEditingController()
+                            ..text = game.gameTime.toString(),
 //                      initialValue: "20",
                           decoration: InputDecoration(
                               filled: true,
@@ -190,7 +213,7 @@ class _MatchSettingState extends State<MatchSettings> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
                   child: Text(
-                    "Questions",
+                    "Questions (#)",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -199,15 +222,34 @@ class _MatchSettingState extends State<MatchSettings> {
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 3),
                     child: SizedBox(
                         width: 65,
                         height: 40,
                         child: TextField(
                           onChanged: (text) {
+                          if (text != "") {
+                          var value = int.tryParse(text);
+                          if (value == null) {
+                          moderator.numberOfQuestion = 25;
+                          setState(() {});
+                          _notIntDialog();
+                          }}
                             moderator.numberOfQuestion = int.parse(text);
+                            game.numberOfQuestion = int.parse(text);
+
+                            if (moderator.numberOfQuestion < 1) {
+                              moderator.numberOfQuestion = 25;
+                              setState(() {});
+                              _lessThanOneDialog();
+                            } else if (moderator.numberOfQuestion > 40) {
+                              moderator.numberOfQuestion = 25;
+                              setState(() {});
+                              _questionLimitDialog();
+                            }
                           },
-                          controller: TextEditingController()..text = '25',
+                          controller: TextEditingController()
+                            ..text = moderator.numberOfQuestion.toString(),
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -222,43 +264,43 @@ class _MatchSettingState extends State<MatchSettings> {
               ]),
 
               //Difficulty
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <
-                  Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
-                  child: Text(
-                    "Difficulty",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.white),
-                  ),
-                ),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
-                    child: ToggleButtons(
-                      fillColor: Colors.white,
-                      selectedColor: Colors.amber,
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                      //                        constraints: BoxConstraints(minWidth: 65, minHeight: 40),
-                      children: <Widget>[Text("Mid"), Text("High")],
-                      onPressed: (int index) {
-                        setState(() {
-                          isSelectedDifficulty[index] =
-                              !isSelectedDifficulty[index];
-                          isSelectedDifficulty[1 - index] = false;
-                          moderator.gameDifficulty = isSelectedDifficulty[0]
-                              ? "MiddleSchool"
-                              : "HighSchool";
-                          moderator.difficultyLevel =
-                              isSelectedDifficulty[0] ? 0 : 1;
-                        });
-                      },
-                      isSelected: isSelectedDifficulty,
-                    ))
-              ]),
+//              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <
+//                  Widget>[
+//                Padding(
+//                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+//                  child: Text(
+//                    "Difficulty",
+//                    textAlign: TextAlign.left,
+//                    style: TextStyle(
+//                        fontWeight: FontWeight.bold,
+//                        fontSize: 18,
+//                        color: Colors.white),
+//                  ),
+//                ),
+//                Padding(
+//                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+//                    child: ToggleButtons(
+//                      fillColor: Colors.white,
+//                      selectedColor: Colors.amber,
+//                      color: Colors.white,
+//                      borderRadius: BorderRadius.circular(10.0),
+//                      //                        constraints: BoxConstraints(minWidth: 65, minHeight: 40),
+//                      children: <Widget>[Text("Mid"), Text("High")],
+//                      onPressed: (int index) {
+//                        setState(() {
+//                          isSelectedDifficulty[index] =
+//                              !isSelectedDifficulty[index];
+//                          isSelectedDifficulty[1 - index] = false;
+//                          moderator.gameDifficulty = isSelectedDifficulty[0]
+//                              ? "MiddleSchool"
+//                              : "HighSchool";
+//                          moderator.difficultyLevel =
+//                              isSelectedDifficulty[0] ? 0 : 1;
+//                        });
+//                      },
+//                      isSelected: isSelectedDifficulty,
+//                    ))
+//              ]),
 
               // Include Subjects
               Padding(
@@ -284,23 +326,25 @@ class _MatchSettingState extends State<MatchSettings> {
                         //                        constraints: BoxConstraints(minWidth: 65, minHeight: 40),
                         children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 30),
                             //                    padding: EdgeInsets.only(left:10, right:10),
                             child: Text("Math"),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text("Earth&Space"),
+                            padding: EdgeInsets.symmetric(horizontal: 25),
+                            child: Text("Earth and Space"),
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text("Biology"),
-                          ),
+//                          Padding(
+//                            padding: EdgeInsets.symmetric(horizontal: 20),
+//                            child: Text("Biology"),
+//                          ),
                         ],
                         onPressed: (int index) {
                           setState(() {
-                            isSelectedSubject_1[index] = !isSelectedSubject_1[index];
-                            moderator.subjectsdict[index] = !moderator.subjectsdict[index];
+                            isSelectedSubject_1[index] =
+                                !isSelectedSubject_1[index];
+                            moderator.subjectsdict[index] =
+                                !moderator.subjectsdict[index];
                             print(index);
                           });
                         },
@@ -314,25 +358,29 @@ class _MatchSettingState extends State<MatchSettings> {
                         //                        constraints: BoxConstraints(minWidth: 65, minHeight: 40),
                         children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: Text("Biology"),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
                             child: Text("Chemistry"),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 15),
                             child: Text("Physics"),
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text("Energy"),
-                          ),
+//                          Padding(
+//                            padding: EdgeInsets.symmetric(horizontal: 20),
+//                            child: Text("Energy"),
+//                          ),
                         ],
                         onPressed: (int index) {
                           setState(() {
                             isSelectedSubject_2[index] =
                                 !isSelectedSubject_2[index];
-                            moderator.subjectsdict[index + 3] =
-                                !moderator.subjectsdict[index + 3];
-                            print(index + 3);
+                            moderator.subjectsdict[index + 2] =
+                                !moderator.subjectsdict[index + 2];
+                            print(index + 2);
                           });
                         },
                         isSelected: isSelectedSubject_2,
@@ -356,7 +404,7 @@ class _MatchSettingState extends State<MatchSettings> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
                   child: Text(
-                    "Toss-Up",
+                    "Toss-Up (secs)",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -365,15 +413,32 @@ class _MatchSettingState extends State<MatchSettings> {
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 3),
                     child: SizedBox(
                         width: 65,
                         height: 40,
                         child: TextField(
                           onChanged: (text) {
-                            moderator.tossUpTime = int.parse(text);
+                            if (text != "") {
+                            var value = int.tryParse(text);
+                            if (value == null) {
+                            game.tossUpTime = 5;
+                            setState(() {});
+                            _notIntDialog();
+                            }}
+                           game.tossUpTime = int.parse(text);
+                            if (game.tossUpTime < 1) {
+                              game.tossUpTime = 5;
+                              setState(() {});
+                              _lessThanOneDialog();
+                            } else if (game.tossUpTime > 59) {
+                              game.tossUpTime = 5;
+                              setState(() {});
+                              _secondsLimit();
+                            }
                           },
-                          controller: TextEditingController()..text = '05',
+                          controller: TextEditingController()
+                            ..text = game.tossUpTime.toString(),
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -393,7 +458,7 @@ class _MatchSettingState extends State<MatchSettings> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
                   child: Text(
-                    "Bonus",
+                    "Bonus (secs)",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -402,15 +467,32 @@ class _MatchSettingState extends State<MatchSettings> {
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 3),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 3),
                     child: SizedBox(
                         width: 65,
                         height: 40,
                         child: TextField(
                           onChanged: (text) {
-                            moderator.bonusTime = int.parse(text);
+                            if (text != "") {
+                              var value = int.tryParse(text);
+                              if (value == null) {
+                                game.bonusTime = 20;
+                                setState(() {});
+                                _notIntDialog();
+                              }}
+                            game.bonusTime = int.parse(text);
+                               if (game.bonusTime < 1) {
+                              game.bonusTime = 20;
+                              setState(() {});
+                              _lessThanOneDialog();
+                            } else if (game.bonusTime > 59) {
+                              game.bonusTime = 20;
+                              setState(() {});
+                              _secondsLimit();
+                            }
                           },
-                          controller: TextEditingController()..text = '20',
+                          controller: TextEditingController()
+                            ..text = game.bonusTime.toString(),
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -451,7 +533,6 @@ class _MatchSettingState extends State<MatchSettings> {
                       color: Colors.red,
                       iconSize: 30,
                       onPressed: () async {
-                        moderator.subjects = [];
                         moderator.subjectsdict.forEach((key, value) {
 //                          print(key);
                           if (value == true) {
@@ -467,17 +548,26 @@ class _MatchSettingState extends State<MatchSettings> {
                               );
                             else if (key == 4)
                               moderator.subjects.add("Physics");
-                            else if (key == 5) moderator.subjects.add("Energy");
                           }
                         });
 
                         await server.start();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  Loading(this.server, this.moderator)),
-                        );
+                        subjectValidation();
+                        print(game.gameTime);
+                        print(game.numberOfQuestion);
+                        print(game.tossUpTime);
+                        print(game.bonusTime);
+//                        bool validInputs = validations();
+                        if (subject_selected == true) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    Loading(this.server, this.moderator)),
+                          );
+                        }
+                        else
+                          _chooseSubjectDialog();
                         setState(() {});
                       },
                     )
@@ -489,30 +579,148 @@ class _MatchSettingState extends State<MatchSettings> {
         ));
   }
 
-// _exitDialog() {
-//   showDialog(
-//       context: context,
-//       barrierDismissible: true,
-//       builder: (context) {
-//         return AlertDialog(
-//           title: Text("Exit to Home Page"),
-//           content: Text("Are you sure you want to exit to the home page?"),
-//           actions: <Widget>[
-//             FlatButton(
-//               child: Text("No", style: staystyle),
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//             ),
-//             FlatButton(
-//               child: Text("Exit", style: exitstyle),
-//               onPressed: () {  Navigator.pushAndRemoveUntil(context,
-//                 MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),
-//                 ),
-//                 ModalRoute.withName('/'));},
-//             ),
-//           ],
-//         );
-//       });
-// }
+  void subjectValidation() {
+    moderator.subjectsdict.forEach((key, value) {
+      if (value == true) {
+        subject_selected = true;
+        return;
+      }
+    });
+  }
+
+//  bool validations() {
+//    if (moderator.bonusTime <= 0 ||
+//        moderator.gameTime <= 0 ||
+//        moderator.tossUpTime <= 0 ||
+//        moderator.numberOfQuestion <= 0) {
+//      _lessThanOneDialog();
+//      return false;
+//    } else if (subject_selected == false) {
+//      _chooseSubjectDialog();
+//      return false;
+//    }
+//
+//    return true;
+//  }
+
+  _chooseSubjectDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Subject not selected"),
+            content: Text(
+                "You have to pick minimum one subject in order to proceed"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  _lessThanOneDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Invalid Input"),
+            content: Text("Input can not be less than 1"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  _gameTimeLimit() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Time Limit"),
+            content: Text("Match can not be longer than 30 minutes"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  _questionLimitDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Question Limit"),
+            content: Text("Can not choose more than 40 questions"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  _notIntDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Invalid Input"),
+            content: Text("Enter an integer"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  _secondsLimit() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Time Limit"),
+            content: Text("Can not be a minute long"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
 }

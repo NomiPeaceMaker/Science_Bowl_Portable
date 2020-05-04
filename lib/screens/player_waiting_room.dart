@@ -7,6 +7,7 @@ import 'package:sciencebowlportable/screens/waiting_room.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
+import 'package:sciencebowlportable/utilities/styles.dart';
 
 class PlayerWaitingRoom extends waitingRoom {
   Client client;
@@ -29,35 +30,41 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   @override
   void initState() {
     super.initState();
+    appBarText = "JOIN";
     player = Player("");
     player.userName = user.userName;
     player.email = user.email;
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data) {
-      ///////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////
+      print("player waiting room");
       print(data);
       data = json.decode(data);
-      if (data["type"] == "buzzer") {
+      if (data["type"] == "selectSlot") {
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String userName = data["userName"];
-        String previousState = data["previousState"];
-        if (previousState != "") {
+        String previousState = userSlotsDict[data["uniqueID"]];
+//        String previousState = data["previousState"];
+        if (previousState != null) {
           int previousStateIndex = playerPositionIndexDict[previousState];
           playerJoinStreamControllers[previousStateIndex].add("undoSelect");
         }
         playerJoinStreamControllers[playerPositionIndex].add(userName);
+        userSlotsDict[data["uniqueID"]] = data["playerID"];
         // test this out it might cause async problems
         player.playerID = data["playerID"];
-      }
-      else if (data["type"] == "startGame") {
+      } else if (data["type"] == "startGame") {
         print("Moving on to game");
         socketDataStreamSubscription.cancel();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Game(client, player)),
         );
-      } else if (data["type"] == "waitingScreenState") {
+      }
+//      else if (data["pin"] == "what_is_pin") {
+//        print("HOST ASKED: WHAT IS THE PIN??");
+//
+//      }
+       else if (data["type"] == "waitingScreenState") {
         print("got waitingScreenState");
         playerSlotIsTakenList =
             (json.decode(data["playerSlotIsTakenList"]) as List).cast<bool>();
@@ -71,9 +78,10 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
                 playerNamesList[index]) : playerJoinStreamControllers[index]
                 .add("undoSelect")
         );
+      } else if (data["type"] == "moderatorLeaving") {
+        client.disconnect();
+        _moderatorEndedGameDialog();
       }
-      ///////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////
     });
   }
 
@@ -81,21 +89,19 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   void onPressTeamSlot(String playerID, int playerPositionIndex) {
     print("Constructing message");
     var message = {
-      "type": "buzzer",
+      "type": "selectSlot",
       "userName": player.userName,
       "playerID": playerID,
+      "uniqueID": player.userName,
       "playerPositionIndex": playerPositionIndex.toString(),
-      "previousState": player.playerID,
+//      "previousState": player.playerID,
     };
-    print("SENDING TO SERVER");
-    print(message);
     if (!playerSlotIsTakenList[playerPositionIndex]) {
       client.write(json.encode(message));
     }
   }
 
   @override
-
   Align bottomScreenMessage() {
     return new Align(
       alignment: Alignment.bottomCenter,
@@ -108,5 +114,37 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
             fontSize: 18),
       ),
     );
+  }
+
+  @override
+  void onExit() {
+    var message = {
+      "type": "playerLeaving",
+      "userName": player.userName,
+      "playerID": player.playerID,
+      "uniqueID": player.userName,
+      "playerPositionIndex": playerPositionIndexDict[player.playerID].toString(),
+    };
+    client.write(json.encode(message));
+  }
+
+  _moderatorEndedGameDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Moderator Ended Game"),
+          content: Text("The moderator has ended the game. Press Okay to go back to back to home screen."),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Okay", style: staystyle),
+              onPressed: () {
+                Navigator.popUntil(context, ModalRoute.withName('/home'));
+              },
+            ),
+          ],
+        );
+      });
   }
 }

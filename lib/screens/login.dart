@@ -3,9 +3,11 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/screens/username.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // void main() => runApp(Login());
 final databaseReference = Firestore.instance;
@@ -24,6 +26,7 @@ class _LoginState extends State<Login> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: _buildSocialLogin());
@@ -133,19 +136,29 @@ class _LoginState extends State<Login> {
       if (result == 1) {
         setState(() {
           loggedIn = true;
+          
         });
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Username()),
-        );
+
+        if (user.userName == 'Guest' || user.userName == null)
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Username()),
+          );
+        }
+        else{
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyHomePage()),
+          );
+        }
       } else {
-        //Filed to log in
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Username()),
-        );
+        //Filed to log in HMake it work without loging in Hack
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => Username()),
+        // );
       }
-      // firstusername();
     });
   }
 
@@ -161,6 +174,10 @@ class _LoginState extends State<Login> {
               (await firebaseAuth.signInWithCredential(facebookAuthCred)).user;
           user.email = Fire_user.email;
 
+          user_email = user.email;
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString("user_email", user_email);
+          print('The email address is: ${user.email}');
           return 1;
         } else
           return 0;
@@ -174,7 +191,10 @@ class _LoginState extends State<Login> {
           final FirebaseUser Fire_user =
               (await firebaseAuth.signInWithCredential(googleAuthCred)).user;
           user.email = Fire_user.email;
-          print(user.email);
+          user_email = user.email;
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString("user_email", user_email);
+          print('The email address is: ${user.email}');
           final snapShot = await Firestore.instance.collection('User').document(user.email).get();
           if (!snapShot.exists){
             print("creating user");
@@ -191,7 +211,7 @@ class _LoginState extends State<Login> {
   Future<FacebookLoginResult> _handleFBSignIn() async {
     FacebookLogin facebookLogin = FacebookLogin();
     FacebookLoginResult facebookLoginResult =
-    await facebookLogin.logInWithReadPermissions(['email']);
+    await facebookLogin.logIn(['email']);
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.cancelledByUser:
         print("Cancelled");

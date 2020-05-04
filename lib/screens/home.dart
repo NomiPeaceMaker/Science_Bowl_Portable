@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/pin_screen.dart';
-// import 'package:sciencebowlportable/screens/moderator.dart';
 import 'package:sciencebowlportable/screens/match_settings.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
@@ -9,8 +8,9 @@ import 'package:sciencebowlportable/utilities/styles.dart';
 import 'package:sciencebowlportable/screens/howtoplay.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
-// import 'package:flutter/services.dart';
 import 'package:move_to_background/move_to_background.dart';
+import 'package:sciencebowlportable/screens/onboarding.dart';
+
 
 
 enum settings { help, report }
@@ -34,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    
     return new WillPopScope(
       
       child: MaterialApp(
@@ -68,11 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 ListTile(
-                  leading: Image(
-                    image: AssetImage('assets/a.png'),
-                    // height: 250,
-                    // width: 250,
-                  ),
+                  leading: Icon(IconData(59475, fontFamily: 'MaterialIcons'), color: Color(0xFFF8B400)),
                   title: GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -93,7 +90,29 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       )),
                 ),
-                ListTile(),
+                ListTile(
+                  leading: Icon(IconData(59513, fontFamily: 'MaterialIcons'), color: Color(0xFFF8B400)),
+                  
+                  title: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OnboardingScreen()),
+                        );
+                      },
+                      child: Container(
+                        child: Text(
+                          "Logout",
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              color: Color(0xFFF8B400),
+                              fontSize: SizeConfig.safeBlockHorizontal * 4.5),
+                        ),
+                      )),
+                ),
                 ListTile(),
                 ListTile(),
               ],
