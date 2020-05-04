@@ -195,11 +195,11 @@ class _LoginState extends State<Login> {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString("user_email", user_email);
           print('The email address is: ${user.email}');
-          final snapShot = await Firestore.instance.collection('User').document(user.email).get();
-          if (!snapShot.exists){
-            print("creating user");
-            createUser();
-          }
+//          final snapShot = await Firestore.instance.collection('User').document(user.email).get();
+//          if (!snapShot.exists){
+//            print("creating user");
+//            createUser();
+//          }
           return 1;
         } catch (error) {
           return 0;
@@ -233,11 +233,11 @@ class _LoginState extends State<Login> {
     return googleSignInAccount;
   }
 
-  void createUser() async {
-    await databaseReference.collection("User").document(user.email).setData({
-      "Username": null,
-      'IsModerator': false,
-      'IsCaptain': false,
-    });
-  }
+//  void createUser() async {
+//    await databaseReference.collection("User").document(user.email).setData({
+//      "Username": null,
+//      'IsModerator': false,
+//      'IsCaptain': false,
+//    });
+//  }
 }

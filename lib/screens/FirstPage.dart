@@ -26,6 +26,8 @@ class _FirstState extends State<First> {
         subjects(),
         timing(),
         penalties(),
+        summaryHeading(),
+        summary(),
       ],
     )));
   }
@@ -96,28 +98,15 @@ class _FirstState extends State<First> {
               "Subjects\n",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
-            Text(
-                "The question categories are divided by high school and middle school.\n",
+            Text("The following are the subject options:\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
-            Text("High School\n",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             Text(
                 "• Biology\n"
                 "• Chemistry\n"
                 "• Earth and Space Science\n"
-                "• Energy\n"
                 "• Mathematics\n"
                 "• Physics\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
-            Text("Middle School\n",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-            Text(
-                "• Life Science\n"
-                "• Physical Science\n"
-                "• Earth and Space Science\n"
-                "• Energy\n"
-                "• Mathematics\n",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal))
           ],
         ));
   }
@@ -156,7 +145,7 @@ class _FirstState extends State<First> {
               "Penalties\n",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
-            Text("There are two penalties: blurt and interrupt\n",
+            Text("There are five penalties:\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
             Text("1. Blurt\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
@@ -168,9 +157,97 @@ class _FirstState extends State<First> {
             Text(
                 "There is a 4 point penalty awarded to the other team for interrupting the moderator and giving an incorrect answer.\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
+            Text("3. Consultation\n",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            Text(
+                "Team members can only consult each other during bonus question before team captain buzzes in.\n",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
+            Text("4. Distraction\n",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            Text(
+                "There is a 4 point penalty awarded to the team answering if a distraction by non-playing team occurs.\n",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
+            Text("5. Disqualify\n",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            Text(
+                "Moderator can disqaulify team from answering the toss-up. No points are lost.\n",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
           ],
         ));
   }
 
+  DataTable summary() {
+    return DataTable(
+      columns: [
+        DataColumn(label: Text("Type of Question")),
+        DataColumn(label: Text("Points Awarded")),
+      ],
+      rows: [
+        DataRow(cells: [
+          DataCell(Text("Correct Toss-up (or distraction by nonplaying team)")),
+          DataCell(Text("+4 points & eligible for bonus question")),
+        ]),
+        DataRow(cells: [
+          DataCell(Text("Incorrect Toss-up")),
+          DataCell(Text("+0 points")),
+        ]),
+        DataRow(cells: [
+          DataCell(Text("Correct Bonus (or distraction by nonplaying team)")),
+          DataCell(Text("+10 points")),
+        ]),
+        DataRow(cells: [
+          DataCell(Text("Incorrect Bonus")),
+          DataCell(Text("+0 points")),
+        ]),
+        DataRow(cells: [
+          DataCell(Text("Interrupted Toss-up (Correct Answer)")),
+          DataCell(Text("+4 points & eligible for bonus question")),
+        ]),
+        DataRow(cells: [
+          DataCell(Text("Interrupted Toss-up (Incorrect Answer)")),
+          DataCell(Text("+4 points to opposing team")),
+        ]),
+        DataRow(cells: [
+          DataCell(Text("Unrecognized Toss-up (Blurt) ")),
+          DataCell(Text("+4 points to opposing team")),
+        ]),
+        DataRow(cells: [
+          DataCell(Text("Unrecognized Interrupted Toss-up (also a Blurt)")),
+          DataCell(Text("+4 points to opposing team")),
+        ]),
+        DataRow(cells: [
+          DataCell(Text(
+              "Communication among players after a team member buzzes in")),
+          DataCell(Text("+4 points to opposing team")),
+        ]),
+        DataRow(cells: [
+          DataCell(Text("Answering a toss-up before a team member buzzes in")),
+          DataCell(Text(
+              "+0 points, but team is disqualified from answering the toss-up")),
+        ]),
+        DataRow(cells: [
+          DataCell(Text(
+              "Communication among players before a team member buzzes in")),
+          DataCell(Text(
+              "+0 points, but team is disqualified from answering the toss-up")),
+        ]),
+      ],
+    );
+  }
 
+  Container summaryHeading() {
+    return Container(
+      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+      child: Column(
+//        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            "Summary\n",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+        ],
+      ),
+    );
+  }
 }
