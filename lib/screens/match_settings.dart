@@ -722,7 +722,7 @@ class _MatchSettingState extends State<MatchSettings> {
         context: context,
         barrierDismissible: true,
         builder: (context) {
-          return AlertDialog(
+          return AlertDialog( 
             title: Text("Time Limit"),
             content: Text("Can not be a minute long"),
             actions: <Widget>[

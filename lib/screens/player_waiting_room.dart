@@ -27,6 +27,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
 
   StreamSubscription socketDataStreamSubscription;
 
+
   @override
   void initState() {
     super.initState();

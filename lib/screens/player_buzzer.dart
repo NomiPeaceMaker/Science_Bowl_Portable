@@ -174,11 +174,10 @@ class _GameState extends State<Game> {
       else if (data["type"] == "Interrupt") {
         BuzzerStreamController.add("Interrupt");
       }
-      else if(data["type"]=="moderatorLeaving")
-        {
-          client.disconnect();
-          moderatorLeftGameDialog();
-        }
+      else if(data["type"]=="moderatorLeaving") {
+        client.disconnect();
+        moderatorLeftGameDialog();
+      }
     });
   }
 
