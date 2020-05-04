@@ -206,6 +206,7 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
               FlatButton(
                 child: Text("Exit", style: exitstyle),
                 onPressed: () {
+                  socketDataStreamSubscription.cancel();
                   setState(() {
                     playerSlotIsTakenList = List.generate(10, (_) => false);
                     playerNamesList = List.generate(10, (_) => "");

@@ -7,12 +7,16 @@ import 'package:sciencebowlportable/globals.dart';
 import 'package:flutter/services.dart';
 
 int initScreen = 0;
+
 Future <void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
+
   initScreen = await prefs.getInt("initScreen");
   user.userName = await prefs.getString("username_set");
+  user_email = await prefs.getString("user_email");
   print('initScreen $initScreen');
+  print('user_email $user_email');
   SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
@@ -34,18 +38,25 @@ class _MyApp extends State<MyApp> {
   Widget build(BuildContext context) {
     
     if(initScreen == 1) { // IF THIS IS NOT THE FIRST TIME RUNNING
+      if (user_email == null)
+      {
         route0 = <String, WidgetBuilder> {
-          '/': (context) => Login(),
-//          '/': (context) => MyHomePage(),
-          // When navigating to the "/second" route, build the SecondScreen widget.
-          '/home': (context) => MyHomePage(),
+        '/': (context) => Login(),
+        '/home': (context) => MyHomePage(),
         };
+      }
+      else{
+        route0 = <String, WidgetBuilder> {
+
+        '/': (context) => MyHomePage(),
+        '/home': (context) => MyHomePage(),
+        };
+      }
     }
     else { // IF THIS IS THE FIRST TIME RUNNING
+
       route0 = <String, WidgetBuilder> {
         '/': (context) => OnboardingScreen(),
-//        '/': (context) => MyHomePage(),
-          // When navigating to the "/second" route, build the SecondScreen widget.
         '/home': (context) => MyHomePage(),
       };
     }

@@ -18,6 +18,7 @@ int PORT = 4040;
 bool isModerator = false;
 String pin;
 Game game=new Game();
+String user_email = null;
 //String name1 = 'nomi';
 //User user = User('nomipeacemaker', 'nomipeacemaker@gmail.com');
 User user = new User();
