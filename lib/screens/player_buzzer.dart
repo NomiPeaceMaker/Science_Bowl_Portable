@@ -23,25 +23,28 @@ class _GameState extends State<Game> {
   Player player;
 
 //  double timeLeft = 300; //5 mins
-  int _minutes=5;
-  int _seconds=0;
   Color txtClr = Colors.white;
-  int aScore = 0;
-  String gamePin="NP5629";
-  int bScore = 0;
+  int aScore = 0; //should be from player or team
+  String gamePin=game.gamePin;
+  int bScore = 0; //should be from player or team
   Color bzrBorder=Colors.white;
   Color buzzerClr=Color(0xFFf84b4b);
   String buzzerTxt="Buzz In!";
   String roundName="Toss-up";
   String playerName = "A Captain";
   bool isBuzzerActive=false;
-  String buf="0";
   bool unavailable=true;
   String team="A"; //true for red, false for green
   int _counter = 5;
   Timer _buzzTimer;
   Timer _gameTimer;
   var element="";
+
+  int _minutes=game.gameTime;
+  int _seconds=0;
+  String buf="0";
+  int bonusTimer=game.bonusTime;
+  int tossUpTimer=game.tossUpTime;
 
   _GameState(this.client, this.player){
     _startBuzzTimer();

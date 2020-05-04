@@ -123,7 +123,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
 
   @override
   Container pinBar() {
-    pin = moderator.gamePin;
+    pin = game.gamePin;
     return new Container(
       margin: EdgeInsets.only(top: 10.0),
       child: new Align(
@@ -136,7 +136,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 18),
               ),
             Text(
-              "Game Pin:\n${moderator.gamePin}",
+              "Game Pin:\n${game.gamePin}",
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey, fontSize: 18),
             ),
           ],

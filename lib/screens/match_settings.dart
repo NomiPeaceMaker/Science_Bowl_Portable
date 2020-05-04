@@ -41,22 +41,22 @@ class _MatchSettingState extends State<MatchSettings> {
         for (var addr in interface.addresses) {
           print('${addr.address}');
           print(server.ip2key('${addr.address}'));
-          moderator.gamePin = server.ip2key('${addr.address}');
+          game.gamePin = server.ip2key('${addr.address}');
         }
       }
     }
 
     printIps().then((value) {
-      print(moderator.gamePin);
-      pin = moderator.gamePin;
+      print(game.gamePin);
+      pin = game.gamePin;
     }, onError: (error) {
       print(error);
     });
 
     moderator.userName = user.userName;
     moderator.email = user.email;
-    moderator.gameDifficulty = "HighSchool";
-    moderator.gameTime = 20;
+    game.gameDifficulty = "HighSchool";
+    game.gameTime = 20;
     moderator.numberOfQuestion = 25;
 //    moderator.subjects = ["Math", "Physics"];
 //    Math Earth&Space Biology Chemistry Physics Energy
@@ -69,8 +69,8 @@ class _MatchSettingState extends State<MatchSettings> {
       5: false
     };
     moderator.subjects = [];
-    moderator.tossUpTime = 5;
-    moderator.bonusTime = 20;
+    game.tossUpTime = 5;
+    game.bonusTime = 20;
     moderator.difficultyLevel = 1;
   }
 
@@ -167,7 +167,7 @@ class _MatchSettingState extends State<MatchSettings> {
                         height: 40,
                         child: TextField(
                           onChanged: (text) {
-                            moderator.gameTime = int.parse(text);
+                            game.gameTime = int.parse(text);
                           },
                           controller: TextEditingController()..text = '20',
 //                      initialValue: "20",
@@ -206,6 +206,7 @@ class _MatchSettingState extends State<MatchSettings> {
                         child: TextField(
                           onChanged: (text) {
                             moderator.numberOfQuestion = int.parse(text);
+                            game.numberOfQuestion = int.parse(text);
                           },
                           controller: TextEditingController()..text = '25',
                           decoration: InputDecoration(
@@ -249,7 +250,7 @@ class _MatchSettingState extends State<MatchSettings> {
                           isSelectedDifficulty[index] =
                               !isSelectedDifficulty[index];
                           isSelectedDifficulty[1 - index] = false;
-                          moderator.gameDifficulty = isSelectedDifficulty[0]
+                          game.gameDifficulty = isSelectedDifficulty[0]
                               ? "MiddleSchool"
                               : "HighSchool";
                           moderator.difficultyLevel =
@@ -371,7 +372,7 @@ class _MatchSettingState extends State<MatchSettings> {
                         height: 40,
                         child: TextField(
                           onChanged: (text) {
-                            moderator.tossUpTime = int.parse(text);
+                            game.tossUpTime = int.parse(text);
                           },
                           controller: TextEditingController()..text = '05',
                           decoration: InputDecoration(
@@ -408,7 +409,7 @@ class _MatchSettingState extends State<MatchSettings> {
                         height: 40,
                         child: TextField(
                           onChanged: (text) {
-                            moderator.bonusTime = int.parse(text);
+                            game.bonusTime = int.parse(text);
                           },
                           controller: TextEditingController()..text = '20',
                           decoration: InputDecoration(
