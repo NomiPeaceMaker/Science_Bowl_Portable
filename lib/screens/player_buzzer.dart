@@ -9,8 +9,6 @@ import 'package:sciencebowlportable/screens/result.dart';
 import 'dart:convert';
 
 
-
-
 class Game extends StatefulWidget {
   Client client;
   Player player;
@@ -38,17 +36,17 @@ class _GameState extends State<Game> {
   bool isBuzzerActive=false;
   bool unavailable=true;
   String team="A"; //true for red, false for green
-  int _counter = 5;
+//  int _counter = 5;
   Timer _buzzTimer;
   Timer _gameTimer;
   var element="";
 
 
-  int _minutes=game.gameTime;
+  int _minutes;
   int _seconds=0;
   String buf="0";
-  int bonusTimer=game.bonusTime;
-  int tossUpTimer=game.tossUpTime;
+  int bonusTimer;
+  int tossUpTimer;
 
   _GameState(this.client, this.player){
     _startBuzzTimer();
@@ -73,49 +71,6 @@ class _GameState extends State<Game> {
           );
         });
   }
-//  void evaluate(){
-//    //random evaluation rn
-//    setState(() {
-//      var pathOptions = new List();
-//      if (roundName=="Toss-up"){
-//        pathOptions=["Correct", "Incorrect", "Blurt", "Consultation", "Interrupt"];
-//      }
-//      else //bonus
-//          {
-//        pathOptions=["Correct", "Incorrect", "Blurt", "Interrupt"];
-//      }
-//      final _random = new Random();
-//      element = pathOptions[_random.nextInt(pathOptions.length)];
-//      print(element);
-//      if (element=="Correct")
-//      {
-//        if (team=="A")
-//        {
-//          aScore+=4;
-//        }
-//        else
-//        {
-//          bScore+=4;
-//        }
-//      }
-//      else if (element=="Incorrect")
-//      {
-//        print("pass for now");
-//      }
-//      else if(element=="Blurt")
-//      {
-//        print("pass for now");
-//      }
-//      else if(element=="Consulation")
-//      {
-//        print("pass for now");
-//      }
-//      else //interrupt
-//          {
-//        print("pass for now");
-//      }
-//    });
-//  }
 
   void _startBuzzTimer() {
 //    bonusTimer=game.bonusTime;
@@ -164,29 +119,6 @@ class _GameState extends State<Game> {
       });
     });
   }
-//  void _startBuzzTimer() {
-//    _counter = 5;
-//    if (_buzzTimer != null) {
-//      _buzzTimer.cancel();
-//    }
-//    _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-//      setState(() {
-//        if (_counter > 0) {
-//          _counter--;
-//        } else {
-//          _buzzTimer.cancel();
-//          setState(() {
-//            if (isBuzzerActive){
-//              unavailable=true;
-//              txtClr=Color(0xffAEAEAE);
-//              buzzerTxt="Unavailable";
-//              buzzerClr=Colors.white;
-//              bzrBorder=Color(0xffAEAEAE);
-//            }});
-//        }
-//      });
-//    });
-//  }
 
   StreamController<String> BuzzerStreamController = StreamController.broadcast();
   StreamSubscription socketDataStreamSubscription;
@@ -194,9 +126,15 @@ class _GameState extends State<Game> {
   @override
   void initState() {
     super.initState();
+//    BuzzerStreamController.add("Blurt");
 //    BuzzerStreamController = StreamController.broadcast();
     game.aTeam.score=0;
     game.bTeam.score=0;
+    bonusTimer=20;//game.bonusTime;
+    tossUpTimer = 5;//game.tossUpTime; //5 secs for buzzer timer
+    _minutes = 5; //game.gameTime;
+    game.aTeam.canAnswer=true;
+    game.bTeam.canAnswer=true;
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data){
       print("DATA RECIEVED FROM MODERATOR");
@@ -218,9 +156,23 @@ class _GameState extends State<Game> {
       else if (data["type"] == "Correct") {
         BuzzerStreamController.add("Correct");
       }
-
-      else if (data["type"] == "Penalty") {
-        BuzzerStreamController.add("Penalty");
+      else if (data["type"] == "moderatorReading") {
+        BuzzerStreamController.add("moderatorReading");
+      }
+      else if (data["type"] == "Blurt") {
+        BuzzerStreamController.add("Blurt");
+      }
+      else if (data["type"] == "Consultation") {
+        BuzzerStreamController.add("Consultation");
+      }
+      else if (data["type"] == "Disqualify") {
+        BuzzerStreamController.add("Disqualify");
+      }
+      else if (data["type"] == "Distraction") {
+        BuzzerStreamController.add("Distraction");
+      }
+      else if (data["type"] == "Interrupt") {
+        BuzzerStreamController.add("Interrupt");
       }
       else if(data["type"]=="moderatorLeaving")
         {
@@ -265,36 +217,6 @@ class _GameState extends State<Game> {
       });
     });
   }
-
-//  void _startGameTimer() {
-//    if (_gameTimer != null) {
-//      _gameTimer.cancel();
-//    }
-//    _gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-//      setState(() {
-//        if (_minutes<0)
-//        {
-//          _gameTimer.cancel();
-//        }
-//        if (_seconds > 0) {
-//          _seconds--;
-//          if(_seconds<10)
-//          {
-//            buf="0";
-//          }
-//          else
-//          {
-//            buf="";
-//          }
-//        }
-//        else {
-//          buf="";
-//          _seconds=59;
-//          _minutes-=1;
-//        }
-//      });
-//    });
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -432,7 +354,7 @@ class _GameState extends State<Game> {
                     child: Text(
                     '$playerName',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: (team=="A") ? Colors.red : Colors.green, fontSize: 18),
                   ),
                 ),
                 elevation: 10.0,
@@ -454,26 +376,159 @@ class _GameState extends State<Game> {
                 print(snapshot.data);
                 if (element=="Available") {
                   print("making buzzer available");
-                  buzzerClr = Colors.green;
+//                  buzzerClr = Colors.red;
                   unavailable = false;
+                  buzzerTxt="Buzz In!";
+                  bzrBorder=Colors.white;
+                  buzzerClr=Color(0xFFf84b4b);
+                  _startBuzzTimer();
                 }
-                if (element=="Incorrect") {
-                  print("making buzzer red");
-                  buzzerClr = Colors.red;
-                  buzzerTxt = "Incorrect";
+                else if (element=="Incorrect") {
+//                  print("making buzzer red");
+//                  buzzerClr = Colors.red;
+//                  buzzerTxt = "Incorrect";
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Icon(Icons.not_interested),
+                      backgroundColor: Colors.red,
+                      //                                  animation: ,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
                 }
 
-                if (element=="Correct") {
-                  print("making buzzer red");
+                else if (element=="Correct") {
+                  print("correct");
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Icon(Icons.done),
+                      backgroundColor: Colors.lightGreen,
+//                                  animation: ,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  if(roundName=="Toss-Up")
+                    {
+                      if (team=="A")
+                        {
+                          game.aTeam.score+=4;
+                        }
+                      else{
+                        game.bTeam.score+=4;
+                      }
+                    }
+                  else
+                    {
+                      if (team=="A")
+                      {
+                        game.aTeam.score+=10;
+                      }
+                      else{
+                        game.bTeam.score+=10;
+                      }
+                    }
+//                  buzzerClr = Colors.lightGreen;
+//                  buzzerTxt = "Correct!";
+                }
+                else if (element=="Recognized") {
+                  print("recognized");
                   buzzerClr = Colors.lightGreen;
-                  buzzerTxt = "Correct!";
+                  bzrBorder=Colors.white;
+                  buzzerTxt = "You're Recognized!";
                 }
 
-
-                if (element=="Penalty") {
+                else if (element=="Interrupt") { //on grey buzzer
                   print("adding penalty");
+                  bzrBorder=Colors.white;
                   buzzerClr = Colors.grey[900];
-                  buzzerTxt = "Penalty!";
+                  buzzerTxt = "You Interrupted!";
+                }
+                else if (element=="Blurt") { //snackbar
+                  print("Blurt");
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Icon(Icons.pan_tool),
+                      backgroundColor: Colors.grey[900],
+                      //                                  animation: ,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  if (team=="A")
+                    {
+                      game.aTeam.score+=4;
+                    }
+                  else{
+                    game.aTeam.score+=4;
+                  }
+                }
+                else if (element=="Consultation") {
+                  print("Consultation");
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Icon(Icons.pan_tool),
+                      backgroundColor: Colors.grey[900],
+                      //                                  animation: ,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  if (team=="A")
+                  {
+                    game.aTeam.score+=4;
+                  }
+                  else{
+                    game.aTeam.score+=4;
+                  }
+                }
+                else if (element=="Disqualify") {
+                  print("Disqualify");
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Icon(Icons.pan_tool),
+                      backgroundColor: Colors.grey[900],
+                      //                                  animation: ,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  bzrBorder=Colors.grey[900];
+
+                }
+                else if (element=="Distraction") {
+                  print("Distraction");
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Icon(Icons.pan_tool),
+                      backgroundColor: Colors.grey[900],
+                      //                                  animation: ,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  if (roundName=="Toss-Up")
+                    {
+                      if(team=="A")
+                        {
+                          game.aTeam.score+=4;
+                        }
+                      else
+                        {
+                          game.bTeam.score+=4;
+                        }
+                    }
+                  else{
+                    if(team=="A")
+                    {
+                      game.aTeam.score+=10;
+                    }
+                    else
+                    {
+                      game.bTeam.score+=10;
+                    }
+                  }
+                }
+                else if (element=="moderatorReading") { //red no text
+                  print("adding penalty");
+                  buzzerClr = Color(0xFFf84b4b);
+                  buzzerTxt = "";
+                  bzrBorder=Colors.white;
                 }
               return RaisedButton(
                 shape: CircleBorder(side: BorderSide(color: bzrBorder, width: 8.0)),
@@ -486,8 +541,17 @@ class _GameState extends State<Game> {
                         style: TextStyle(fontSize: 20.0, color: txtClr),
                         textAlign: TextAlign.center,
                       ),
-                      (_counter > 0 && isBuzzerActive)
-                          ? Text('$_counter',
+                      (roundName=="Toss-Up")?
+                      (tossUpTimer > 0 && element=="Available")
+                          ? Text(tossUpTimer.toString(),
+                        style: TextStyle(fontSize: 15.0, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      )
+                          : Text(
+                        '',
+                      ):
+                      (bonusTimer > 0 && element=="Available")
+                          ? Text(bonusTimer.toString(),
                         style: TextStyle(fontSize: 15.0, color: Colors.white),
                         textAlign: TextAlign.center,
                       )
@@ -496,59 +560,14 @@ class _GameState extends State<Game> {
                       )
                     ],
                   ),
-                  onPressed: (){
+                  disabledColor: Colors.white,
+                  disabledTextColor: Colors.grey[900],
+                  onPressed: (element!="Disqualify") ? (){
                     setState(() {
                       client.write(json.encode({"type":"BuzzIn", "playerID":player.playerID}));
-                      if (!unavailable)
-                      {
-                        if (element=="Recognized") {
-                          buzzerTxt = "Recognized!";
-                          buzzerClr = Colors.green;
-//                          evaluate();
-                        }
-                        if (element=="Correct")
-                        {
-                          Scaffold.of(context).showSnackBar(
-                            SnackBar(
-                              content: Icon(Icons.done),
-                              backgroundColor: Colors.lightGreen,
-//                                  animation: ,
-                              duration: Duration(seconds: 2),
-                            ),
-                            );
-                          }
-                          else if (element=="Incorrect")
-                          {
-                            Scaffold.of(context).showSnackBar(
-                              SnackBar(
-                                content: Icon(Icons.not_interested),
-                                backgroundColor: Colors.red,
-  //                                  animation: ,
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          }
-                          else //penalty
-                          {
-                            Scaffold.of(context).showSnackBar(
-                              SnackBar(
-                                content: Icon(Icons.pan_tool),
-                                backgroundColor: Colors.grey[900],
-  //                                  animation: ,
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          }
-                      }
-                      else
-                      {
-                        buzzerTxt="Buzz In!";
-                        buzzerClr=Color(0xFFf84b4b);
-                        _startBuzzTimer();
-                      }
                     }
                     );
-                  },
+                  } : null,
                   color: buzzerClr,
                 );
               },
