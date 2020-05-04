@@ -69,12 +69,14 @@ class _LoginState extends State<Login> {
                                   height: SizeConfig.safeBlockVertical * 50,
                                   width: SizeConfig.safeBlockHorizontal * 90,
                                   child: TypewriterAnimatedTextKit(
+                                    speed: Duration(milliseconds: 60),
                                     alignment: Alignment.topLeft,
                                     text: ["Welcome to Science Bowl Portable"],
                                     isRepeatingAnimation: false,
                                     // duration: Duration(milliseconds: 2000),
                                     textStyle: TextStyle(
-                                      fontSize: 60,
+                                      fontSize: SizeConfig.safeBlockVertical * 8.5,
+                                      // fontSize: 60,
                                       fontWeight: FontWeight.bold,
                                       color: themeColor,
                                     ),
