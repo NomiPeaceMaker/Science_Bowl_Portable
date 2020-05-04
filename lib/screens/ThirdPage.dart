@@ -15,16 +15,32 @@ class _ThirdState extends State<Third> {
           scrollDirection: Axis.vertical,
           children: <Widget>[
             buzzInHeader(),
-            Image.asset('assets/buzz_in.png'),
+            Image.asset(
+              'assets/buzz_in.png',
+              width: 200,
+              height: 200,
+            ),
             buzzIn(),
             recognisedHeader(),
-            Image.asset('assets/recognised.png'),
+            Image.asset(
+              'assets/recognised.png',
+              width: 200,
+              height: 200,
+            ),
             recognised(),
             unavailableHeader(),
-            Image.asset('assets/unavailable.png'),
+            Image.asset(
+              'assets/unavailable.png',
+              width: 200,
+              height: 200,
+            ),
             unavailable(),
             interruptHeader(),
-            Image.asset('assets/interrupt.png'),
+            Image.asset(
+              'assets/interrupt.png',
+              width: 200,
+              height: 200,
+            ),
             interrupt(),
           ],
         )));
@@ -36,7 +52,8 @@ class _ThirdState extends State<Third> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("The timer indicates the duration for which the buzzer is available.\n",
+            Text(
+                "The timer indicates the duration for which the buzzer is available.\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal))
           ],
         ));
@@ -48,12 +65,14 @@ class _ThirdState extends State<Third> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("Recognition by moderator is visually indicated by the buzzer going green\n\n"
+            Text(
+                "Recognition by moderator is visually indicated by the buzzer going green\n\n"
                 "The buzzer does not accept user input now.\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal))
           ],
         ));
   }
+
   Container unavailable() {
     return Container(
         margin: const EdgeInsets.all(20),
@@ -65,6 +84,7 @@ class _ThirdState extends State<Third> {
           ],
         ));
   }
+
   Container interrupt() {
     return Container(
         margin: const EdgeInsets.all(20),
@@ -77,36 +97,35 @@ class _ThirdState extends State<Third> {
         ));
   }
 
-  Center buzzInHeader() {
-    return Center(
-        child: Text("Buzzer Available",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)));
+  Container buzzInHeader() {
+    return Container(
+        margin: const EdgeInsets.all(20),
+        child: Center(
+            child: Text("Buzzer Available",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))));
   }
 
-  Center recognisedHeader() {
-    return Center(
-      child: Text(
-        "Recognition",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-      ),
-    );
+  Container recognisedHeader() {
+    return Container(
+        margin: const EdgeInsets.all(20),
+        child: Center(
+            child: Text("Recognition",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))));
   }
 
-  Center interruptHeader() {
-    return Center(
-      child: Text(
-        "Interrupt",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-      ),
-    );
+  Container interruptHeader() {
+    return Container(
+        margin: const EdgeInsets.all(20),
+        child: Center(
+            child: Text("Interrupt",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))));
   }
 
-  Center unavailableHeader() {
-    return Center(
-      child: Text(
-        "Buzzer Unavailable",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-      ),
-    );
+  Container unavailableHeader() {
+    return Container(
+        margin: const EdgeInsets.all(20),
+        child: Center(
+            child: Text("Buzzer Unavailable",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))));
   }
 }
