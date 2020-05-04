@@ -265,7 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return AlertDialog(
             title: Text("No Wifi Connectivity"),
             content: Text(
-                "You need to be connected to Wifi to continue. Try connecting to Wifi and try again."),
+                "You need to be connected to Wifi to continue. Connect to Wifi and try again."),
             actions: <Widget>[
               FlatButton(
                 child: Text("Okay", style: staystyle),
