@@ -208,7 +208,7 @@ class _HostState extends State<Host> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: Text(
-          (!paused)? "HOST" : "Paused",
+          (!paused)? "Science Bowl Portable" : "Paused",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
         ),
         centerTitle: true,

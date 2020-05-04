@@ -5,7 +5,10 @@ import "dart:math";
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
+import 'package:sciencebowlportable/screens/result.dart';
 import 'dart:convert';
+
+
 
 
 class Game extends StatefulWidget {
@@ -24,9 +27,9 @@ class _GameState extends State<Game> {
 
 //  double timeLeft = 300; //5 mins
   Color txtClr = Colors.white;
-  int aScore = 0; //should be from player or team
+//  int aScore = 0; //should be from player or team
   String gamePin=game.gamePin;
-  int bScore = 0; //should be from player or team
+//  int bScore = 0; //should be from player or team
   Color bzrBorder=Colors.white;
   Color buzzerClr=Color(0xFFf84b4b);
   String buzzerTxt="Buzz In!";
@@ -40,6 +43,7 @@ class _GameState extends State<Game> {
   Timer _gameTimer;
   var element="";
 
+
   int _minutes=game.gameTime;
   int _seconds=0;
   String buf="0";
@@ -50,73 +54,139 @@ class _GameState extends State<Game> {
     _startBuzzTimer();
     _startGameTimer();
   }
-  void evaluate(){
-    //random evaluation rn
-    setState(() {
-      var pathOptions = new List();
-      if (roundName=="Toss-up"){
-        pathOptions=["Correct", "Incorrect", "Blurt", "Consultation", "Interrupt"];
-      }
-      else //bonus
-          {
-        pathOptions=["Correct", "Incorrect", "Blurt", "Interrupt"];
-      }
-      final _random = new Random();
-      element = pathOptions[_random.nextInt(pathOptions.length)];
-      print(element);
-      if (element=="Correct")
-      {
-        if (team=="A")
-        {
-          aScore+=4;
-        }
-        else
-        {
-          bScore+=4;
-        }
-      }
-      else if (element=="Incorrect")
-      {
-        print("pass for now");
-      }
-      else if(element=="Blurt")
-      {
-        print("pass for now");
-      }
-      else if(element=="Consulation")
-      {
-        print("pass for now");
-      }
-      else //interrupt
-          {
-        print("pass for now");
-      }
-    });
+  moderatorLeftGameDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Moderator has left the match"),
+            content: Text("Return to home screen"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay"),
+                onPressed: () {
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
+                },
+              ),
+            ],
+          );
+        });
   }
+//  void evaluate(){
+//    //random evaluation rn
+//    setState(() {
+//      var pathOptions = new List();
+//      if (roundName=="Toss-up"){
+//        pathOptions=["Correct", "Incorrect", "Blurt", "Consultation", "Interrupt"];
+//      }
+//      else //bonus
+//          {
+//        pathOptions=["Correct", "Incorrect", "Blurt", "Interrupt"];
+//      }
+//      final _random = new Random();
+//      element = pathOptions[_random.nextInt(pathOptions.length)];
+//      print(element);
+//      if (element=="Correct")
+//      {
+//        if (team=="A")
+//        {
+//          aScore+=4;
+//        }
+//        else
+//        {
+//          bScore+=4;
+//        }
+//      }
+//      else if (element=="Incorrect")
+//      {
+//        print("pass for now");
+//      }
+//      else if(element=="Blurt")
+//      {
+//        print("pass for now");
+//      }
+//      else if(element=="Consulation")
+//      {
+//        print("pass for now");
+//      }
+//      else //interrupt
+//          {
+//        print("pass for now");
+//      }
+//    });
+//  }
 
   void _startBuzzTimer() {
-    _counter = 5;
+//    bonusTimer=game.bonusTime;
+//    tossUpTimer = game.tossUpTime;
     if (_buzzTimer != null) {
       _buzzTimer.cancel();
     }
     _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        if (_counter > 0) {
-          _counter--;
-        } else {
-          _buzzTimer.cancel();
-          setState(() {
-            if (isBuzzerActive){
-              unavailable=true;
-              txtClr=Color(0xffAEAEAE);
-              buzzerTxt="Unavailable";
-              buzzerClr=Colors.white;
-              bzrBorder=Color(0xffAEAEAE);
-            }});
+        if (roundName=="Toss-Up") {
+          if (tossUpTimer > 0) {
+            tossUpTimer--;
+          }
+          else {
+            _buzzTimer.cancel();
+//            decisionTime=true;
+            tossUpTimer = game.tossUpTime;
+          }
+        }
+        else
+        {
+          if (bonusTimer > 0) {
+            bonusTimer--;
+          }
+          else {
+            _buzzTimer.cancel();
+            setState(() {
+//              if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+//                Navigator.push(
+//                  context,
+//                  MaterialPageRoute(
+//                      builder: (context) => Result()),
+//                );
+//              }
+//              else{
+                _buzzTimer.cancel();
+                bonusTimer=game.bonusTime;
+//                decisionTime=true;
+                if (isBuzzerActive) {
+                  unavailable = true;
+                }
+//              }
+            });
+          }
         }
       });
     });
   }
+//  void _startBuzzTimer() {
+//    _counter = 5;
+//    if (_buzzTimer != null) {
+//      _buzzTimer.cancel();
+//    }
+//    _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+//      setState(() {
+//        if (_counter > 0) {
+//          _counter--;
+//        } else {
+//          _buzzTimer.cancel();
+//          setState(() {
+//            if (isBuzzerActive){
+//              unavailable=true;
+//              txtClr=Color(0xffAEAEAE);
+//              buzzerTxt="Unavailable";
+//              buzzerClr=Colors.white;
+//              bzrBorder=Color(0xffAEAEAE);
+//            }});
+//        }
+//      });
+//    });
+//  }
 
   StreamController<String> BuzzerStreamController = StreamController.broadcast();
   StreamSubscription socketDataStreamSubscription;
@@ -125,6 +195,8 @@ class _GameState extends State<Game> {
   void initState() {
     super.initState();
 //    BuzzerStreamController = StreamController.broadcast();
+    game.aTeam.score=0;
+    game.bTeam.score=0;
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data){
       print("DATA RECIEVED FROM MODERATOR");
@@ -135,53 +207,94 @@ class _GameState extends State<Game> {
         print("Server: Player has been officially recognised.");
         BuzzerStreamController.add("Recognized");
       }
-      if (data["type"] == "BuzzerAvailable") {
+      else if (data["type"] == "BuzzerAvailable") {
         print("BUZZERR AVAIALEKLEKJF");
         unavailable = false;
         BuzzerStreamController.add("Available");
       }
-      if (data["type"] == "Incorrect") {
+      else if (data["type"] == "Incorrect") {
         BuzzerStreamController.add("Incorrect");
       }
-      if (data["type"] == "Correct") {
+      else if (data["type"] == "Correct") {
         BuzzerStreamController.add("Correct");
       }
 
-      if (data["type"] == "Penalty") {
+      else if (data["type"] == "Penalty") {
         BuzzerStreamController.add("Penalty");
       }
+      else if(data["type"]=="moderatorLeaving")
+        {
+          client.disconnect();
+          moderatorLeftGameDialog();
+        }
     });
   }
+
 
   void _startGameTimer() {
     if (_gameTimer != null) {
       _gameTimer.cancel();
     }
+
     _gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        if (_minutes<0)
+        if (_seconds==1 &&_minutes==0)
         {
           _gameTimer.cancel();
         }
         if (_seconds > 0) {
           _seconds--;
-          if(_seconds<10)
-          {
-            buf="0";
+          if (_seconds < 10) {
+            buf = "0";
+          } else {
+            buf = "";
           }
-          else
-          {
-            buf="";
-          }
+        } else {
+          buf = "";
+          _seconds = 59;
+          _minutes -= 1;
         }
-        else {
-          buf="";
-          _seconds=59;
-          _minutes-=1;
+        if(_seconds==0 && _minutes==0)
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Result()),
+          );
         }
       });
     });
   }
+
+//  void _startGameTimer() {
+//    if (_gameTimer != null) {
+//      _gameTimer.cancel();
+//    }
+//    _gameTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+//      setState(() {
+//        if (_minutes<0)
+//        {
+//          _gameTimer.cancel();
+//        }
+//        if (_seconds > 0) {
+//          _seconds--;
+//          if(_seconds<10)
+//          {
+//            buf="0";
+//          }
+//          else
+//          {
+//            buf="";
+//          }
+//        }
+//        else {
+//          buf="";
+//          _seconds=59;
+//          _minutes-=1;
+//        }
+//      });
+//    });
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -241,7 +354,7 @@ class _GameState extends State<Game> {
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    "Team A\n"+aScore.toString(),
+                    "Team A\n"+game.aTeam.score.toString(),
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
                   )
@@ -264,7 +377,7 @@ class _GameState extends State<Game> {
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    "Team B\n"+bScore.toString(),
+                    "Team B\n"+game.bTeam.score.toString(),
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightGreen, fontSize: 18),
                   )
@@ -391,7 +504,7 @@ class _GameState extends State<Game> {
                         if (element=="Recognized") {
                           buzzerTxt = "Recognized!";
                           buzzerClr = Colors.green;
-                          evaluate();
+//                          evaluate();
                         }
                         if (element=="Correct")
                         {

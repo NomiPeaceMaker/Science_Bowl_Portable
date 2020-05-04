@@ -43,6 +43,7 @@ class Client {
   }
 
   disconnect() {
+    print("DISCONNECTING");
     if (socket != null) {
       socket.destroy();
       connected = false;
