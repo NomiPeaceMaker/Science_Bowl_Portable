@@ -61,7 +61,7 @@ class _GameState extends State<Game> {
         builder: (context) {
           return AlertDialog(
             title: Text("Moderator has left the match"),
-            content: Text("Proceed to home screen"),
+            content: Text("Return to home screen"),
             actions: <Widget>[
               FlatButton(
                 child: Text("Okay"),
