@@ -10,15 +10,17 @@ import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:move_to_background/move_to_background.dart';
 import 'package:sciencebowlportable/screens/onboarding.dart';
-
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 enum settings { help, report }
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
-  
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -30,13 +32,11 @@ class _MyHomePageState extends State<MyHomePage> {
   final ableColor = Color(0xFF20BABA);
   Color buttonColor = Color(0xFF20BABA);
 
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    
+
     return new WillPopScope(
-      
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Container(
@@ -69,7 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 ListTile(
-                  leading: Icon(IconData(59475, fontFamily: 'MaterialIcons'), color: Color(0xFFF8B400)),
+                  leading: Icon(IconData(59475, fontFamily: 'MaterialIcons'),
+                      color: Color(0xFFF8B400)),
                   title: GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -91,15 +92,29 @@ class _MyHomePageState extends State<MyHomePage> {
                       )),
                 ),
                 ListTile(
-                  leading: Icon(IconData(59513, fontFamily: 'MaterialIcons'), color: Color(0xFFF8B400)),
-                  
+                  leading: Icon(IconData(59513, fontFamily: 'MaterialIcons'),
+                      color: Color(0xFFF8B400)),
                   title: GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OnboardingScreen()),
-                        );
+                        GoogleSignIn.games().signOut();
+                        FacebookLogin.channel.invokeMethod("logOut");
+                        FirebaseAuth.instance.signOut().then((ob) {
+                          print("loggedout");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OnboardingScreen()),
+                          );
+                        }).catchError((e){
+                          print("not logged out");
+                          Fluttertoast.showToast(
+                              msg: "Log out failed",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                          );
+
+
+                        });
                       },
                       child: Container(
                         child: Text(
@@ -179,12 +194,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   ]),
                   _button("HOST GAME", MatchSettings()),
                   _button("JOIN GAME", Pin()),
-                  _noInternetbutton("HOW TO PLAY", HowToPlay()) // This shouldn't need internet but it doesnt work without so ig
+                  _noInternetbutton("HOW TO PLAY", HowToPlay())
+                  // This shouldn't need internet but it doesnt work without so ig
                 ])),
           ),
         ),
       ),
-      onWillPop:  () async {
+      onWillPop: () async {
         MoveToBackground.moveTaskToBack();
         return false;
       },
@@ -197,64 +213,62 @@ class _MyHomePageState extends State<MyHomePage> {
             vertical: SizeConfig.safeBlockVertical * 3.5,
             horizontal: SizeConfig.safeBlockHorizontal * 5),
         child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(45.0),
-          ),
-          child: SizedBox(
-            height: SizeConfig.blockSizeVertical * 21,
-            width: SizeConfig.blockSizeVertical * 50,
-            child: Center(
-              child: Text(title,
-                  style: TextStyle(color: Colors.white, fontSize: 22.0)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(45.0),
             ),
-          ),
-          color: buttonColor,
-          
-          onPressed: ()  async {
+            child: SizedBox(
+              height: SizeConfig.blockSizeVertical * 21,
+              width: SizeConfig.blockSizeVertical * 50,
+              child: Center(
+                child: Text(title,
+                    style: TextStyle(color: Colors.white, fontSize: 22.0)),
+              ),
+            ),
+            color: buttonColor,
+            onPressed: () async {
               await _checkWifiConnectivity();
               setState(() {
-                if (_connectedToWifi) {buttonColor = ableColor;}
-                else {buttonColor = disableColor;}
+                if (_connectedToWifi) {
+                  buttonColor = ableColor;
+                } else {
+                  buttonColor = disableColor;
+                }
               });
               if (_connectedToWifi) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => landingPage),
-                ); 
-                } else {
-                  _noInternetDialog();
-                }
-            }
-        ));
+                );
+              } else {
+                _noInternetDialog();
+              }
+            }));
   }
 
-   _noInternetbutton(String title, landingPage) {
+  _noInternetbutton(String title, landingPage) {
     return Padding(
         padding: EdgeInsets.symmetric(
             vertical: SizeConfig.safeBlockVertical * 3.5,
             horizontal: SizeConfig.safeBlockHorizontal * 5),
         child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(45.0),
-          ),
-          child: SizedBox(
-            height: SizeConfig.blockSizeVertical * 21,
-            width: SizeConfig.blockSizeVertical * 50,
-            child: Center(
-              child: Text(title,
-                  style: TextStyle(color: Colors.white, fontSize: 22.0)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(45.0),
             ),
-          ),
-          color: ableColor,
-          
-          onPressed: ()   {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => landingPage),
-                ); 
-                }
-
-        ));
+            child: SizedBox(
+              height: SizeConfig.blockSizeVertical * 21,
+              width: SizeConfig.blockSizeVertical * 50,
+              child: Center(
+                child: Text(title,
+                    style: TextStyle(color: Colors.white, fontSize: 22.0)),
+              ),
+            ),
+            color: ableColor,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => landingPage),
+              );
+            }));
   }
 
   _noInternetDialog() {
@@ -284,7 +298,6 @@ class _MyHomePageState extends State<MyHomePage> {
     if (result == ConnectivityResult.wifi) {
       print("Connected to Wifi");
       _connectedToWifi = true;
-
     } else {
       print("NO wifi detected");
       _connectedToWifi = false;

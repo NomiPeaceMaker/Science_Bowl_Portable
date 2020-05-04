@@ -223,7 +223,7 @@ class _LoginState extends State<Login> {
             user.email = Fire_user.email;
           });
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString("user_email", user_email);
+          await prefs.setString("user_email", user.email);
           print('The email address is: ${user.email}');
 //          final snapShot = await Firestore.instance.collection('User').document(user.email).get();
 //          if (!snapShot.exists){
