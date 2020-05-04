@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
-import 'package:sciencebowlportable/screens/login.dart';
 import 'package:sciencebowlportable/screens/result.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
@@ -53,13 +52,13 @@ class _HostState extends State<Host> {
   bool buzzedIn=false;
   int skipsLeft=5;
   initState() {
-    bonusTimer=moderator.bonusTime;
-    tossUpTimer = moderator.tossUpTime; //5 secs for buzzer timer
-    _minutes = this.moderator.gameTime; //customize match say aaye ga
-    this.moderator.bTeam.score=0;
-    this.moderator.aTeam.score=0;
-    this.moderator.aTeam.canAnswer=true;
-    this.moderator.bTeam.canAnswer=true;
+    bonusTimer=game.bonusTime;
+    tossUpTimer = game.tossUpTime; //5 secs for buzzer timer
+    _minutes = game.gameTime; //customize match say aaye ga
+    game.bTeam.score=0;
+    game.aTeam.score=0;
+    game.aTeam.canAnswer=true;
+    game.bTeam.canAnswer=true;
     _startGameTimer();
     super.initState();
     Stream socketDataStream = socketDataStreamController.stream;
@@ -76,8 +75,8 @@ class _HostState extends State<Host> {
   }
 
   void _startBuzzTimer() {
-    bonusTimer=moderator.bonusTime;
-    tossUpTimer = this.moderator.tossUpTime;
+//    bonusTimer=game.bonusTime;
+//    tossUpTimer = game.tossUpTime;
     if (_buzzTimer != null) {
       _buzzTimer.cancel();
     }
@@ -90,6 +89,7 @@ class _HostState extends State<Host> {
           else {
             _buzzTimer.cancel();
             decisionTime=true;
+            tossUpTimer = game.tossUpTime;
           }
         }
         else
@@ -100,15 +100,16 @@ class _HostState extends State<Host> {
           else {
             _buzzTimer.cancel();
             setState(() {
-              if (index == questionSet.length - 1) {
+              if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Result(this.moderator)),
+                      builder: (context) => Result()),
                 );
               }
               else{
                 _buzzTimer.cancel();
+                bonusTimer=game.bonusTime;
                 decisionTime=true;
                 if (isBuzzerActive) {
                   unavailable = true;
@@ -149,7 +150,7 @@ class _HostState extends State<Host> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Result(this.moderator)),
+                builder: (context) => Result()),
           );
         }
       });
@@ -269,7 +270,7 @@ class _HostState extends State<Host> {
                             fontSize: 18)
                     ),
                     Text(
-                      this.moderator.aTeam.score.toString(),
+                      game.aTeam.score.toString(),
                       textAlign: TextAlign.right,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -309,7 +310,7 @@ class _HostState extends State<Host> {
                             fontSize: 18)
                     ),
                     Text(
-                      this.moderator.bTeam.score.toString(),
+                      game.bTeam.score.toString(),
                       textAlign: TextAlign.right,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -406,16 +407,16 @@ class _HostState extends State<Host> {
                             onPressed: () {
                               setState(() {
                                 if (!paused && skipsLeft>0 && roundName=="Toss-Up") {
-                                  if (index == questionSet.length - 1) {
+                                  if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Result(this.moderator)),
+                                          builder: (context) => Result()),
                      );
                                   }
                                   else {
-                                    skipsLeft-=1;
                                     index += 1;
+                                    skipsLeft-=1;
                                     buzzedIn=false;
                                     roundName = "Toss-Up";
                                     decisionTime=false;
@@ -454,7 +455,7 @@ class _HostState extends State<Host> {
                 ),
                 padding: EdgeInsets.all(20.0),
                 disabledTextColor: Colors.white,
-                disabledColor: buzzedIn ? Colors.black :(decisionTime)? Colors.deepPurple :interrupt ? Colors.brown : Colors.grey,
+                disabledColor: buzzedIn ? Colors.black :(decisionTime)? Colors.deepPurple :interrupt ? Colors.lightBlue : Colors.grey,
                 color: Colors.lightGreen,
                 textColor: Colors.white,
                 onPressed: (!doneReading && !paused && !buzzedIn && !decisionTime && !interrupt)?() {
@@ -490,8 +491,8 @@ class _HostState extends State<Host> {
                       setState(() {
                         if(!paused){
                           server.sendAll(json.encode({"type": "Correct"}));;
-                          this.moderator.aTeam.canAnswer=true;
-                          this.moderator.bTeam.canAnswer=true;
+                          game.aTeam.canAnswer=true;
+                          game.bTeam.canAnswer=true;
                           if (roundName=="Toss-Up")
                           {
                             buzzedIn=false;
@@ -501,20 +502,20 @@ class _HostState extends State<Host> {
                             doneReading=false;
                             if(team=="A")
                             {
-                              this.moderator.aTeam.score+=4;
+                              game.aTeam.score+=4;
                             }
                             else
                             {
-                              this.moderator.bTeam.score+=4;
+                              game.bTeam.score+=4;
                             }
                           }
                           else
                           {
-                            if (index == questionSet.length - 1) {
+                            if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Result(this.moderator)),
+                                    builder: (context) => Result()),
                               );
                               }
                             else{
@@ -526,11 +527,11 @@ class _HostState extends State<Host> {
                               doneReading=false;
                               if(team=="A")
                               {
-                                this.moderator.aTeam.score+=10;
+                                game.aTeam.score+=10;
                               }
                               else
                               {
-                                this.moderator.bTeam.score+=10;
+                                game.bTeam.score+=10;
                               }
                             }
                           }
@@ -556,47 +557,47 @@ class _HostState extends State<Host> {
                       setState(() {
                         if(!paused) {
                           server.sendAll(json.encode({"type": "Incorrect"}));; //should tell which team answered correctly? so incorrect team cant answer again
-                          if (this.moderator.aTeam.canAnswer && this.moderator.bTeam.canAnswer && roundName=="Toss-Up") {
+                          if (game.aTeam.canAnswer && game.bTeam.canAnswer && roundName=="Toss-Up") {
                             if (team == "A") {
                               if (interrupt) {
-                                this.moderator.bTeam.score += 4;
+                                game.bTeam.score += 4;
                               }
-                              this.moderator.aTeam.canAnswer = false;
+                              game.aTeam.canAnswer = false;
                               //                              team="B";
                             }
                             else {
                               if (interrupt) {
-                                this.moderator.aTeam.score += 4;
+                                game.aTeam.score += 4;
                               }
-                              this.moderator.bTeam.canAnswer = false;
+                              game.bTeam.canAnswer = false;
                             }
                             buzzedIn=false;
                             decisionTime=false;
                             interrupt=false;
                             doneReading = false;
                           }
-                          else if(((this.moderator.bTeam.canAnswer && !this.moderator.aTeam.canAnswer) ||(!this.moderator.bTeam.canAnswer && this.moderator.aTeam.canAnswer))&&roundName=="Toss-Up")
+                          else if(((game.bTeam.canAnswer && !game.aTeam.canAnswer) ||(!game.bTeam.canAnswer && game.aTeam.canAnswer))&&roundName=="Toss-Up")
                             {
-                              if (this.moderator.bTeam.canAnswer ) //notify mod?
+                              if (game.bTeam.canAnswer ) //notify mod?
                                 {
                                   if (interrupt) { //add team ="A"
-                                    this.moderator.bTeam.score += 4;
+                                    game.bTeam.score += 4;
                                   }
                                   print("Team A cannot answer now");
                                 }
                               else
                                 {
                                   if (interrupt) {
-                                    this.moderator.aTeam.score += 4;
+                                    game.aTeam.score += 4;
                                   }
                                   print("Team B cannot answer now");
                                 }
                               print("here");
-                              if (index == questionSet.length - 1) {
+                              if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Result(this.moderator)),
+                                      builder: (context) => Result()),
                                 );
                               }
                               else {
@@ -606,17 +607,17 @@ class _HostState extends State<Host> {
                                 decisionTime=false;
                                 interrupt=false;
                                 doneReading = false;
-                                this.moderator.aTeam.canAnswer=true;
-                                this.moderator.bTeam.canAnswer=true;
+                                game.aTeam.canAnswer=true;
+                                game.bTeam.canAnswer=true;
                               }
                             }
                           if(roundName=="Bonus")
                           {
-                            if (index == questionSet.length - 1) {
+                            if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Result(this.moderator)),
+                                    builder: (context) => Result()),
                               );
                             }
                             else {
@@ -626,8 +627,8 @@ class _HostState extends State<Host> {
                               decisionTime=false;
                               interrupt=false;
                               doneReading = false;
-                              this.moderator.aTeam.canAnswer=true;
-                              this.moderator.bTeam.canAnswer=true;
+                              game.aTeam.canAnswer=true;
+                              game.bTeam.canAnswer=true;
                             }
                           }
                       }
@@ -701,19 +702,19 @@ class _HostState extends State<Host> {
                                                   server.sendAll(json.encode({"type": "Blurt"}));;
                                                   //need to do more work here
                                                   if (team == "A") {
-                                                    this.moderator.bTeam.score += 4;
+                                                    game.bTeam.score += 4;
                                                   }
                                                   else {
-                                                    this.moderator.aTeam.score += 4;
+                                                    game.aTeam.score += 4;
                                                   }
                                                 }
                                               });
                                               Navigator.of(context, rootNavigator: true).pop('dialog');
-                                              if (index == questionSet.length - 1) {
+                                              if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) => Result(this.moderator)),
+                                                      builder: (context) => Result()),
                                                 );
                                               }
                                               else {
@@ -723,8 +724,8 @@ class _HostState extends State<Host> {
                                                 decisionTime=false;
                                                 interrupt=false;
                                                 doneReading = false;
-                                                this.moderator.aTeam.canAnswer=true;
-                                                this.moderator.bTeam.canAnswer=true;
+                                                game.aTeam.canAnswer=true;
+                                                game.bTeam.canAnswer=true;
                                               }
                                             },
                                             child: Text(
@@ -749,19 +750,19 @@ class _HostState extends State<Host> {
                                                 if (!paused) {
                                                   server.sendAll(json.encode({"type": "Consultation"}));
                                                   if (team == "A") {
-                                                    this.moderator.bTeam.score += 4;
+                                                    game.bTeam.score += 4;
                                                   }
                                                   else {
-                                                    this.moderator.aTeam.score += 4;
+                                                    game.aTeam.score += 4;
                                                   }
                                                 }
                                               });
                                               Navigator.of(context, rootNavigator: true).pop('dialog');
-                                              if (index == questionSet.length - 1) {
+                                              if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) => Result(this.moderator)),
+                                                      builder: (context) => Result()),
                                                 );
                                               }
                                               else {
@@ -771,8 +772,8 @@ class _HostState extends State<Host> {
                                                 decisionTime=false;
                                                 interrupt=false;
                                                 doneReading = false;
-                                                this.moderator.aTeam.canAnswer=true;
-                                                this.moderator.bTeam.canAnswer=true;
+                                                game.aTeam.canAnswer=true;
+                                                game.bTeam.canAnswer=true;
                                               }
                                             },
                                             child: Text(
@@ -795,43 +796,43 @@ class _HostState extends State<Host> {
                                               setState(() {
                                                 if (!paused) {
                                                   //need to do more work here
-                                                  if (this.moderator.aTeam.canAnswer && this.moderator.bTeam.canAnswer && roundName=="Toss-Up") {
+                                                  if (game.aTeam.canAnswer && game.bTeam.canAnswer && roundName=="Toss-Up") {
                                                     if (team == "A") {
                                                       server.sendAll(json.encode({"type": "Disqualify", "team": "A"}));
-                                                      this.moderator.aTeam.canAnswer = false;
+                                                      game.aTeam.canAnswer = false;
                                                       //                              team="B";
                                                     }
                                                     else {
                                                       server.sendAll(json.encode({"type": "Disqualify", "team": "B"}));
-                                                      this.moderator.bTeam.canAnswer = false;
+                                                      game.bTeam.canAnswer = false;
                                                     }
                                                     buzzedIn=false;
                                                     decisionTime=false;
                                                     interrupt=false;
                                                     doneReading = false;
                                                   }
-                                                  else if(((this.moderator.bTeam.canAnswer && !this.moderator.aTeam.canAnswer) ||(!this.moderator.bTeam.canAnswer && this.moderator.aTeam.canAnswer))&&roundName=="Toss-Up")
+                                                  else if(((game.bTeam.canAnswer && !game.aTeam.canAnswer) ||(!game.bTeam.canAnswer && game.aTeam.canAnswer))&&roundName=="Toss-Up")
                                                   {
-                                                    if (this.moderator.bTeam.canAnswer ) //notify mod?
+                                                    if (game.bTeam.canAnswer ) //notify mod?
                                                         {
                                                       if (interrupt) { //add team ="A"
-                                                        this.moderator.bTeam.score += 4;
+                                                        game.bTeam.score += 4;
                                                       }
                                                       print("Team A cannot answer now");
                                                     }
                                                     else
                                                     {
                                                       if (interrupt) {
-                                                        this.moderator.aTeam.score += 4;
+                                                        game.aTeam.score += 4;
                                                       }
                                                       print("Team B cannot answer now");
                                                     }
                                                     print("here");
-                                                    if (index == questionSet.length - 1) {
+                                                    if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                            builder: (context) => Result(this.moderator)),
+                                                            builder: (context) => Result()),
                                                       );
                                                     }
                                                     else {
@@ -841,17 +842,17 @@ class _HostState extends State<Host> {
                                                       decisionTime=false;
                                                       interrupt=false;
                                                       doneReading = false;
-                                                      this.moderator.aTeam.canAnswer=true;
-                                                      this.moderator.bTeam.canAnswer=true;
+                                                      game.aTeam.canAnswer=true;
+                                                      game.bTeam.canAnswer=true;
                                                     }
                                                   }
                                                   if(roundName=="Bonus")
                                                   {
-                                                    if (index == questionSet.length - 1) {
+                                                    if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                            builder: (context) => Result(this.moderator)),
+                                                            builder: (context) => Result()),
                                                       );
                                                     }
                                                     else {
@@ -861,8 +862,8 @@ class _HostState extends State<Host> {
                                                       decisionTime=false;
                                                       interrupt=false;
                                                       doneReading = false;
-                                                      this.moderator.aTeam.canAnswer=true;
-                                                      this.moderator.bTeam.canAnswer=true;
+                                                      game.aTeam.canAnswer=true;
+                                                      game.bTeam.canAnswer=true;
                                                     }
                                                   }
                                                 }
@@ -896,24 +897,24 @@ class _HostState extends State<Host> {
                                                     interrupt=false;
                                                     decisionTime=false;
                                                     doneReading=false;
-                                                    this.moderator.aTeam.canAnswer=true;
-                                                    this.moderator.bTeam.canAnswer=true;
+                                                    game.aTeam.canAnswer=true;
+                                                    game.bTeam.canAnswer=true;
                                                     if(team=="A")
                                                     {
-                                                      this.moderator.aTeam.score+=4;
+                                                      game.aTeam.score+=4;
                                                     }
                                                     else
                                                     {
-                                                      this.moderator.bTeam.score+=4;
+                                                      game.bTeam.score+=4;
                                                     }
                                                   }
                                                   else
                                                   {
-                                                    if (index == questionSet.length - 1) {
+                                                    if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                            builder: (context) => Result(this.moderator)),
+                                                            builder: (context) => Result()),
                                                       );
                                                     }
                                                     else{
@@ -923,15 +924,15 @@ class _HostState extends State<Host> {
                                                       interrupt=false;
                                                       decisionTime=false;
                                                       doneReading=false;
-                                                      this.moderator.aTeam.canAnswer=true;
-                                                      this.moderator.bTeam.canAnswer=true;
+                                                      game.aTeam.canAnswer=true;
+                                                      game.bTeam.canAnswer=true;
                                                       if(team=="A")
                                                       {
-                                                        this.moderator.aTeam.score+=10;
+                                                        game.aTeam.score+=10;
                                                       }
                                                       else
                                                       {
-                                                        this.moderator.bTeam.score+=10;
+                                                        game.bTeam.score+=10;
                                                       }
                                                     }
                                                   }
@@ -969,8 +970,10 @@ class _HostState extends State<Host> {
                 ],
               ),
             ),
-//          Text(this.moderator.aTeam.canAnswer.toString()),
-//            Text(this.moderator.bTeam.canAnswer.toString())
+//          Text("Questions + buffer "+questionSet.length.toString()),
+//            Text("Index "+index.toString()),
+//            Text("Displayed "+(index+1-(5-skipsLeft)).toString()),
+//            Text("Skips used: "+(5-skipsLeft).toString()),
           ],
         ),
       ),

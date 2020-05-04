@@ -5,17 +5,17 @@ import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 
 class Result extends StatefulWidget {
-  Moderator moderator;
-  Result(this.moderator);
+//  Moderator moderator;
+  Result();
 
   @override
-  _ResultState createState() => _ResultState(this.moderator);
+  _ResultState createState() => _ResultState();
 }
 
 class _ResultState extends State<Result> {
-  Moderator moderator;
+//  Moderator moderator;
 
-  _ResultState(this.moderator);
+  _ResultState();
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
@@ -53,7 +53,7 @@ class _ResultState extends State<Result> {
                     ),
                     children: <TextSpan>[
                       TextSpan(
-                          text: (this.moderator.aTeam.score>this.moderator.bTeam.score)?"A" :(this.moderator.aTeam.score<this.moderator.bTeam.score)?"B": "A and B! \nIt's a Tie" ,
+                          text: (game.aTeam.score>game.bTeam.score)?"A" :(game.aTeam.score<game.bTeam.score)?"B": "A and B! \nIt's a Tie" ,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             // foreground: Paint()
@@ -95,7 +95,7 @@ class _ResultState extends State<Result> {
                                   fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                 )),
-                            Text(this.moderator.aTeam.score.toString(),
+                            Text(game.aTeam.score.toString(),
                                 style: TextStyle(
                                   color: Colors.red,
                                   fontSize: 20.0,
@@ -111,7 +111,7 @@ class _ResultState extends State<Result> {
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.w500,
                               )),
-                          Text(this.moderator.bTeam.score.toString(),
+                          Text(game.bTeam.score.toString(),
                               style: TextStyle(
                                 color: Colors.lightGreen,
                                 fontSize: 20.0,
