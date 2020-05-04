@@ -6,6 +6,7 @@ import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/screens/player_waiting_room.dart';
+import 'package:sciencebowlportable/utilities/styles.dart';
 
 //void join() => Pin();
 //Might need to tweak the colour scheme a bit + Red Team or Team A?
@@ -31,6 +32,20 @@ class _PinState extends State<Pin> {
     if (msgJson["type"] == "Connected") {
       print("GOT CONNECTED MESSAGE FROM SERVER");
       client.write(json.encode({"type":"uniqueID", "ID": user.userName}));
+      client.write(json.encode({"type":"pin", "pin": pin, "uniqueID": user.userName}));
+    } if (msgJson["type"] == "pinState") {
+      print("clinet recieved accept pin message");
+
+      if (msgJson["pinState"] == "Accepted") {
+        client.write(json.encode({"type": "movingToWaitingRoom", "uniqueID": user.userName}));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PlayerWaitingRoom(this.client)),
+        );
+      } else if (msgJson["pinState"] == "Rejected") {
+        _incorrectPinDialog();
+      }
     }
 //      print("Connected to server, recieved message!");
 //      socketDataStreamController.add("");
@@ -43,7 +58,8 @@ class _PinState extends State<Pin> {
   }
 
   onError(dynamic error) {
-    print(error);
+    print("error $error");
+    _incorrectPinDialog();
   }
 
   @override
@@ -102,6 +118,7 @@ class _PinState extends State<Pin> {
                     // subnet = subnet.substring(0,8);
                     print(subnet); // SUBNET is now the same as the "G" Character in the thing but better.
                     print(gamePin);
+                    pin = gamePin;
                     print(key2ip(gamePin,subnet));
                     client = Client(
                       hostname: key2ip(gamePin, subnet),
@@ -117,10 +134,6 @@ class _PinState extends State<Pin> {
                     await client.connect();
                     print("done connecting");
                   }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PlayerWaitingRoom(this.client)),
-                  );
                 }
               ),
             ],
@@ -129,4 +142,24 @@ class _PinState extends State<Pin> {
       ),
     );
   }
+  _incorrectPinDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog (
+            title: Text("Incorrect Pin"),
+            content: Text("Your pin doesn't match any hosted game."),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay", style: staystyle),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
 }
+

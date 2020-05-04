@@ -28,14 +28,14 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
     }
     playerPositionIndexDict =
     {
-      "A 1": 0,
+      "A 1":0,
       "A 2":1,
       "A Captain":2,
       "A 3":3,
       "A 4":4,
-      "B 1": 5,
-      "B 2": 6,
-      "B Captain": 7,
+      "B 1":5,
+      "B 2":6,
+      "B Captain":7,
       "B 3":8,
       "B 4":9
     };
@@ -206,6 +206,11 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
               FlatButton(
                 child: Text("Exit", style: exitstyle),
                 onPressed: () {
+                  socketDataStreamSubscription.cancel();
+                  setState(() {
+                    playerSlotIsTakenList = List.generate(10, (_) => false);
+                    playerNamesList = List.generate(10, (_) => "");
+                  });
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),),

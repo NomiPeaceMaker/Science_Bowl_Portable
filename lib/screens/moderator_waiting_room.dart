@@ -34,17 +34,33 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
     appBarText = "HOST";
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data) {
-      ///////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////
       print("got Data");
       print(data);
       data = json.decode(data);
-
       Player player = Player(data["playerID"]);
       player.userName = data["userName"];
       player.email = data["email"];
       print("LISTENING AT WAITING SCREEN MODERATOR");
-      if (data["type"] == "selectSlot") {
+      if (data["type"] == "pin") {
+        if (data["pin"] == pin) {
+          print("moderator accepts pin");
+          server.sockets[data["uniqueID"]].write(
+              json.encode({"type": "pinState", "pinState": "Accepted"})
+          );
+        } else {
+          server.sockets[data["uniqueID"]].write(
+              json.encode({"type": "pinState", "pinState": "Rejected"})
+          );
+        }
+      } else if (data["type"] == "movingToWaitingRoom") {
+        userSlotsDict[data["uniqueID"]] = null;
+        var waitingScreenState = {"type": "waitingScreenState"};
+        waitingScreenState["playerSlotIsTakenList"] = json.encode(playerSlotIsTakenList);
+        waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
+        print(waitingScreenState);
+        server.sendAll(json.encode(waitingScreenState));
+      }
+      else if (data["type"] == "selectSlot") {
         print(playerSlotIsTakenList);
 
         String previousState = userSlotsDict[data["uniqueID"]];
@@ -59,15 +75,15 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
           playerJoinStreamControllers[playerPositionIndex].add(player.userName);
           userSlotsDict[data["uniqueID"]] = data["playerID"];
         }
-      } else if (data["type"]=="newUserConnected") {
+//      else if (data["type"]=="newUserConnected") {
 //        userSlotsDict["email"] = data["email"];
 //        userSlotsDict["playerID"] = data["playerID"];
-        userSlotsDict[data["uniqueID"]] = null;
-        var waitingScreenState = {"type": "waitingScreenState"};
-        waitingScreenState["playerSlotIsTakenList"] = json.encode(playerSlotIsTakenList);
-        waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
-        print(waitingScreenState);
-        server.sendAll(json.encode(waitingScreenState));
+//        userSlotsDict[data["uniqueID"]] = null;
+//        var waitingScreenState = {"type": "waitingScreenState"};
+//        waitingScreenState["playerSlotIsTakenList"] = json.encode(playerSlotIsTakenList);
+//        waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
+//        print(waitingScreenState);
+//        server.sendAll(json.encode(waitingScreenState));
       } else if (data["type"] == "playerLeaving") {
         var uniqueID = data["uniqueID"];
         server.sockets[uniqueID].close();
@@ -76,8 +92,6 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         playerJoinStreamControllers[playerPositionIndex].add("undoSelect");
       }
-      ///////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////
     });
   }
 
@@ -128,6 +142,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
 
   @override
   Container pinBar() {
+    pin = moderator.gamePin;
     return new Container(
       margin: EdgeInsets.only(top: 10.0),
       child: new Align(
@@ -159,7 +174,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
       context: context,
       barrierDismissible: true,
       builder: (context) {
-        return AlertDialog(
+        return AlertDialog (
           title: Text("Captains Need to Join"),
           content: Text("Both team captians need to join before we can start the game. Please ask them to join before presseing start game."),
           actions: <Widget>[
@@ -169,7 +184,6 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
                 Navigator.of(context).pop();
               },
             ),
-
           ],
         );
       });
