@@ -4,7 +4,7 @@ class User {
   String userName, email;
   bool isLoggedIn, isModerator;
   User() {
-    userName = "Guest";
+    this.userName = "Guest";
     this.isLoggedIn = true;
   }
 }
