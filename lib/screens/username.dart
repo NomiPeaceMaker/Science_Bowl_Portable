@@ -3,6 +3,7 @@ import 'package:sciencebowlportable/globals.dart';
 // import 'package:science_bowl_portable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/globals.dart';
+import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void firstusername() => runApp(Username());
@@ -38,6 +39,7 @@ class _usernameState extends State<Username> {
   }
 
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: Container(
