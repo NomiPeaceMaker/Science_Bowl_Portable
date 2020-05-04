@@ -369,11 +369,13 @@ class _GameState extends State<Game> {
           SizedBox(
             width:MediaQuery.of(context).size.height*0.25,
             height:MediaQuery.of(context).size.height*0.25,
+
             child:  StreamBuilder(
               stream: BuzzerStreamController.stream,
               builder: (context, snapshot) {
-                element=(snapshot.data==null) ? "Buzz In!" : snapshot.data;
+                element=(snapshot.data==null) ? "" : snapshot.data;
                 print(snapshot.data);
+                BuzzerStreamController.add(null);
                 if (element=="Available") {
                   print("making buzzer available");
 //                  buzzerClr = Colors.red;
@@ -384,29 +386,31 @@ class _GameState extends State<Game> {
                   _startBuzzTimer();
                 }
                 else if (element=="Incorrect") {
-//                  print("making buzzer red");
+                  print("Incorrect");
 //                  buzzerClr = Colors.red;
-//                  buzzerTxt = "Incorrect";
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Icon(Icons.not_interested),
-                      backgroundColor: Colors.red,
-                      //                                  animation: ,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+//
+//                 buzzerTxt = "Incorrect";
+
+//                  Scaffold.of(context).showSnackBar(
+//                    SnackBar(
+//                      content: Icon(Icons.not_interested),
+//                      backgroundColor: Colors.red,
+//                      //                                  animation: ,
+//                      duration: Duration(seconds: 2),
+//                    ),
+//                  );
                 }
 
                 else if (element=="Correct") {
                   print("correct");
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Icon(Icons.done),
-                      backgroundColor: Colors.lightGreen,
-//                                  animation: ,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+//                  Scaffold.of(context).showSnackBar(
+//                    SnackBar(
+//                      content: Icon(Icons.done),
+//                      backgroundColor: Colors.lightGreen,
+////                                  animation: ,
+//                      duration: Duration(seconds: 2),
+//                    ),
+//                  );
                   if(roundName=="Toss-Up")
                     {
                       if (team=="A")
@@ -445,14 +449,14 @@ class _GameState extends State<Game> {
                 }
                 else if (element=="Blurt") { //snackbar
                   print("Blurt");
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Icon(Icons.pan_tool),
-                      backgroundColor: Colors.grey[900],
-                      //                                  animation: ,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+//                  Scaffold.of(context).showSnackBar(
+//                    SnackBar(
+//                      content: Icon(Icons.pan_tool),
+//                      backgroundColor: Colors.grey[900],
+//                      //                                  animation: ,
+//                      duration: Duration(seconds: 2),
+//                    ),
+//                  );
                   if (team=="A")
                     {
                       game.aTeam.score+=4;
@@ -463,14 +467,14 @@ class _GameState extends State<Game> {
                 }
                 else if (element=="Consultation") {
                   print("Consultation");
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Icon(Icons.pan_tool),
-                      backgroundColor: Colors.grey[900],
-                      //                                  animation: ,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+//                  Scaffold.of(context).showSnackBar(
+//                    SnackBar(
+//                      content: Icon(Icons.pan_tool),
+//                      backgroundColor: Colors.grey[900],
+//                      //                                  animation: ,
+//                      duration: Duration(seconds: 2),
+//                    ),
+//                  );
                   if (team=="A")
                   {
                     game.aTeam.score+=4;
@@ -481,27 +485,27 @@ class _GameState extends State<Game> {
                 }
                 else if (element=="Disqualify") {
                   print("Disqualify");
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Icon(Icons.pan_tool),
-                      backgroundColor: Colors.grey[900],
-                      //                                  animation: ,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+//                  Scaffold.of(context).showSnackBar(
+//                    SnackBar(
+//                      content: Icon(Icons.pan_tool),
+//                      backgroundColor: Colors.grey[900],
+//                      //                                  animation: ,
+//                      duration: Duration(seconds: 2),
+//                    ),
+//                  );
                   bzrBorder=Colors.grey[900];
 
                 }
                 else if (element=="Distraction") {
                   print("Distraction");
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Icon(Icons.pan_tool),
-                      backgroundColor: Colors.grey[900],
-                      //                                  animation: ,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+//                  Scaffold.of(context).showSnackBar(
+//                    SnackBar(
+//                      content: Icon(Icons.pan_tool),
+//                      backgroundColor: Colors.grey[900],
+//                      //                                  animation: ,
+//                      duration: Duration(seconds: 2),
+//                    ),
+//                  );
                   if (roundName=="Toss-Up")
                     {
                       if(team=="A")
@@ -530,6 +534,7 @@ class _GameState extends State<Game> {
                   buzzerTxt = "";
                   bzrBorder=Colors.white;
                 }
+
               return RaisedButton(
                 shape: CircleBorder(side: BorderSide(color: bzrBorder, width: 8.0)),
                 child: Column(
@@ -562,13 +567,13 @@ class _GameState extends State<Game> {
                   ),
                   disabledColor: Colors.white,
                   disabledTextColor: Colors.grey[900],
+                  color: buzzerClr,
                   onPressed: (element!="Disqualify") ? (){
                     setState(() {
                       client.write(json.encode({"type":"BuzzIn", "playerID":player.playerID}));
                     }
                     );
                   } : null,
-                  color: buzzerClr,
                 );
               },
             ),

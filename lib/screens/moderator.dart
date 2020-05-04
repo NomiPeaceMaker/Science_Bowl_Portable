@@ -407,6 +407,7 @@ class _HostState extends State<Host> {
                             onPressed: () {
                               setState(() {
                                 if (!paused && skipsLeft>0 && roundName=="Toss-Up") {
+                                  server.sendAll(json.encode({"type": "moderatorReading"}));
                                   if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
                                     Navigator.push(
                                       context,
