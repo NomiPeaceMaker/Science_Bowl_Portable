@@ -106,23 +106,6 @@ class _MatchSettingState extends State<MatchSettings> {
               icon: new Icon(Icons.arrow_back),
               iconSize: 32,
               onPressed: () => Navigator.pop(context),
-              //     onPressed: () => showDialog(
-              // context: context,
-              // barrierDismissible: true,
-              // child: AlertDialog(
-              //   title: Text("Are you sure you want to exit?"),
-              //   actions: <Widget> [
-              //     FlatButton(
-              //       child: Text("Yes"),
-              //       onPressed: () => Navigator.of(context).pop(),
-              //     ),
-              //     FlatButton(
-              //       child: Text("No"),
-              //       onPressed: () => Navigator.of(context).pop(),
-              //       )
-              //   ],
-              // ),
-              //     ),
             ),
           ),
         ),
@@ -170,8 +153,12 @@ class _MatchSettingState extends State<MatchSettings> {
                         width: 65,
                         height: 40,
                         child: TextField(
+                          textAlignVertical: TextAlignVertical.center,
+                          textAlign: TextAlign.center,
                           onChanged: (text) {
-                            if (text != "") {
+                            if(text=="")
+                              {game.gameTime=0;}
+                            else{
                               var value = int.tryParse(text);
                               if (value == null) {
                                 game.gameTime = 20;
@@ -229,8 +216,11 @@ class _MatchSettingState extends State<MatchSettings> {
                         width: 65,
                         height: 40,
                         child: TextField(
+                          textAlignVertical: TextAlignVertical.center,
+                          textAlign: TextAlign.center,
                           onChanged: (text) {
-                          if (text != "") {
+                            if(text==""){moderator.numberOfQuestion=0;}
+                           else{
                           var value = int.tryParse(text);
                           if (value == null) {
                           moderator.numberOfQuestion = 25;
@@ -420,8 +410,10 @@ class _MatchSettingState extends State<MatchSettings> {
                         width: 65,
                         height: 40,
                         child: TextField(
+                          textAlignVertical: TextAlignVertical.center,
+                          textAlign: TextAlign.center,
                           onChanged: (text) {
-                            if (text != "") {
+                            if (text == "") {game.tossUpTime=0;}else{
                             var value = int.tryParse(text);
                             if (value == null) {
                             game.tossUpTime = 5;
@@ -474,8 +466,10 @@ class _MatchSettingState extends State<MatchSettings> {
                         width: 65,
                         height: 40,
                         child: TextField(
+                          textAlignVertical: TextAlignVertical.center,
+                          textAlign: TextAlign.center,
                           onChanged: (text) {
-                            if (text != "") {
+                            if (text == "") {game.bonusTime=0;}else{
                               var value = int.tryParse(text);
                               if (value == null) {
                                 game.bonusTime = 20;
@@ -510,32 +504,51 @@ class _MatchSettingState extends State<MatchSettings> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
+//                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     FlatButton(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: EdgeInsets.all(0),
                       child: Text(
                         "Set to Default",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
-                            color: Colors.red),
+                            color: Colors.pink),
+                          textAlign: TextAlign.left,
+
                       ),
                       color: Colors.transparent,
-                      textColor: Colors.red,
+                      textColor: Colors.pink,
                       onPressed: () {
-                        setState(() {});
 //                        (context as Element).reassemble();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MatchSettings()),
-                        );
+                        reset();
+                        setState(() {});
+
                       },
                     ),
-                    IconButton(
-                      icon: Icon(Icons.navigate_next),
-                      color: Colors.red,
-                      iconSize: 30,
+                  ],
+                ),
+              ),
+              Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+                child:Align(
+                  alignment: Alignment.center,
+                  child:SizedBox(
+                    width: 130.0,
+                    height: 50.0,
+                  child: FlatButton(
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: new Text(
+                          "Confirm",
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                      ),
+                      color: Colors.green[600],
+                      textColor: Colors.white,
+
                       onPressed: () async {
                         moderator.subjectsdict.forEach((key, value) {
 //                          print(key);
@@ -561,8 +574,8 @@ class _MatchSettingState extends State<MatchSettings> {
                         print(game.numberOfQuestion);
                         print(game.tossUpTime);
                         print(game.bonusTime);
-//                        bool validInputs = validations();
-                        if (subject_selected == true) {
+                        bool validInputs = validations();
+                        if (validInputs == true) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -570,13 +583,10 @@ class _MatchSettingState extends State<MatchSettings> {
                                     Loading(this.server, this.moderator)),
                           );
                         }
-                        else
-                          _chooseSubjectDialog();
                         setState(() {});
                       },
-                    )
-                  ],
-                ),
+                    ),
+                ),),
               ),
             ],
           ),
@@ -592,20 +602,19 @@ class _MatchSettingState extends State<MatchSettings> {
     });
   }
 
-//  bool validations() {
-//    if (moderator.bonusTime <= 0 ||
-//        moderator.gameTime <= 0 ||
-//        moderator.tossUpTime <= 0 ||
-//        moderator.numberOfQuestion <= 0) {
-//      _lessThanOneDialog();
-//      return false;
-//    } else if (subject_selected == false) {
-//      _chooseSubjectDialog();
-//      return false;
-//    }
-//
-//    return true;
-//  }
+  bool validations() {
+    if (game.bonusTime == 0 ||
+        game.tossUpTime == 0 ||
+        game.gameTime== 0 ||
+        moderator.numberOfQuestion <= 0) {
+      _emptyfield();
+      return false;
+    } else if (subject_selected == false) {
+      _chooseSubjectDialog();
+      return false;
+    }
+    return true;
+  }
 
   _chooseSubjectDialog() {
     showDialog(
@@ -726,5 +735,44 @@ class _MatchSettingState extends State<MatchSettings> {
             ],
           );
         });
+  }
+
+  _emptyfield() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Empty field"),
+            content: Text("Fill all fields before proceeding"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+  void reset(){
+    game.gameTime = 20;
+    moderator.numberOfQuestion = 25;
+    moderator.subjects = [];
+    moderator.subjectsdict = {
+      0: false,
+      1: false,
+      2: false,
+      3: false,
+      4: false,
+    };
+    moderator.subjects = [];
+    game.tossUpTime = 5;
+    game.bonusTime = 20;
+    moderator.difficultyLevel = 1;
+    isSelectedSubject_1 = List.generate(2, (_) => false);
+    isSelectedSubject_2 = List.generate(3, (_) => false);
+    subject_selected = false;
   }
 }

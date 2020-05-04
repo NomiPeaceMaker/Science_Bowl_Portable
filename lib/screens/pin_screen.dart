@@ -25,6 +25,12 @@ class _PinState extends State<Pin> {
   List<String> serverLogs = [];
   TextEditingController controller = TextEditingController();
 
+  initState() {
+    super.initState();
+    print("START");
+    print(user.email);
+  }
+
   onData(Uint8List data) {
     var msg = String.fromCharCodes(data);
     var msgJson = json.decode(msg);
