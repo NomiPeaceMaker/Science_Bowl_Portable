@@ -18,19 +18,21 @@ class MatchSettings extends StatefulWidget {
 }
 
 //List<bool> isSelectedDifficulty = [false, true];
-List<bool> isSelectedSubject_1 = List.generate(2, (_) => false);
-List<bool> isSelectedSubject_2 = List.generate(3, (_) => false);
-bool subject_selected = false;
 
 class _MatchSettingState extends State<MatchSettings> {
   Server server;
   Moderator moderator = Moderator();
+  List<bool> isSelectedSubject_1;
+  List<bool> isSelectedSubject_2;
+  bool subject_selected;
+
 
   List<String> serverLogs = [];
   TextEditingController controller = TextEditingController();
 
   initState() {
     super.initState();
+
     print("INITIALIZING STATE");
     server = Server(
       onData: this.onData,
@@ -521,6 +523,8 @@ class _MatchSettingState extends State<MatchSettings> {
                       color: Colors.transparent,
                       textColor: Colors.red,
                       onPressed: () {
+                        setState(() {});
+//                        (context as Element).reassemble();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
