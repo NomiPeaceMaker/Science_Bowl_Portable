@@ -41,7 +41,7 @@ class _HostState extends State<Host> {
   Timer _buzzTimer;
   Timer _gameTimer;
   bool doneReading=false;
-  bool interrupt=false;
+  bool interrupt=true;
 
   int bonusTimer;
   int tossUpTimer;
@@ -455,7 +455,7 @@ class _HostState extends State<Host> {
                 ),
                 padding: EdgeInsets.all(20.0),
                 disabledTextColor: Colors.white,
-                disabledColor: buzzedIn ? Colors.black :(decisionTime)? Colors.deepPurple :interrupt ? Colors.brown : Colors.grey,
+                disabledColor: buzzedIn ? Colors.black :(decisionTime)? Colors.deepPurple :interrupt ? Colors.lightBlue : Colors.grey,
                 color: Colors.lightGreen,
                 textColor: Colors.white,
                 onPressed: (!doneReading && !paused && !buzzedIn && !decisionTime && !interrupt)?() {
