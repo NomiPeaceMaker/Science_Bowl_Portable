@@ -11,6 +11,7 @@ int initScreen = 0;
 Future <void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
+
   initScreen = await prefs.getInt("initScreen");
   user.userName = await prefs.getString("username_set");
   user_email = await prefs.getString("user_email");
@@ -46,12 +47,14 @@ class _MyApp extends State<MyApp> {
       }
       else{
         route0 = <String, WidgetBuilder> {
+
         '/': (context) => MyHomePage(),
         '/home': (context) => MyHomePage(),
         };
       }
     }
     else { // IF THIS IS THE FIRST TIME RUNNING
+
       route0 = <String, WidgetBuilder> {
         '/': (context) => OnboardingScreen(),
         '/home': (context) => MyHomePage(),

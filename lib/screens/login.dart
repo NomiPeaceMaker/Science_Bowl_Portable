@@ -138,6 +138,7 @@ class _LoginState extends State<Login> {
           loggedIn = true;
           
         });
+
         if (user.userName == 'Guest' || user.userName == null)
         {
           Navigator.push(
@@ -172,6 +173,7 @@ class _LoginState extends State<Login> {
           final FirebaseUser Fire_user =
               (await firebaseAuth.signInWithCredential(facebookAuthCred)).user;
           user.email = Fire_user.email;
+
           user_email = user.email;
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString("user_email", user_email);
