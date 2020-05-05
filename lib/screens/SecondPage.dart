@@ -7,7 +7,6 @@ class Second extends StatefulWidget {
 }
 
 class _SecondState extends State<Second> {
-  
   //Widget to get images
   // Widget _imageAsset(String path) {
   //   SizeConfig().init(context);
@@ -229,7 +228,8 @@ class _SecondState extends State<Second> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-                "If a player buzzes in before the moderator has pressed done reading button then interrupt penalty will occur.\n",
+                "If a player buzzes in before the moderator has pressed done reading button then interrupt penalty will occur.\n\n"
+                "This penalty is automated i.e. does not require moderator input.\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal))
           ],
         ));

@@ -134,43 +134,41 @@ class _FirstState extends State<First> {
   Container subjects() {
     return Container(
         margin: _paragraphMargin,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                "Subjects\n",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              Text(
-                  // "There are two levels at which the science bool is played. SBP currently  following currently\n",
-                  "SBP currently supports playing the following subjects at the High School Level:\n",
-                  style:
-                      TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
-                Text(
-                "• Biology\n"
-                "• Chemistry\n"
-                "• Earth and Space Science\n"
-                "• Mathematics\n"
-                "• Physics\n",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
-        
-              // WILL ADD SUBJECT TO A TABLE LATER - DO NOT DELETE 
-              // DataTable(
-              //   columns: [
-              //   DataColumn(label: Text("High School", textAlign: TextAlign.center,)),
-              //   // DataColumn(label: Text("Middle School")),
-              // ], rows: [
-              //   DataRow(cells: [DataCell(Text("Biology"))]),
-              //   DataRow(cells: [DataCell(Text("Chemistry"))]),
-              //   DataRow(cells: [DataCell(Text("Earth and Space"))]),
-              //   DataRow(cells: [DataCell(Text("Mathematics"))]),
-              //   DataRow(cells: [DataCell(Text("Physics"))]),
-                // style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)
-              // ]),
-              //   DataCell( Text(
-              // "Life Science \nPhysical Science \nEarth and Space Science \nEnergy \nMathematics",
-              // style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),),
-            ]));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+            Widget>[
+          Text(
+            "Subjects\n",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          Text(
+              // "There are two levels at which the science bool is played. SBP currently  following currently\n",
+              "SBP currently supports playing the following subjects at the High School Level:\n",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
+          Text(
+              "• Biology\n"
+              "• Chemistry\n"
+              "• Earth and Space Science\n"
+              "• Mathematics\n"
+              "• Physics\n",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
+
+          // WILL ADD SUBJECT TO A TABLE LATER - DO NOT DELETE
+          // DataTable(
+          //   columns: [
+          //   DataColumn(label: Text("High School", textAlign: TextAlign.center,)),
+          //   // DataColumn(label: Text("Middle School")),
+          // ], rows: [
+          //   DataRow(cells: [DataCell(Text("Biology"))]),
+          //   DataRow(cells: [DataCell(Text("Chemistry"))]),
+          //   DataRow(cells: [DataCell(Text("Earth and Space"))]),
+          //   DataRow(cells: [DataCell(Text("Mathematics"))]),
+          //   DataRow(cells: [DataCell(Text("Physics"))]),
+          // style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)
+          // ]),
+          //   DataCell( Text(
+          // "Life Science \nPhysical Science \nEarth and Space Science \nEnergy \nMathematics",
+          // style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),),
+        ]));
   }
 
   Container timing() {
@@ -217,7 +215,8 @@ class _FirstState extends State<First> {
             Text("2. Interrupt\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             Text(
-                "There is a 4 point penalty awarded to the other team for interrupting the moderator and giving an incorrect answer.\n",
+                "There is a 4 point penalty awarded to the other team for interrupting the moderator and giving an incorrect answer.\n\n"
+                "This penalty is automated i.e. does not require moderator input.\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
             Text("3. Consultation\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
