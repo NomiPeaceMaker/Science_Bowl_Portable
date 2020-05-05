@@ -57,7 +57,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         socketDataStreamSubscription.cancel();
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Game(client, player)),
+          MaterialPageRoute(builder: (context) => Game(this.client, this.player)),
         );
       }
 //      else if (data["pin"] == "what_is_pin") {
