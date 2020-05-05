@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class First extends StatefulWidget {
@@ -9,6 +10,7 @@ class First extends StatefulWidget {
 class _FirstState extends State<First> {
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Container(
         child: Container(
             child: ListView(
@@ -21,6 +23,7 @@ class _FirstState extends State<First> {
             print("player is ready");
           },
         ),
+        caption(),
         introduction(),
         questions(),
         subjects(),
@@ -40,6 +43,46 @@ class _FirstState extends State<First> {
     ),
   );
 
+  Container caption() {
+    return Container(
+        margin: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 5.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "WATCH: Official Science Bowl rules explainer\n",
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontStyle: FontStyle.italic,
+                fontSize: 13,
+              ),
+            ),
+            RichText(
+                // textAlign: TextAlign,
+                text: TextSpan(
+                    text:
+                        "In this section we will discuss the general rules of the Science Bowl. ",
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.normal,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.grey[600],
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                          text: "Swipe",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          )),
+                      TextSpan(
+                        text:
+                            " to the next sections to find out how these rules relate with the Science Bowl Portable's (SBP) interface.",
+                      )
+                    ])),
+          ],
+        ));
+  }
+
   Container introduction() {
     return Container(
       margin: const EdgeInsets.all(20.0),
@@ -47,11 +90,11 @@ class _FirstState extends State<First> {
 //      mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("\nWhat is the Science Bowl?\n",
+          Text("What is the Science Bowl?\n",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
           Text(
-            "The science bowl is a science trivial game were players can play each other in teams A and B.\n\n"
-            "Each competing team consists of 4 or 5 student members\n\n"
+            "The Science Bowl is a science trivial game were players can play against each other in two team, usually team A and team B.\n\n"
+            // "Each competing team consists of 4 or 5 student members\n\n"
             "You can play either as moderator or as a player.",
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
           )
@@ -72,16 +115,13 @@ class _FirstState extends State<First> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           Text(
-              "Two types of questions will be used:\n"
-              "• toss-up questions - 4 points\n"
-              "• bonus questions - 10 points\n\n"
-              "A toss-up question may be answered by any of the 4 members of either "
-              "team that are actively competing.\n\n"
-              "A team answering a toss-up question correctly will always get a chance to answer a bonus question;"
-              " the other team is ineligible.\n\n"
-              "No communication among team members is allowed on toss-up questions, but communication is allowed on bonus questions.\n\n"
-              "Only the Team Captain must give the final answer in bonus questions\n\n"
-              "Questions are either multiple-choice or short-answer.\n",
+              "There are two types of questions:\n"
+              "• Toss-up questions worth 4 points\n"
+              "• Bonus questions worth 10 points\n\n"
+              "A team that correctly answers a toss-up question will get an opportunity to answer a bonus question; the other team is ineligible to answer.\n\n"
+              "Players cannot consult among team members on toss-up questions, however can and are encouraged to communicate on bonus questions.\n\n"
+              "A toss-up question may be answered by any member of the eligible team(s). However, only the Team Captain must give the final answer in a bonus questions\n\n"
+              "Questions are either multiple-choice or short-answer.",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
         ],
       ),

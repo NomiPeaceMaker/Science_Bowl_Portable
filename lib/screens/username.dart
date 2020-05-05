@@ -3,11 +3,12 @@ import 'package:sciencebowlportable/globals.dart';
 // import 'package:science_bowl_portable/screens/edit_account.dart';
 import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/globals.dart';
+import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void firstusername() => runApp(Username());
 
-String temp_username="";
+String temp_username = "";
 
 class Username extends StatefulWidget {
   @override
@@ -38,22 +39,31 @@ class _usernameState extends State<Username> {
   }
 
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage(
+                  'assets/username_back.png',
+                ),
+                alignment: Alignment.topLeft,
+                fit: BoxFit.scaleDown),
+          ),
           child: Center(
               child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _buildSignUpText(),
-          SizedBox(height: 200),
-          _usernameText(),
-          SizedBox(height: 50),
-          _confirmbutton(),
-          SizedBox(height: 170),
-          _skipbutton(),
-        ],
-      ))),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _buildSignUpText(),
+              SizedBox(height: SizeConfig.safeBlockHorizontal * 40),
+              _usernameText(),
+              SizedBox(height: SizeConfig.safeBlockHorizontal * 12),
+              _confirmbutton(),
+              SizedBox(height: SizeConfig.safeBlockHorizontal * 38),
+              _skipbutton(),
+            ],
+          ))),
     );
   }
 
@@ -79,8 +89,9 @@ class _usernameState extends State<Username> {
                 width: 230,
                 child: TextField(
                   controller: myController,
-                  onChanged: (String text)
-                  {temp_username=text;},
+                  onChanged: (String text) {
+                    temp_username = text;
+                  },
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF66CCCC),
@@ -89,7 +100,9 @@ class _usernameState extends State<Username> {
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    enabledBorder: UnderlineInputBorder( borderSide: const BorderSide(color: Color(0xFF66CCCC), width: 2.0)),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF66CCCC), width: 2.0)),
                     hintText: "Please Enter Username",
                     hintStyle: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -109,19 +122,17 @@ class _usernameState extends State<Username> {
                       color: Color(0xffCC0066),
                       fontSize: 20,
                       fontWeight: FontWeight.bold)),
-                onPressed: () async {
-                  user.userName = myController.text;
-                  user.userName = temp_username;
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                  username_set = temp_username;
-                  print (temp_username);
-                  await prefs.setString("username_set", temp_username);
-                  user.userName = temp_username;
-                  print(user.userName);
-                  Navigator.pushNamed(context, '/home');
-                      
-                }
-                )),
+              onPressed: () async {
+                user.userName = myController.text;
+                user.userName = temp_username;
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                username_set = temp_username;
+                print(temp_username);
+                await prefs.setString("username_set", temp_username);
+                user.userName = temp_username;
+                print(user.userName);
+                Navigator.pushNamed(context, '/home');
+              })),
     );
   }
 
@@ -129,20 +140,15 @@ class _usernameState extends State<Username> {
     return Container(
       child: Center(
           child: FlatButton(
-              child: Text("Skip",
-                style: TextStyle(
-                  color: Color(0xff707070),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
-                )
-              ),
-            onPressed: (){
-                Navigator.pushNamed(context, '/home');
-                  
-              },
-            )
-          ),
-
+        child: Text("Skip",
+            style: TextStyle(
+                color: Color(0xff707070),
+                fontSize: 20,
+                fontWeight: FontWeight.bold)),
+        onPressed: () {
+          Navigator.pushNamed(context, '/home');
+        },
+      )),
     );
   }
 }

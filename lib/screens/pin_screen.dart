@@ -25,19 +25,24 @@ class _PinState extends State<Pin> {
   List<String> serverLogs = [];
   TextEditingController controller = TextEditingController();
 
+  initState() {
+    super.initState();
+    print("START");
+    print(user.email);
+  }
+
   onData(Uint8List data) {
     var msg = String.fromCharCodes(data);
     var msgJson = json.decode(msg);
 //    print("Message Recieved from server $msg");
     if (msgJson["type"] == "Connected") {
       print("GOT CONNECTED MESSAGE FROM SERVER");
-      client.write(json.encode({"type":"uniqueID", "ID": user.userName}));
-      client.write(json.encode({"type":"pin", "pin": pin, "uniqueID": user.userName}));
+      client.write(json.encode({"type":"uniqueID", "ID": user.email}));
+      client.write(json.encode({"type":"pin", "pin": pin, "uniqueID": user.email}));
     } if (msgJson["type"] == "pinState") {
       print("clinet recieved accept pin message");
-
       if (msgJson["pinState"] == "Accepted") {
-        client.write(json.encode({"type": "movingToWaitingRoom", "uniqueID": user.userName}));
+        client.write(json.encode({"type": "movingToWaitingRoom", "uniqueID": user.email}));
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -56,6 +61,7 @@ class _PinState extends State<Pin> {
     }
     setState(() {});
   }
+
 
   onError(dynamic error) {
     print("error $error");

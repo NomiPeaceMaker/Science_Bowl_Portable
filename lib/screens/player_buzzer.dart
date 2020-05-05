@@ -174,11 +174,10 @@ class _GameState extends State<Game> {
       else if (data["type"] == "Interrupt") {
         BuzzerStreamController.add("Interrupt");
       }
-      else if(data["type"]=="moderatorLeaving")
-        {
-          client.disconnect();
-          moderatorLeftGameDialog();
-        }
+      else if(data["type"]=="moderatorLeaving") {
+        client.disconnect();
+        moderatorLeftGameDialog();
+      }
     });
   }
 
@@ -268,125 +267,133 @@ class _GameState extends State<Game> {
           ),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Text(
-                    "Team A\n"+game.aTeam.score.toString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
-                  )
-              ),
-              Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  margin: EdgeInsets.all(15),
-                  elevation: 2.0,
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 10.0),
-                      child: Text(
-                        "Time Left\n"+_minutes.toString()+":"+buf+_seconds.toString(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold, color:Colors.purple , fontSize: 18),
-                      )
-                  )
-              ),
-              Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Text(
-                    "Team B\n"+game.bTeam.score.toString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightGreen, fontSize: 18),
-                  )
-              )
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 0.0),
-            child: Text(
-              roundName,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-          ),
-
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0),
-            child: Container(
-                margin: EdgeInsets.only(left: 20.0, right: 20.0),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width*0.7,
-                  height: MediaQuery.of(context).size.height*0.3,
-                  child: Card(
-                    elevation: 10.0,
-                    color: Colors.yellow[50],
+      body: Container(
+        decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                        'assets/game_back.png',
+                      ),
+                      alignment: Alignment.bottomRight,
+                      fit: BoxFit.scaleDown),),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Text(
+                      "Team A\n"+game.aTeam.score.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
+                    )
+                ),
+                Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
+                    margin: EdgeInsets.all(15),
+                    elevation: 2.0,
                     child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Center(
+                        padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 10.0),
                         child: Text(
-                          "Question pictures will be displayed here.",
+                          "Time Left\n"+_minutes.toString()+":"+buf+_seconds.toString(),
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
+                          style: TextStyle(fontWeight: FontWeight.bold, color:Colors.purple , fontSize: 18),
+                        )
                     )
-                  ),
                 ),
-              ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0),
-            child: Container(
-//              height: 30.0,
-              height: MediaQuery.of(context).size.height*0.1,
-              width: MediaQuery.of(context).size.width*0.7,
-              //            color: Colors.
-              child: Card(
-                child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
+                Padding(
+                    padding: EdgeInsets.all(15),
                     child: Text(
-                    '$playerName',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: (team=="A") ? Colors.red : Colors.green, fontSize: 18),
+                      "Team B\n"+game.bTeam.score.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightGreen, fontSize: 18),
+                    )
+                )
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 0.0),
+              child: Text(
+                roundName,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
+
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5.0),
+              child: Container(
+                  margin: EdgeInsets.only(left: 20.0, right: 20.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width*0.7,
+                    height: MediaQuery.of(context).size.height*0.3,
+                    child: Card(
+                      elevation: 10.0,
+                      color: Colors.yellow[50],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Center(
+                          child: Text(
+                            "Question pictures will be displayed here.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      )
+                    ),
                   ),
                 ),
-                elevation: 10.0,
-                color: Colors.yellow[50],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5.0),
+              child: Container(
+//              height: 30.0,
+                height: MediaQuery.of(context).size.height*0.1,
+                width: MediaQuery.of(context).size.width*0.7,
+                //            color: Colors.
+                child: Card(
+                  child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
+                      child: Text(
+                      '$playerName',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold, color: (team=="A") ? Colors.red : Colors.green, fontSize: 18),
+                    ),
+                  ),
+                  elevation: 10.0,
+                  color: Colors.yellow[50],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)
+                  ),
                 ),
               ),
             ),
-          ),
 
-          SizedBox(
-            width:MediaQuery.of(context).size.height*0.25,
-            height:MediaQuery.of(context).size.height*0.25,
+            SizedBox(
+              width:MediaQuery.of(context).size.height*0.25,
+              height:MediaQuery.of(context).size.height*0.25,
 
-            child:  StreamBuilder(
-              stream: BuzzerStreamController.stream,
-              builder: (context, snapshot) {
-                element=(snapshot.data==null) ? "" : snapshot.data;
-                print(snapshot.data);
-                BuzzerStreamController.add(null);
-                if (element=="Available") {
-                  print("making buzzer available");
+              child:  StreamBuilder(
+                stream: BuzzerStreamController.stream,
+                builder: (context, snapshot) {
+                  element=(snapshot.data==null) ? "" : snapshot.data;
+                  print(snapshot.data);
+                  BuzzerStreamController.add(null);
+                  if (element=="Available") {
+                    print("making buzzer available");
 //                  buzzerClr = Colors.red;
-                  unavailable = false;
-                  buzzerTxt="Buzz In!";
-                  bzrBorder=Colors.white;
-                  buzzerClr=Color(0xFFf84b4b);
-                  _startBuzzTimer();
-                }
-                else if (element=="Incorrect") {
-                  print("Incorrect");
+                    unavailable = false;
+                    buzzerTxt="Buzz In!";
+                    bzrBorder=Colors.white;
+                    buzzerClr=Color(0xFFf84b4b);
+                    _startBuzzTimer();
+                  }
+                  else if (element=="Incorrect") {
+                    print("Incorrect");
 //                  buzzerClr = Colors.red;
 //
 //                 buzzerTxt = "Incorrect";
@@ -399,10 +406,10 @@ class _GameState extends State<Game> {
 //                      duration: Duration(seconds: 2),
 //                    ),
 //                  );
-                }
+                  }
 
-                else if (element=="Correct") {
-                  print("correct");
+                  else if (element=="Correct") {
+                    print("correct");
 //                  Scaffold.of(context).showSnackBar(
 //                    SnackBar(
 //                      content: Icon(Icons.done),
@@ -411,44 +418,44 @@ class _GameState extends State<Game> {
 //                      duration: Duration(seconds: 2),
 //                    ),
 //                  );
-                  if(roundName=="Toss-Up")
-                    {
-                      if (team=="A")
-                        {
-                          game.aTeam.score+=4;
-                        }
-                      else{
-                        game.bTeam.score+=4;
-                      }
-                    }
-                  else
-                    {
-                      if (team=="A")
+                    if(roundName=="Toss-Up")
                       {
-                        game.aTeam.score+=10;
+                        if (team=="A")
+                          {
+                            game.aTeam.score+=4;
+                          }
+                        else{
+                          game.bTeam.score+=4;
+                        }
                       }
-                      else{
-                        game.bTeam.score+=10;
+                    else
+                      {
+                        if (team=="A")
+                        {
+                          game.aTeam.score+=10;
+                        }
+                        else{
+                          game.bTeam.score+=10;
+                        }
                       }
-                    }
 //                  buzzerClr = Colors.lightGreen;
 //                  buzzerTxt = "Correct!";
-                }
-                else if (element=="Recognized") {
-                  print("recognized");
-                  buzzerClr = Colors.lightGreen;
-                  bzrBorder=Colors.white;
-                  buzzerTxt = "You're Recognized!";
-                }
+                  }
+                  else if (element=="Recognized") {
+                    print("recognized");
+                    buzzerClr = Colors.lightGreen;
+                    bzrBorder=Colors.white;
+                    buzzerTxt = "You're Recognized!";
+                  }
 
-                else if (element=="Interrupt") { //on grey buzzer
-                  print("adding penalty");
-                  bzrBorder=Colors.white;
-                  buzzerClr = Colors.grey[900];
-                  buzzerTxt = "You Interrupted!";
-                }
-                else if (element=="Blurt") { //snackbar
-                  print("Blurt");
+                  else if (element=="Interrupt") { //on grey buzzer
+                    print("adding penalty");
+                    bzrBorder=Colors.white;
+                    buzzerClr = Colors.grey[900];
+                    buzzerTxt = "You Interrupted!";
+                  }
+                  else if (element=="Blurt") { //snackbar
+                    print("Blurt");
 //                  Scaffold.of(context).showSnackBar(
 //                    SnackBar(
 //                      content: Icon(Icons.pan_tool),
@@ -457,16 +464,34 @@ class _GameState extends State<Game> {
 //                      duration: Duration(seconds: 2),
 //                    ),
 //                  );
-                  if (team=="A")
+                    if (team=="A")
+                      {
+                        game.aTeam.score+=4;
+                      }
+                    else{
+                      game.aTeam.score+=4;
+                    }
+                  }
+                  else if (element=="Consultation") {
+                    print("Consultation");
+//                  Scaffold.of(context).showSnackBar(
+//                    SnackBar(
+//                      content: Icon(Icons.pan_tool),
+//                      backgroundColor: Colors.grey[900],
+//                      //                                  animation: ,
+//                      duration: Duration(seconds: 2),
+//                    ),
+//                  );
+                    if (team=="A")
                     {
                       game.aTeam.score+=4;
                     }
-                  else{
-                    game.aTeam.score+=4;
+                    else{
+                      game.aTeam.score+=4;
+                    }
                   }
-                }
-                else if (element=="Consultation") {
-                  print("Consultation");
+                  else if (element=="Disqualify") {
+                    print("Disqualify");
 //                  Scaffold.of(context).showSnackBar(
 //                    SnackBar(
 //                      content: Icon(Icons.pan_tool),
@@ -475,29 +500,11 @@ class _GameState extends State<Game> {
 //                      duration: Duration(seconds: 2),
 //                    ),
 //                  );
-                  if (team=="A")
-                  {
-                    game.aTeam.score+=4;
-                  }
-                  else{
-                    game.aTeam.score+=4;
-                  }
-                }
-                else if (element=="Disqualify") {
-                  print("Disqualify");
-//                  Scaffold.of(context).showSnackBar(
-//                    SnackBar(
-//                      content: Icon(Icons.pan_tool),
-//                      backgroundColor: Colors.grey[900],
-//                      //                                  animation: ,
-//                      duration: Duration(seconds: 2),
-//                    ),
-//                  );
-                  bzrBorder=Colors.grey[900];
+                    bzrBorder=Colors.grey[900];
 
-                }
-                else if (element=="Distraction") {
-                  print("Distraction");
+                  }
+                  else if (element=="Distraction") {
+                    print("Distraction");
 //                  Scaffold.of(context).showSnackBar(
 //                    SnackBar(
 //                      content: Icon(Icons.pan_tool),
@@ -506,79 +513,80 @@ class _GameState extends State<Game> {
 //                      duration: Duration(seconds: 2),
 //                    ),
 //                  );
-                  if (roundName=="Toss-Up")
-                    {
+                    if (roundName=="Toss-Up")
+                      {
+                        if(team=="A")
+                          {
+                            game.aTeam.score+=4;
+                          }
+                        else
+                          {
+                            game.bTeam.score+=4;
+                          }
+                      }
+                    else{
                       if(team=="A")
-                        {
-                          game.aTeam.score+=4;
-                        }
+                      {
+                        game.aTeam.score+=10;
+                      }
                       else
-                        {
-                          game.bTeam.score+=4;
-                        }
-                    }
-                  else{
-                    if(team=="A")
-                    {
-                      game.aTeam.score+=10;
-                    }
-                    else
-                    {
-                      game.bTeam.score+=10;
+                      {
+                        game.bTeam.score+=10;
+                      }
                     }
                   }
-                }
-                else if (element=="moderatorReading") { //red no text
-                  print("adding penalty");
-                  buzzerClr = Color(0xFFf84b4b);
-                  buzzerTxt = "";
-                  bzrBorder=Colors.white;
-                }
+                  else if (element=="moderatorReading") { //red no text
+                    print("adding penalty");
+                    buzzerClr = Color(0xFFf84b4b);
+                    buzzerTxt = "";
+                    bzrBorder=Colors.white;
+                  }
 
-              return RaisedButton(
-                shape: CircleBorder(side: BorderSide(color: bzrBorder, width: 8.0)),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        buzzerTxt,
-                        style: TextStyle(fontSize: 20.0, color: txtClr),
-                        textAlign: TextAlign.center,
-                      ),
-                      (roundName=="Toss-Up")?
-                      (tossUpTimer > 0 && element=="Available")
-                          ? Text(tossUpTimer.toString(),
-                        style: TextStyle(fontSize: 15.0, color: Colors.white),
-                        textAlign: TextAlign.center,
-                      )
-                          : Text(
-                        '',
-                      ):
-                      (bonusTimer > 0 && element=="Available")
-                          ? Text(bonusTimer.toString(),
-                        style: TextStyle(fontSize: 15.0, color: Colors.white),
-                        textAlign: TextAlign.center,
-                      )
-                          : Text(
-                        '',
-                      )
-                    ],
-                  ),
-                  disabledColor: Colors.white,
-                  disabledTextColor: Colors.grey[900],
-                  color: buzzerClr,
-                  onPressed: (element!="Disqualify") ? (){
-                    setState(() {
-                      client.write(json.encode({"type":"BuzzIn", "playerID":player.playerID}));
-                    }
-                    );
-                  } : null,
-                );
-              },
+                return RaisedButton(
+                  shape: CircleBorder(side: BorderSide(color: bzrBorder, width: 8.0)),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          buzzerTxt,
+                          style: TextStyle(fontSize: 20.0, color: txtClr),
+                          textAlign: TextAlign.center,
+                        ),
+                        (roundName=="Toss-Up")?
+                        (tossUpTimer > 0 && element=="Available")
+                            ? Text(tossUpTimer.toString(),
+                          style: TextStyle(fontSize: 15.0, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )
+                            : Text(
+                          '',
+                        ):
+                        (bonusTimer > 0 && element=="Available")
+                            ? Text(bonusTimer.toString(),
+                          style: TextStyle(fontSize: 15.0, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )
+                            : Text(
+                          '',
+                        )
+                      ],
+                    ),
+                    disabledColor: Colors.white,
+                    disabledTextColor: Colors.grey[900],
+                    color: buzzerClr,
+                    onPressed: (element!="Disqualify") ? (){
+                      setState(() {
+                        client.write(json.encode({"type":"BuzzIn", "playerID":player.playerID}));
+                      }
+                      );
+                    } : null,
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
