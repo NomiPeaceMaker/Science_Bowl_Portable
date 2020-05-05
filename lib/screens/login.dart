@@ -24,6 +24,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   var loggedIn = false;
+  bool _visible = false;
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   // This widget is the root of your application.
@@ -37,13 +38,14 @@ class _LoginState extends State<Login> {
     SizeConfig().init(context);
 
     return Scaffold(
+      backgroundColor: themeColor,
       body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(
-                  'assets/login_back.png',
+                  'assets/login_alt_4.png',
                 ),
-                alignment: Alignment.bottomLeft,
+                alignment: Alignment.topLeft,
                 fit: BoxFit.scaleDown),
           ),
           child: Center(
@@ -77,7 +79,8 @@ class _LoginState extends State<Login> {
                                       fontSize: SizeConfig.safeBlockVertical * 8.5,
                                       // fontSize: 60,
                                       fontWeight: FontWeight.bold,
-                                      color: themeColor,
+                                      // color: themeColor,
+                                      color: Colors.white,
                                     ),
                                   )),
                               SizedBox(height: 20),

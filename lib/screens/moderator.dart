@@ -252,348 +252,377 @@ class _HostState extends State<Host> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Text(
-                        "Team A",
+      body: Container(
+        decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                        'assets/game_back.png',
+                      ),
+                      alignment: Alignment.bottomRight,
+                      fit: BoxFit.scaleDown),),
+        child: SingleChildScrollView(
+          
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Text(
+                          "Team A",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                              fontSize: 18)
+                      ),
+                      Text(
+                        game.aTeam.score.toString(),
                         textAlign: TextAlign.right,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.red,
-                            fontSize: 18)
-                    ),
-                    Text(
-                      game.aTeam.score.toString(),
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                          fontSize: 18),),
-                  ],
-                ),
-                Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    margin: EdgeInsets.all(15),
-                    elevation: 10.0,
-                    child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 35.0, vertical: 10.0),
-                        child: Text(
-                          "Time Left\n" +
-                              _minutes.toString() +
-                              ":" +
-                              buf +
-                              _seconds.toString(),
-                          textAlign: TextAlign.center,
+                            fontSize: 18),),
+                    ],
+                  ),
+                  Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      margin: EdgeInsets.all(15),
+                      elevation: 10.0,
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 35.0, vertical: 10.0),
+                          child: Text(
+                            "Time Left\n" +
+                                _minutes.toString() +
+                                ":" +
+                                buf +
+                                _seconds.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.purple,
+                                fontSize: 18),
+                          ))),
+                  Column(
+                    children: <Widget>[
+                      Text(
+                          "Team B",
+                          textAlign: TextAlign.right,
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.purple,
-                              fontSize: 18),
-                        ))),
-                Column(
-                  children: <Widget>[
-                    Text(
-                        "Team B",
+                              color: Colors.lightGreen,
+                              fontSize: 18)
+                      ),
+                      Text(
+                        game.bTeam.score.toString(),
                         textAlign: TextAlign.right,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.lightGreen,
-                            fontSize: 18)
-                    ),
-                    Text(
-                      game.bTeam.score.toString(),
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.lightGreen,
-                          fontSize: 18),),
-                  ],
-                ),
-              ],
-            ),
-            Card(
-                color: Colors.yellow[50],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-                elevation: 10.0,
-                child: Column(
-                  //              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.0),
-                      child: Text(
-                        roundName,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Text(
-                          questionSet[index].subjectType,
+                            fontSize: 18),),
+                    ],
+                  ),
+                ],
+              ),
+              Card(
+                  color: Colors.yellow[50],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                  elevation: 10.0,
+                  child: Column(
+                    //              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        child: Text(
+                          roundName,
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
+                              fontWeight: FontWeight.bold, fontSize: 20),
                         ),
-                        Text(
-                          (roundName=="Toss-Up" && questionSet[index].tossupIsShortAns) ? "Short Answer" : (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns)? "MCQ"
-                              : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Text(
-                        (roundName=="Toss-Up")?"Q"+(index+1-(5-skipsLeft)).toString()+"."+questionSet[index].tossupQuestion : "Q"+(index+1-(5-skipsLeft)).toString()+"."+questionSet[index].bonusQuestion,
-                        style: TextStyle(fontSize: 16),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(5),
-                      child:
-                      (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns) ?
-                      Text(
-                        questionSet[index].tossupMCQOptions[0]+"\n"+questionSet[index].tossupMCQOptions[1]+"\n"+questionSet[index].tossupMCQOptions[2]+"\n"+questionSet[index].tossupMCQOptions[3],
-                        style: TextStyle(fontSize: 16),
-                      )
-                          : (roundName=="Bonus" && !questionSet[index].bonusIsShortAns) ?
-                      Text(
-                        questionSet[index].bonusMCQOptions[0]+"\n"+questionSet[index].bonusMCQOptions[1]+"\n"+questionSet[index].bonusMCQOptions[2]+"\n"+questionSet[index].bonusMCQOptions[3],
-                        style: TextStyle(fontSize: 16),
-                      ):
-                      Container(width: 0.0, height: 0.0,),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.0),
-                      child: Text(
-                        (roundName=="Toss-Up")?"Ans. " + questionSet[index].tossupAnswer : "Ans. " + questionSet[index].bonusAnswer,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: (roundName=="Toss-Up")?Text(
-                              "Skip Question   "+skipsLeft.toString()+"/5",
-
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
-                            ): Container(width: 0.0, height: 0.0,),
+                          Text(
+                            questionSet[index].subjectType,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
                           ),
-                          (roundName=="Toss-Up")?
-                          IconButton(
-                            icon: new Icon(Icons.navigate_next),
-                            alignment: Alignment.bottomRight,
-                            iconSize: 32,
-                            color: Colors.grey,
-                            onPressed: () {
-                              setState(() {
-                                if (!paused && skipsLeft>0 && roundName=="Toss-Up") {
-                                  server.sendAll(json.encode({"type": "moderatorReading"}));
-                                  if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Result()),
-                     );
-                                  }
-                                  else {
-                                    index += 1;
-                                    skipsLeft-=1;
-                                    buzzedIn=false;
-                                    roundName = "Toss-Up";
-                                    decisionTime=false;
-                                    interrupt=false;
-                                    doneReading=false;
-                                  }
-                                }
-                              });
-                            }, //next qs
-                          ): Container(width: 0.0, height: 0.0,),
+                          Text(
+                            (roundName=="Toss-Up" && questionSet[index].tossupIsShortAns) ? "Short Answer" : (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns)? "MCQ"
+                                : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
                         ],
                       ),
-                    )
-                  ],
-                )),
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-              color: doneReading ? Colors.grey : Colors.lightGreen,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: RaisedButton(
+                      Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text(
+                          (roundName=="Toss-Up")?"Q"+(index+1-(5-skipsLeft)).toString()+"."+questionSet[index].tossupQuestion : "Q"+(index+1-(5-skipsLeft)).toString()+"."+questionSet[index].bonusQuestion,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(5),
+                        child:
+                        (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns) ?
+                        Text(
+                          questionSet[index].tossupMCQOptions[0]+"\n"+questionSet[index].tossupMCQOptions[1]+"\n"+questionSet[index].tossupMCQOptions[2]+"\n"+questionSet[index].tossupMCQOptions[3],
+                          style: TextStyle(fontSize: 16),
+                        )
+                            : (roundName=="Bonus" && !questionSet[index].bonusIsShortAns) ?
+                        Text(
+                          questionSet[index].bonusMCQOptions[0]+"\n"+questionSet[index].bonusMCQOptions[1]+"\n"+questionSet[index].bonusMCQOptions[2]+"\n"+questionSet[index].bonusMCQOptions[3],
+                          style: TextStyle(fontSize: 16),
+                        ):
+                        Container(width: 0.0, height: 0.0,),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        child: Text(
+                          (roundName=="Toss-Up")?"Ans. " + questionSet[index].tossupAnswer : "Ans. " + questionSet[index].bonusAnswer,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.all(10),
+                              child: (roundName=="Toss-Up")?Text(
+                                "Skip Question   "+skipsLeft.toString()+"/5",
+
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                              ): Container(width: 0.0, height: 0.0,),
+                            ),
+                            (roundName=="Toss-Up")?
+                            IconButton(
+                              icon: new Icon(Icons.navigate_next),
+                              alignment: Alignment.bottomRight,
+                              iconSize: 32,
+                              color: Colors.grey,
+                              onPressed: () {
+                                setState(() {
+                                  if (!paused && skipsLeft>0 && roundName=="Toss-Up") {
+                                    server.sendAll(json.encode({"type": "moderatorReading"}));
+                                    if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Result()),
+                       );
+                                    }
+                                    else {
+                                      index += 1;
+                                      skipsLeft-=1;
+                                      buzzedIn=false;
+                                      roundName = "Toss-Up";
+                                      decisionTime=false;
+                                      interrupt=false;
+                                      doneReading=false;
+                                    }
+                                  }
+                                });
+                              }, //next qs
+                            ): Container(width: 0.0, height: 0.0,),
+                          ],
+                        ),
+                      )
+                    ],
+                  )),
+              Card(
+                margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                color: doneReading ? Colors.grey : Colors.lightGreen,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.white, width: 3.0),
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: Text(
-                  (buzzedIn)? playerName + " buzzed in! \n   Decide what to do":
-                  (decisionTime)? "Decision Time!":
-                  (interrupt)? playerName + " interrupted! \n   Decide what to do":
-                  (doneReading && roundName=="Toss-Up")
-                      ? "Buzzer Open: " + tossUpTimer.toString():
-                  (doneReading && roundName=="Bonus")? "Buzzer Open: " + bonusTimer.toString():
-                  "Done Reading",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.white, width: 3.0),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Text(
+                    (buzzedIn)? playerName + " buzzed in! \n   Decide what to do":
+                    (decisionTime)? "Decision Time!":
+                    (interrupt)? playerName + " interrupted! \n   Decide what to do":
+                    (doneReading && roundName=="Toss-Up")
+                        ? "Buzzer Open: " + tossUpTimer.toString():
+                    (doneReading && roundName=="Bonus")? "Buzzer Open: " + bonusTimer.toString():
+                    "Done Reading",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  padding: EdgeInsets.all(20.0),
+                  disabledTextColor: Colors.white,
+                  disabledColor: buzzedIn ? Colors.black :(decisionTime)? Colors.deepPurple :interrupt ? Colors.lightBlue : Colors.grey,
+                  color: Colors.lightGreen,
+                  textColor: Colors.white,
+                  onPressed: (!doneReading && !paused && !buzzedIn && !decisionTime && !interrupt)?() {
+                    setState(() {
+                        server.sendAll(json.encode({"type": "BuzzerAvailable"}));
+                        doneReading=true;
+                        _startBuzzTimer();
+                    });
+                  }: null,
                 ),
-                padding: EdgeInsets.all(20.0),
-                disabledTextColor: Colors.white,
-                disabledColor: buzzedIn ? Colors.black :(decisionTime)? Colors.deepPurple :interrupt ? Colors.lightBlue : Colors.grey,
-                color: Colors.lightGreen,
-                textColor: Colors.white,
-                onPressed: (!doneReading && !paused && !buzzedIn && !decisionTime && !interrupt)?() {
-                  setState(() {
-                      server.sendAll(json.encode({"type": "BuzzerAvailable"}));
-                      doneReading=true;
-                      _startBuzzTimer();
-                  });
-                }: null,
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white, width: 3.0),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Text(
-                      "Correct",
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    padding: EdgeInsets.all(20.0),
-                    disabledColor: Colors.grey,
-                    disabledTextColor: Colors.white,
-                    color: (decisionTime || interrupt || buzzedIn) ? Colors.lightGreen : Colors.grey,
-                    textColor: Colors.white,
-                    onPressed: (decisionTime || interrupt || buzzedIn) ? () {
-                      setState(() {
-                        if(!paused){
-                          server.sendAll(json.encode({"type": "Correct"}));;
-                          game.aTeam.canAnswer=true;
-                          game.bTeam.canAnswer=true;
-                          if (roundName=="Toss-Up")
-                          {
-                            buzzedIn=false;
-                            roundName="Bonus";
-                            decisionTime=false;
-                            interrupt=false;
-                            doneReading=false;
-                            if(team=="A")
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.white, width: 3.0),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Text(
+                        "Correct",
+                        style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      padding: EdgeInsets.all(20.0),
+                      disabledColor: Colors.grey,
+                      disabledTextColor: Colors.white,
+                      color: (decisionTime || interrupt || buzzedIn) ? Colors.lightGreen : Colors.grey,
+                      textColor: Colors.white,
+                      onPressed: (decisionTime || interrupt || buzzedIn) ? () {
+                        setState(() {
+                          if(!paused){
+                            server.sendAll(json.encode({"type": "Correct"}));;
+                            game.aTeam.canAnswer=true;
+                            game.bTeam.canAnswer=true;
+                            if (roundName=="Toss-Up")
                             {
-                              game.aTeam.score+=4;
-                            }
-                            else
-                            {
-                              game.bTeam.score+=4;
-                            }
-                          }
-                          else
-                          {
-                            if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Result()),
-                              );
-                              }
-                            else{
-                              index+=1;
                               buzzedIn=false;
-                              roundName="Toss-Up";
+                              roundName="Bonus";
                               decisionTime=false;
                               interrupt=false;
                               doneReading=false;
                               if(team=="A")
                               {
-                                game.aTeam.score+=10;
+                                game.aTeam.score+=4;
                               }
                               else
                               {
-                                game.bTeam.score+=10;
+                                game.bTeam.score+=4;
+                              }
+                            }
+                            else
+                            {
+                              if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Result()),
+                                );
+                                }
+                              else{
+                                index+=1;
+                                buzzedIn=false;
+                                roundName="Toss-Up";
+                                decisionTime=false;
+                                interrupt=false;
+                                doneReading=false;
+                                if(team=="A")
+                                {
+                                  game.aTeam.score+=10;
+                                }
+                                else
+                                {
+                                  game.bTeam.score+=10;
+                                }
                               }
                             }
                           }
                         }
-                      }
-                      );
-                    } : null,
-                  ),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white, width: 3.0),
-                      borderRadius: BorderRadius.circular(10.0),
+                        );
+                      } : null,
                     ),
-                    child: Text("Incorrect",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20)),
-                    padding: EdgeInsets.all(20.0),
-                    disabledColor: Colors.grey,
-                    disabledTextColor: Colors.white,
-                    color: (decisionTime || interrupt || buzzedIn) ? Colors.amber: Colors.grey,
-                    textColor: Colors.white,
-                    onPressed: (decisionTime || interrupt || buzzedIn) ? () {
-                      setState(() {
-                        if(!paused) {
-                          server.sendAll(json.encode({"type": "Incorrect"}));; //should tell which team answered correctly? so incorrect team cant answer again
-                          if (game.aTeam.canAnswer && game.bTeam.canAnswer && roundName=="Toss-Up") {
-                            if (team == "A") {
-                              if (interrupt) {
-                                game.bTeam.score += 4;
+                    RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.white, width: 3.0),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Text("Incorrect",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20)),
+                      padding: EdgeInsets.all(20.0),
+                      disabledColor: Colors.grey,
+                      disabledTextColor: Colors.white,
+                      color: (decisionTime || interrupt || buzzedIn) ? Colors.amber: Colors.grey,
+                      textColor: Colors.white,
+                      onPressed: (decisionTime || interrupt || buzzedIn) ? () {
+                        setState(() {
+                          if(!paused) {
+                            server.sendAll(json.encode({"type": "Incorrect"}));; //should tell which team answered correctly? so incorrect team cant answer again
+                            if (game.aTeam.canAnswer && game.bTeam.canAnswer && roundName=="Toss-Up") {
+                              if (team == "A") {
+                                if (interrupt) {
+                                  game.bTeam.score += 4;
+                                }
+                                game.aTeam.canAnswer = false;
+                                //                              team="B";
                               }
-                              game.aTeam.canAnswer = false;
-                              //                              team="B";
-                            }
-                            else {
-                              if (interrupt) {
-                                game.aTeam.score += 4;
+                              else {
+                                if (interrupt) {
+                                  game.aTeam.score += 4;
+                                }
+                                game.bTeam.canAnswer = false;
                               }
-                              game.bTeam.canAnswer = false;
+                              buzzedIn=false;
+                              decisionTime=false;
+                              interrupt=false;
+                              doneReading = false;
                             }
-                            buzzedIn=false;
-                            decisionTime=false;
-                            interrupt=false;
-                            doneReading = false;
-                          }
-                          else if(((game.bTeam.canAnswer && !game.aTeam.canAnswer) ||(!game.bTeam.canAnswer && game.aTeam.canAnswer))&&roundName=="Toss-Up")
+                            else if(((game.bTeam.canAnswer && !game.aTeam.canAnswer) ||(!game.bTeam.canAnswer && game.aTeam.canAnswer))&&roundName=="Toss-Up")
+                              {
+                                if (game.bTeam.canAnswer ) //notify mod?
+                                  {
+                                    if (interrupt) { //add team ="A"
+                                      game.bTeam.score += 4;
+                                    }
+                                    print("Team A cannot answer now");
+                                  }
+                                else
+                                  {
+                                    if (interrupt) {
+                                      game.aTeam.score += 4;
+                                    }
+                                    print("Team B cannot answer now");
+                                  }
+                                print("here");
+                                if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Result()),
+                                  );
+                                }
+                                else {
+                                  index += 1;
+                                  buzzedIn=false;
+                                  roundName = "Toss-Up";
+                                  decisionTime=false;
+                                  interrupt=false;
+                                  doneReading = false;
+                                  game.aTeam.canAnswer=true;
+                                  game.bTeam.canAnswer=true;
+                                }
+                              }
+                            if(roundName=="Bonus")
                             {
-                              if (game.bTeam.canAnswer ) //notify mod?
-                                {
-                                  if (interrupt) { //add team ="A"
-                                    game.bTeam.score += 4;
-                                  }
-                                  print("Team A cannot answer now");
-                                }
-                              else
-                                {
-                                  if (interrupt) {
-                                    game.aTeam.score += 4;
-                                  }
-                                  print("Team B cannot answer now");
-                                }
-                              print("here");
                               if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
                                 Navigator.push(
                                   context,
@@ -612,315 +641,268 @@ class _HostState extends State<Host> {
                                 game.bTeam.canAnswer=true;
                               }
                             }
-                          if(roundName=="Bonus")
-                          {
-                            if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Result()),
-                              );
-                            }
-                            else {
-                              index += 1;
-                              buzzedIn=false;
-                              roundName = "Toss-Up";
-                              decisionTime=false;
-                              interrupt=false;
-                              doneReading = false;
-                              game.aTeam.canAnswer=true;
-                              game.bTeam.canAnswer=true;
-                            }
-                          }
-                      }
-                      }
-                      );
-                    }: null,
-                  ),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white, width: 3.0),
-                      borderRadius: BorderRadius.circular(10.0),
+                        }
+                        }
+                        );
+                      }: null,
                     ),
-                    child: Text(
-                      "Penalty",
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    padding: EdgeInsets.all(20.0),
-                    disabledColor: Colors.grey,
-                    disabledTextColor: Colors.white,
-                    color: (decisionTime || interrupt || buzzedIn) ? Colors.red: Colors.grey,
-                    textColor: Colors.white,
-                    onPressed: (decisionTime || interrupt || buzzedIn) ? ()
-                    {
-                      if(!paused){
+                    RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.white, width: 3.0),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Text(
+                        "Penalty",
+                        style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      padding: EdgeInsets.all(20.0),
+                      disabledColor: Colors.grey,
+                      disabledTextColor: Colors.white,
+                      color: (decisionTime || interrupt || buzzedIn) ? Colors.red: Colors.grey,
+                      textColor: Colors.white,
+                      onPressed: (decisionTime || interrupt || buzzedIn) ? ()
+                      {
+                        if(!paused){
 //                        _buzzTimer.cancel();
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
 //                                backgroundColor: Colors.whi,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(20.0)),
-                                //this right here
-                                child: Container(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(20.0)),
+                                  //this right here
+                                  child: Container(
 //                                  color: Colors.greenAccent,
-                                  height: (roundName=="Toss-Up")? 400 : 310,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
-                                      children: [
-                                        Align(
-                                          child: Icon(
-                                            Icons.outlined_flag,
-                                            size: 60.0,
-                                            color: Colors.black,
-                                          ),
-                                          alignment: Alignment.center,
-                                        ),
-                                        Align(
-                                          child: Text(
-                                            "Select a Penalty:",
-                                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26, color: Colors.black),
-                                          ),
-                                          alignment: Alignment.center,
-                                        ),
-                                        SizedBox(
-                                          width: 320.0,
-                                          height: 60.0,
-                                          child: RaisedButton(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0),
+                                    height: (roundName=="Toss-Up")? 400 : 310,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
+                                        children: [
+                                          Align(
+                                            child: Icon(
+                                              Icons.outlined_flag,
+                                              size: 60.0,
+                                              color: Colors.black,
                                             ),
-                                            onPressed: () {
-                                              setState(() {
-                                                if (!paused) {
-                                                  server.sendAll(json.encode({"type": "Blurt"}));;
-                                                  //need to do more work here
-                                                  if (team == "A") {
-                                                    game.bTeam.score += 4;
-                                                  }
-                                                  else {
-                                                    game.aTeam.score += 4;
-                                                  }
-                                                }
-                                              });
-                                              Navigator.of(context, rootNavigator: true).pop('dialog');
-                                              if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => Result()),
-                                                );
-                                              }
-                                              else {
-                                                index += 1;
-                                                buzzedIn=false;
-                                                roundName = "Toss-Up";
-                                                decisionTime=false;
-                                                interrupt=false;
-                                                doneReading = false;
-                                                game.aTeam.canAnswer=true;
-                                                game.bTeam.canAnswer=true;
-                                              }
-                                            },
+                                            alignment: Alignment.center,
+                                          ),
+                                          Align(
                                             child: Text(
-                                              "Blurt",
-                                              style: TextStyle(fontSize: 20,
-                                                  color: Colors.white),
+                                              "Select a Penalty:",
+                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26, color: Colors.black),
                                             ),
-                                            color: Colors.red,
+                                            alignment: Alignment.center,
                                           ),
-                                        ),
-                                        (roundName=="Toss-Up") ? Spacer() : Container(height:0, width:0),
-                                        (roundName=="Toss-Up")?
-                                        SizedBox(
-                                          width: 320.0,
-                                          height: 60.0,
-                                          child: RaisedButton(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0),
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                if (!paused) {
-                                                  server.sendAll(json.encode({"type": "Consultation"}));
-                                                  if (team == "A") {
-                                                    game.bTeam.score += 4;
-                                                  }
-                                                  else {
-                                                    game.aTeam.score += 4;
-                                                  }
-                                                }
-                                              });
-                                              Navigator.of(context, rootNavigator: true).pop('dialog');
-                                              if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => Result()),
-                                                );
-                                              }
-                                              else {
-                                                index += 1;
-                                                buzzedIn=false;
-                                                roundName = "Toss-Up";
-                                                decisionTime=false;
-                                                interrupt=false;
-                                                doneReading = false;
-                                                game.aTeam.canAnswer=true;
-                                                game.bTeam.canAnswer=true;
-                                              }
-                                            },
-                                            child: Text(
-                                              "Consultation",
-                                              style: TextStyle(fontSize: 20,
-                                                  color: Colors.white),
-                                            ),
-                                            color: Colors.red,
-                                          ),
-                                        ) : Container(height:0, width:0),
-                                        Spacer(),
-                                        SizedBox(
-                                          width: 320.0,
-                                          height: 60.0,
-                                          child: RaisedButton(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0),
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                if (!paused) {
-                                                  //need to do more work here
-                                                  if (game.aTeam.canAnswer && game.bTeam.canAnswer && roundName=="Toss-Up") {
+                                          SizedBox(
+                                            width: 320.0,
+                                            height: 60.0,
+                                            child: RaisedButton(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10.0),
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  if (!paused) {
+                                                    server.sendAll(json.encode({"type": "Blurt"}));;
+                                                    //need to do more work here
                                                     if (team == "A") {
-                                                      server.sendAll(json.encode({"type": "Disqualify", "team": "A"}));
-                                                      game.aTeam.canAnswer = false;
-                                                      //                              team="B";
+                                                      game.bTeam.score += 4;
                                                     }
                                                     else {
-                                                      server.sendAll(json.encode({"type": "Disqualify", "team": "B"}));
-                                                      game.bTeam.canAnswer = false;
-                                                    }
-                                                    buzzedIn=false;
-                                                    decisionTime=false;
-                                                    interrupt=false;
-                                                    doneReading = false;
-                                                  }
-                                                  else if(((game.bTeam.canAnswer && !game.aTeam.canAnswer) ||(!game.bTeam.canAnswer && game.aTeam.canAnswer))&&roundName=="Toss-Up")
-                                                  {
-                                                    if (game.bTeam.canAnswer ) //notify mod?
-                                                        {
-                                                      if (interrupt) { //add team ="A"
-                                                        game.bTeam.score += 4;
-                                                      }
-                                                      print("Team A cannot answer now");
-                                                    }
-                                                    else
-                                                    {
-                                                      if (interrupt) {
-                                                        game.aTeam.score += 4;
-                                                      }
-                                                      print("Team B cannot answer now");
-                                                    }
-                                                    print("here");
-                                                    if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) => Result()),
-                                                      );
-                                                    }
-                                                    else {
-                                                      index += 1;
-                                                      buzzedIn=false;
-                                                      roundName = "Toss-Up";
-                                                      decisionTime=false;
-                                                      interrupt=false;
-                                                      doneReading = false;
-                                                      game.aTeam.canAnswer=true;
-                                                      game.bTeam.canAnswer=true;
+                                                      game.aTeam.score += 4;
                                                     }
                                                   }
-                                                  if(roundName=="Bonus")
-                                                  {
-                                                    if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) => Result()),
-                                                      );
-                                                    }
-                                                    else {
-                                                      index += 1;
-                                                      buzzedIn=false;
-                                                      roundName = "Toss-Up";
-                                                      decisionTime=false;
-                                                      interrupt=false;
-                                                      doneReading = false;
-                                                      game.aTeam.canAnswer=true;
-                                                      game.bTeam.canAnswer=true;
-                                                    }
-                                                  }
+                                                });
+                                                Navigator.of(context, rootNavigator: true).pop('dialog');
+                                                if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => Result()),
+                                                  );
                                                 }
-                                              });
-                                              Navigator.of(context, rootNavigator: true).pop('dialog');
-                                            },
-                                            child: Text(
-                                              "Disqualify",
-                                              style: TextStyle(fontSize: 20,
-                                                  color: Colors.white),
+                                                else {
+                                                  index += 1;
+                                                  buzzedIn=false;
+                                                  roundName = "Toss-Up";
+                                                  decisionTime=false;
+                                                  interrupt=false;
+                                                  doneReading = false;
+                                                  game.aTeam.canAnswer=true;
+                                                  game.bTeam.canAnswer=true;
+                                                }
+                                              },
+                                              child: Text(
+                                                "Blurt",
+                                                style: TextStyle(fontSize: 20,
+                                                    color: Colors.white),
+                                              ),
+                                              color: Colors.red,
                                             ),
-                                            color: Colors.red,
                                           ),
-                                        ),
-                                        Spacer(),
-                                        SizedBox(
-                                          width: 320.0,
-                                          height: 60.0,
-                                          child: RaisedButton(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0),
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                if(!paused){
-                                                  server.sendAll(json.encode({"type": "Distraction"}));
-                                                  if (roundName=="Toss-Up")
-                                                  {
-                                                    roundName="Bonus";
-                                                    buzzedIn=false;
-                                                    interrupt=false;
-                                                    decisionTime=false;
-                                                    doneReading=false;
-                                                    game.aTeam.canAnswer=true;
-                                                    game.bTeam.canAnswer=true;
-                                                    if(team=="A")
-                                                    {
-                                                      game.aTeam.score+=4;
+                                          (roundName=="Toss-Up") ? Spacer() : Container(height:0, width:0),
+                                          (roundName=="Toss-Up")?
+                                          SizedBox(
+                                            width: 320.0,
+                                            height: 60.0,
+                                            child: RaisedButton(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10.0),
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  if (!paused) {
+                                                    server.sendAll(json.encode({"type": "Consultation"}));
+                                                    if (team == "A") {
+                                                      game.bTeam.score += 4;
                                                     }
-                                                    else
-                                                    {
-                                                      game.bTeam.score+=4;
+                                                    else {
+                                                      game.aTeam.score += 4;
                                                     }
                                                   }
-                                                  else
-                                                  {
-                                                    if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) => Result()),
-                                                      );
+                                                });
+                                                Navigator.of(context, rootNavigator: true).pop('dialog');
+                                                if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => Result()),
+                                                  );
+                                                }
+                                                else {
+                                                  index += 1;
+                                                  buzzedIn=false;
+                                                  roundName = "Toss-Up";
+                                                  decisionTime=false;
+                                                  interrupt=false;
+                                                  doneReading = false;
+                                                  game.aTeam.canAnswer=true;
+                                                  game.bTeam.canAnswer=true;
+                                                }
+                                              },
+                                              child: Text(
+                                                "Consultation",
+                                                style: TextStyle(fontSize: 20,
+                                                    color: Colors.white),
+                                              ),
+                                              color: Colors.red,
+                                            ),
+                                          ) : Container(height:0, width:0),
+                                          Spacer(),
+                                          SizedBox(
+                                            width: 320.0,
+                                            height: 60.0,
+                                            child: RaisedButton(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10.0),
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  if (!paused) {
+                                                    //need to do more work here
+                                                    if (game.aTeam.canAnswer && game.bTeam.canAnswer && roundName=="Toss-Up") {
+                                                      if (team == "A") {
+                                                        server.sendAll(json.encode({"type": "Disqualify", "team": "A"}));
+                                                        game.aTeam.canAnswer = false;
+                                                        //                              team="B";
+                                                      }
+                                                      else {
+                                                        server.sendAll(json.encode({"type": "Disqualify", "team": "B"}));
+                                                        game.bTeam.canAnswer = false;
+                                                      }
+                                                      buzzedIn=false;
+                                                      decisionTime=false;
+                                                      interrupt=false;
+                                                      doneReading = false;
                                                     }
-                                                    else{
-                                                      index+=1;
-                                                      roundName="Toss-Up";
+                                                    else if(((game.bTeam.canAnswer && !game.aTeam.canAnswer) ||(!game.bTeam.canAnswer && game.aTeam.canAnswer))&&roundName=="Toss-Up")
+                                                    {
+                                                      if (game.bTeam.canAnswer ) //notify mod?
+                                                          {
+                                                        if (interrupt) { //add team ="A"
+                                                          game.bTeam.score += 4;
+                                                        }
+                                                        print("Team A cannot answer now");
+                                                      }
+                                                      else
+                                                      {
+                                                        if (interrupt) {
+                                                          game.aTeam.score += 4;
+                                                        }
+                                                        print("Team B cannot answer now");
+                                                      }
+                                                      print("here");
+                                                      if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) => Result()),
+                                                        );
+                                                      }
+                                                      else {
+                                                        index += 1;
+                                                        buzzedIn=false;
+                                                        roundName = "Toss-Up";
+                                                        decisionTime=false;
+                                                        interrupt=false;
+                                                        doneReading = false;
+                                                        game.aTeam.canAnswer=true;
+                                                        game.bTeam.canAnswer=true;
+                                                      }
+                                                    }
+                                                    if(roundName=="Bonus")
+                                                    {
+                                                      if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) => Result()),
+                                                        );
+                                                      }
+                                                      else {
+                                                        index += 1;
+                                                        buzzedIn=false;
+                                                        roundName = "Toss-Up";
+                                                        decisionTime=false;
+                                                        interrupt=false;
+                                                        doneReading = false;
+                                                        game.aTeam.canAnswer=true;
+                                                        game.bTeam.canAnswer=true;
+                                                      }
+                                                    }
+                                                  }
+                                                });
+                                                Navigator.of(context, rootNavigator: true).pop('dialog');
+                                              },
+                                              child: Text(
+                                                "Disqualify",
+                                                style: TextStyle(fontSize: 20,
+                                                    color: Colors.white),
+                                              ),
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          SizedBox(
+                                            width: 320.0,
+                                            height: 60.0,
+                                            child: RaisedButton(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10.0),
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  if(!paused){
+                                                    server.sendAll(json.encode({"type": "Distraction"}));
+                                                    if (roundName=="Toss-Up")
+                                                    {
+                                                      roundName="Bonus";
                                                       buzzedIn=false;
                                                       interrupt=false;
                                                       decisionTime=false;
@@ -929,53 +911,81 @@ class _HostState extends State<Host> {
                                                       game.bTeam.canAnswer=true;
                                                       if(team=="A")
                                                       {
-                                                        game.aTeam.score+=10;
+                                                        game.aTeam.score+=4;
                                                       }
                                                       else
                                                       {
-                                                        game.bTeam.score+=10;
+                                                        game.bTeam.score+=4;
+                                                      }
+                                                    }
+                                                    else
+                                                    {
+                                                      if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) => Result()),
+                                                        );
+                                                      }
+                                                      else{
+                                                        index+=1;
+                                                        roundName="Toss-Up";
+                                                        buzzedIn=false;
+                                                        interrupt=false;
+                                                        decisionTime=false;
+                                                        doneReading=false;
+                                                        game.aTeam.canAnswer=true;
+                                                        game.bTeam.canAnswer=true;
+                                                        if(team=="A")
+                                                        {
+                                                          game.aTeam.score+=10;
+                                                        }
+                                                        else
+                                                        {
+                                                          game.bTeam.score+=10;
+                                                        }
                                                       }
                                                     }
                                                   }
-                                                }
-                                              });
-                                              Navigator.of(context, rootNavigator: true).pop('dialog');
-                                            },
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                Text(
-                                                  "Distraction",
-                                                  style: TextStyle(fontSize: 20,
-                                                      color: Colors.white),
-                                                ),
-                                                Text(
-                                                  "(by non playing team)",
-                                                  style: TextStyle(fontSize: 10,
-                                                      color: Colors.white),
-                                                ),
-                                              ],
+                                                });
+                                                Navigator.of(context, rootNavigator: true).pop('dialog');
+                                              },
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text(
+                                                    "Distraction",
+                                                    style: TextStyle(fontSize: 20,
+                                                        color: Colors.white),
+                                                  ),
+                                                  Text(
+                                                    "(by non playing team)",
+                                                    style: TextStyle(fontSize: 10,
+                                                        color: Colors.white),
+                                                  ),
+                                                ],
+                                              ),
+                                              color: Colors.red,
                                             ),
-                                            color: Colors.red,
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            });
-                      }
-                    } : null,
-                  ),
-                ],
+                                );
+                              });
+                        }
+                      } : null,
+                    ),
+                  ],
+                ),
               ),
-            ),
 //          Text("Questions + buffer "+questionSet.length.toString()),
 //            Text("Index "+index.toString()),
 //            Text("Displayed "+(index+1-(5-skipsLeft)).toString()),
 //            Text("Skips used: "+(5-skipsLeft).toString()),
-          ],
+            ],
+          ),
         ),
       ),
     );

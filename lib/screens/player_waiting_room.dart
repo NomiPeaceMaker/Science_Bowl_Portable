@@ -136,7 +136,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       builder: (context) {
         return AlertDialog(
           title: Text("Moderator Ended Game"),
-          content: Text("The moderator has ended the game. Press Okay to go back to back to home screen."),
+          content: Text("The moderator has ended the game. Press Okay to go back to home screen."),
           actions: <Widget>[
             FlatButton(
               child: Text("Okay", style: staystyle),
