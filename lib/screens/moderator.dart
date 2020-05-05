@@ -177,7 +177,7 @@ class _HostState extends State<Host> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.offline_pin),
+              leading: Icon(Icons.fiber_pin),
               title: Text(
                 "Game PIN:\n $pin",
                 style: TextStyle(
