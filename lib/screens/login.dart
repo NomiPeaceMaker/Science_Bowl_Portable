@@ -23,8 +23,11 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  // Vars to Animate 
+
+  
   var loggedIn = false;
-  bool _visible = false;
+  
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   // This widget is the root of your application.

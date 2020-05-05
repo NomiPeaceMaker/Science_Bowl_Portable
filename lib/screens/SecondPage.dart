@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 
 class Second extends StatefulWidget {
   @override
@@ -6,8 +7,20 @@ class Second extends StatefulWidget {
 }
 
 class _SecondState extends State<Second> {
+  
+  //Widget to get images
+  // Widget _imageAsset(String path) {
+  //   SizeConfig().init(context);
+  //   return (Image.asset(
+  //     path,
+  //     width: SizeConfig.safeBlockHorizontal * 70,
+  //     // height: SizeConfig.safeBlockVertical * 25,
+  //   ));
+  // }
+
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Container(
 //        margin: const EdgeInsets.all(20),
         child: Center(
@@ -15,6 +28,8 @@ class _SecondState extends State<Second> {
         scrollDirection: Axis.vertical,
         children: <Widget>[
           buzzerHeader(),
+          // _imageAsset('assets/donereading.png'),
+          // _imageAsset('assets/buzzeropen.png'),
           Image.asset(
             'assets/donereading.png',
           ),
