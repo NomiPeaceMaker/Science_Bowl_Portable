@@ -10,6 +10,7 @@ import 'package:sciencebowlportable/models/Timer.dart';
 import 'package:sciencebowlportable/screens/result.dart';
 import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/models/Server.dart';
+import 'package:sciencebowlportable/models/Team.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
 
 class ModeratorQuestions extends StatefulWidget {
@@ -36,7 +37,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
   String playerName= "A Captain"; //change according to player in focus
   double timeToAnswer = 2.113;
   String team ="A"; //depends on who buzzed in
-  int index=0;
+  int questionNumberIndex=0;
 //timer variables
   bool unavailable = false;
   bool isBuzzerActive = false;
@@ -103,7 +104,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
           else {
             _buzzTimer.cancel();
             setState(() {
-              if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+              if ((questionNumberIndex+1-(5-skipsLeft))== questionSet.length - 5) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -261,48 +262,25 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
       ),
       body: Container(
         decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(
-                        'assets/game_back.png',
-                      ),
-                      alignment: Alignment.bottomRight,
-                      fit: BoxFit.scaleDown),),
+          image: DecorationImage(
+              image: AssetImage('assets/game_back.png',),
+              alignment: Alignment.bottomRight,
+              fit: BoxFit.scaleDown),
+        ),
         child: SingleChildScrollView(
-          
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Text(
-                          "Team A",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                              fontSize: 18)
-                      ),
-                      Text(
-                        game.aTeam.score.toString(),
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                            fontSize: 18),),
-                    ],
-                  ),
+                  teamScore(game.aTeam),
                   Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
                       margin: EdgeInsets.all(15),
                       elevation: 10.0,
                       child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 35.0, vertical: 10.0),
+                          padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 10.0),
                           child: Text(
                             "Time Left\n" +
                                 _minutes.toString() +
@@ -315,32 +293,12 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 color: Colors.purple,
                                 fontSize: 18),
                           ))),
-                  Column(
-                    children: <Widget>[
-                      Text(
-                          "Team B",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.lightGreen,
-                              fontSize: 18)
-                      ),
-                      Text(
-                        game.bTeam.score.toString(),
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.lightGreen,
-                            fontSize: 18),),
-                    ],
-                  ),
+                  teamScore(game.bTeam),
                 ],
               ),
               Card(
                   color: Colors.yellow[50],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
                   margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
                   elevation: 10.0,
                   child: Column(
@@ -358,13 +316,12 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           Text(
-                            questionSet[index].subjectType,
+                            questionSet[questionNumberIndex].subjectType,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           Text(
-                            (roundName=="Toss-Up" && questionSet[index].tossupIsShortAns) ? "Short Answer" : (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns)? "MCQ"
-                                : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
+                            questionSet[questionNumberIndex].questionType(roundName),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18),
                           ),
@@ -373,21 +330,21 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                       Padding(
                         padding: EdgeInsets.all(20),
                         child: Text(
-                          (roundName=="Toss-Up")?"Q"+(index+1-(5-skipsLeft)).toString()+"."+questionSet[index].tossupQuestion : "Q"+(index+1-(5-skipsLeft)).toString()+"."+questionSet[index].bonusQuestion,
+                          (roundName=="Toss-Up")?"Q"+(questionNumberIndex+1-(5-skipsLeft)).toString()+"."+questionSet[questionNumberIndex].tossupQuestion : "Q"+(questionNumberIndex+1-(5-skipsLeft)).toString()+"."+questionSet[questionNumberIndex].bonusQuestion,
                           style: TextStyle(fontSize: 16),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(5),
                         child:
-                        (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns) ?
+                        (roundName=="Toss-Up" && !questionSet[questionNumberIndex].tossupIsShortAns) ?
                         Text(
-                          questionSet[index].tossupMCQOptions[0]+"\n"+questionSet[index].tossupMCQOptions[1]+"\n"+questionSet[index].tossupMCQOptions[2]+"\n"+questionSet[index].tossupMCQOptions[3],
+                          questionSet[questionNumberIndex].tossupMCQOptions[0]+"\n"+questionSet[questionNumberIndex].tossupMCQOptions[1]+"\n"+questionSet[questionNumberIndex].tossupMCQOptions[2]+"\n"+questionSet[questionNumberIndex].tossupMCQOptions[3],
                           style: TextStyle(fontSize: 16),
                         )
-                            : (roundName=="Bonus" && !questionSet[index].bonusIsShortAns) ?
+                            : (roundName=="Bonus" && !questionSet[questionNumberIndex].bonusIsShortAns) ?
                         Text(
-                          questionSet[index].bonusMCQOptions[0]+"\n"+questionSet[index].bonusMCQOptions[1]+"\n"+questionSet[index].bonusMCQOptions[2]+"\n"+questionSet[index].bonusMCQOptions[3],
+                          questionSet[questionNumberIndex].bonusMCQOptions[0]+"\n"+questionSet[questionNumberIndex].bonusMCQOptions[1]+"\n"+questionSet[questionNumberIndex].bonusMCQOptions[2]+"\n"+questionSet[questionNumberIndex].bonusMCQOptions[3],
                           style: TextStyle(fontSize: 16),
                         ):
                         Container(width: 0.0, height: 0.0,),
@@ -395,7 +352,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 10.0),
                         child: Text(
-                          (roundName=="Toss-Up")?"Ans. " + questionSet[index].tossupAnswer : "Ans. " + questionSet[index].bonusAnswer,
+                          (roundName=="Toss-Up")?"Ans. " + questionSet[questionNumberIndex].tossupAnswer : "Ans. " + questionSet[questionNumberIndex].bonusAnswer,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16),
@@ -424,7 +381,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 setState(() {
                                   if (!paused && skipsLeft>0 && roundName=="Toss-Up") {
                                     server.sendAll(json.encode({"type": "moderatorReading"}));
-                                    if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                    if ((questionNumberIndex+1-(5-skipsLeft)) == questionSet.length - 5) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -432,7 +389,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                        );
                                     }
                                     else {
-                                      index += 1;
+                                      questionNumberIndex += 1;
                                       skipsLeft-=1;
                                       buzzedIn=false;
                                       roundName = "Toss-Up";
@@ -528,7 +485,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                             }
                             else
                             {
-                              if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                              if ((questionNumberIndex+1-(5-skipsLeft))== questionSet.length - 5) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -536,7 +493,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 );
                                 }
                               else{
-                                index+=1;
+                                questionNumberIndex+=1;
                                 buzzedIn=false;
                                 roundName="Toss-Up";
                                 decisionTime=false;
@@ -610,7 +567,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                     print("Team B cannot answer now");
                                   }
                                 print("here");
-                                if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                if ((questionNumberIndex+1-(5-skipsLeft)) == questionSet.length - 5) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -618,7 +575,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                   );
                                 }
                                 else {
-                                  index += 1;
+                                  questionNumberIndex += 1;
                                   buzzedIn=false;
                                   roundName = "Toss-Up";
                                   decisionTime=false;
@@ -630,7 +587,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                               }
                             if(roundName=="Bonus")
                             {
-                              if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                              if ((questionNumberIndex+1-(5-skipsLeft)) == questionSet.length - 5) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -638,7 +595,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 );
                               }
                               else {
-                                index += 1;
+                                questionNumberIndex += 1;
                                 buzzedIn=false;
                                 roundName = "Toss-Up";
                                 decisionTime=false;
@@ -727,7 +684,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                   }
                                                 });
                                                 Navigator.of(context, rootNavigator: true).pop('dialog');
-                                                if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                                if ((questionNumberIndex+1-(5-skipsLeft)) == questionSet.length - 5) {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -735,7 +692,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                   );
                                                 }
                                                 else {
-                                                  index += 1;
+                                                  questionNumberIndex += 1;
                                                   buzzedIn=false;
                                                   roundName = "Toss-Up";
                                                   decisionTime=false;
@@ -775,7 +732,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                   }
                                                 });
                                                 Navigator.of(context, rootNavigator: true).pop('dialog');
-                                                if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                                                if ((questionNumberIndex+1-(5-skipsLeft))== questionSet.length - 5) {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -783,7 +740,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                   );
                                                 }
                                                 else {
-                                                  index += 1;
+                                                  questionNumberIndex += 1;
                                                   buzzedIn=false;
                                                   roundName = "Toss-Up";
                                                   decisionTime=false;
@@ -845,7 +802,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         print("Team B cannot answer now");
                                                       }
                                                       print("here");
-                                                      if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                                      if ((questionNumberIndex+1-(5-skipsLeft)) == questionSet.length - 5) {
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -853,7 +810,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         );
                                                       }
                                                       else {
-                                                        index += 1;
+                                                        questionNumberIndex += 1;
                                                         buzzedIn=false;
                                                         roundName = "Toss-Up";
                                                         decisionTime=false;
@@ -865,7 +822,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                     }
                                                     if(roundName=="Bonus")
                                                     {
-                                                      if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                                      if ((questionNumberIndex+1-(5-skipsLeft)) == questionSet.length - 5) {
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -873,7 +830,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         );
                                                       }
                                                       else {
-                                                        index += 1;
+                                                        questionNumberIndex += 1;
                                                         buzzedIn=false;
                                                         roundName = "Toss-Up";
                                                         decisionTime=false;
@@ -927,7 +884,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                     }
                                                     else
                                                     {
-                                                      if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                                                      if ((questionNumberIndex+1-(5-skipsLeft))== questionSet.length - 5) {
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -935,7 +892,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         );
                                                       }
                                                       else{
-                                                        index+=1;
+                                                        questionNumberIndex+=1;
                                                         roundName="Toss-Up";
                                                         buzzedIn=false;
                                                         interrupt=false;
@@ -998,3 +955,26 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
     );
   }
 }
+
+Column teamScore(Team team) {
+  return new Column(
+    children: <Widget>[
+      Text(
+        "Team ${team.teamName}",
+        textAlign: TextAlign.right,
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: (team.teamName == "A") ? Colors.red : Colors.green,
+            fontSize: 18)
+      ),
+      Text(
+        team.score.toString(),
+        textAlign: TextAlign.right,
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: (team.teamName == "A") ? Colors.red : Colors.green,
+            fontSize: 18),),
+    ],
+  );
+}
+
