@@ -10,13 +10,13 @@ class myTimer extends CountdownTimer {
   bool _isInMinutes;
 
   void pauseTimer() {
-    _start = _timeLeftInSeconds;
+    this._start = this._timeLeftInSeconds;
     this._sub.cancel();
   }
 
 
   void resumeTimer() {
-    startTimer(_isInMinutes);
+    this.startTimer(_isInMinutes);
   }
 
   void startTimer (bool isInMinutes) {
@@ -24,11 +24,11 @@ class myTimer extends CountdownTimer {
     this._sub = this.listen(null);
     this._sub.onData((duration) {
       String timerText;
-      int _timeLeftInSeconds = this._start - duration.elapsed.inSeconds;
+      this._timeLeftInSeconds = this._start - duration.elapsed.inSeconds;
       if (isInMinutes) {
-        timerText = '${(_timeLeftInSeconds/60).round().toString()}:${(_timeLeftInSeconds.remainder(60) % 60).toString().padLeft(2, '0')}';
+        timerText = '${(this._timeLeftInSeconds/60).round().toString()}:${(this._timeLeftInSeconds.remainder(60) % 60).toString().padLeft(2, '0')}';
       } else {
-        timerText = _timeLeftInSeconds.toString();
+        timerText = this._timeLeftInSeconds.toString();
       }
       this.onData(timerText);
     });
