@@ -23,11 +23,10 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  // Vars to Animate 
+  // Vars to Animate
 
-  
   var loggedIn = false;
-  
+
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   // This widget is the root of your application.
@@ -79,7 +78,8 @@ class _LoginState extends State<Login> {
                                     text: ["Welcome to Science Bowl Portable"],
                                     isRepeatingAnimation: false,
                                     textStyle: TextStyle(
-                                      fontSize: SizeConfig.safeBlockVertical * 8.5,
+                                      fontSize:
+                                          SizeConfig.safeBlockVertical * 8.5,
                                       // fontSize: 60,
                                       fontWeight: FontWeight.bold,
                                       // color: themeColor,
@@ -151,9 +151,7 @@ class _LoginState extends State<Login> {
         "SBP",
         textAlign: TextAlign.center,
         style: TextStyle(
-            color: themeColor,
-            fontSize: 42,
-            fontWeight: FontWeight.bold),
+            color: themeColor, fontSize: 42, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -164,7 +162,6 @@ class _LoginState extends State<Login> {
       print(result);
       if (result == 1) {
         setState(() {
-
           loggedIn = true;
         });
 
@@ -202,6 +199,18 @@ class _LoginState extends State<Login> {
           setState(() {
             user.email = Fire_user.email;
           });
+          final snapShot = await Firestore.instance
+              .collection('User')
+              .document(user.email)
+              .get();
+          if (!snapShot.exists) {
+            print("creating user");
+            createUser();
+          } else {
+            Map userMap = snapShot.data;
+            user.userName = userMap['Username'];
+          }
+
           user_email = user.email;
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString("user_email", user_email);
@@ -212,7 +221,6 @@ class _LoginState extends State<Login> {
         break;
       case "G":
         try {
-
           GoogleSignInAccount googleSignInAccount = await _handleGoogleSignIn();
           final googleAuth = await googleSignInAccount.authentication;
           final googleAuthCred = GoogleAuthProvider.getCredential(
@@ -231,11 +239,17 @@ class _LoginState extends State<Login> {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString("user_email", user.email);
           print('The email address is: ${user.email}');
-//          final snapShot = await Firestore.instance.collection('User').document(user.email).get();
-//          if (!snapShot.exists){
-//            print("creating user");
-//            createUser();
-//          }
+          final snapShot = await Firestore.instance
+              .collection('User')
+              .document(user.email)
+              .get();
+          if (!snapShot.exists) {
+            print("creating user");
+            createUser();
+          } else {
+            Map userMap = snapShot.data;
+            user.userName = userMap['Username'];
+          }
           return 1;
         } catch (error) {
           return 0;
@@ -263,17 +277,14 @@ class _LoginState extends State<Login> {
   }
 
   Future<GoogleSignInAccount> _handleGoogleSignIn() async {
-    GoogleSignIn googleSignIn = GoogleSignIn(
-        scopes: ['email']);
+    GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     return googleSignInAccount;
   }
 
-//  void createUser() async {
-//    await databaseReference.collection("User").document(user.email).setData({
-//      "Username": null,
-//      'IsModerator': false,
-//      'IsCaptain': false,
-//    });
-//  }
+  void createUser() async {
+    await databaseReference.collection("User").document(user.email).setData({
+      "Username": null,
+    });
+  }
 }
