@@ -79,7 +79,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
         var uniqueID = data["uniqueID"];
         server.sockets[uniqueID].close();
         server.sockets.removeWhere((key, _) => key == uniqueID);
-        socketDataStreamController.add(json.encode({"type": "newUserConnected"}));
+//        socketDataStreamController.add(json.encode({"type": "newUserConnected"}));
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         playerJoinStreamControllers[playerPositionIndex].add("undoSelect");
       }

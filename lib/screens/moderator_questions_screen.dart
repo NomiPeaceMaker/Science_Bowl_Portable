@@ -199,6 +199,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                     ),
                   ),
                   onTap: () {
+                    socketDataStreamSubscription.cancel();
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),),

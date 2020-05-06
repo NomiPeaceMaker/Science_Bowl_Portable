@@ -53,6 +53,7 @@ class Server {
         print("GOT UNIQUE ID MESSAGE FROM CLIENT");
         print(msg["type"]);
         sockets[msg["ID"]] = socket;
+        socket.write(json.encode({"type": "recieved"}));
         print(msg["ID"]);
         print(socket);
       } else {

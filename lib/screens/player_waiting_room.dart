@@ -92,7 +92,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
     print("Constructing message");
     var message = {
       "type": "selectSlot",
-      "userName": player.email,
+      "userName": user.email,
       "playerID": playerID,
       "uniqueID": player.userName,
       "playerPositionIndex": playerPositionIndex.toString(),
@@ -142,7 +142,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       "type": "playerLeaving",
       "userName": player.userName,
       "playerID": player.playerID,
-      "uniqueID": player.email,
+      "uniqueID": user.email,
       "playerPositionIndex": playerPositionIndexDict[player.playerID].toString(),
     };
     client.write(json.encode(message));

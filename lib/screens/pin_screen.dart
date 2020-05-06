@@ -26,6 +26,7 @@ class _PinState extends State<Pin> {
   TextEditingController controller = TextEditingController();
 
   initState() {
+    print("${user.email} ${user.userName}");
     super.initState();
     print("START");
     print(user.email);
@@ -38,8 +39,9 @@ class _PinState extends State<Pin> {
     if (msgJson["type"] == "Connected") {
       print("GOT CONNECTED MESSAGE FROM SERVER");
       client.write(json.encode({"type":"uniqueID", "ID": user.email}));
+    } else if (msgJson["type"] == "recieved") {
       client.write(json.encode({"type":"pin", "pin": pin, "uniqueID": user.email}));
-    } if (msgJson["type"] == "pinState") {
+    } else if (msgJson["type"] == "pinState") {
       print("clinet recieved accept pin message");
       if (msgJson["pinState"] == "Accepted") {
         game.moderatorName = msgJson["moderatorName"];

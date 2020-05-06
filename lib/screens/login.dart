@@ -249,6 +249,7 @@ class _LoginState extends State<Login> {
           } else {
             Map userMap = snapShot.data;
             user.userName = userMap['Username'];
+            print("user_name ${user.userName}");
           }
           return 1;
         } catch (error) {
