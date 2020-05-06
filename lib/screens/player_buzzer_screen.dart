@@ -9,16 +9,16 @@ import 'package:sciencebowlportable/screens/result.dart';
 import 'dart:convert';
 
 
-class Game extends StatefulWidget {
+class PlayerBuzzer extends StatefulWidget {
   Client client;
   Player player;
 
-  Game(this.client, this.player);
+  PlayerBuzzer(this.client, this.player);
   @override
-  _GameState createState() => _GameState(this.client, this.player);
+  _PlayerBuzzerState createState() => _PlayerBuzzerState(this.client, this.player);
 }
 
-class _GameState extends State<Game> {
+class _PlayerBuzzerState extends State<PlayerBuzzer> {
 //  double timeLeft = 300; //5 mins
   Client client;
   Player player;
@@ -48,7 +48,7 @@ class _GameState extends State<Game> {
   int bonusTimer;
   int tossUpTimer;
 
-  _GameState(this.client, this.player){
+  _PlayerBuzzerState(this.client, this.player){
     _startBuzzTimer();
     _startGameTimer();
   }

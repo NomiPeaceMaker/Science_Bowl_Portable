@@ -28,14 +28,14 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
     }
     playerPositionIndexDict =
     {
-      "A 1":0,
-      "A 2":1,
-      "A Captain":2,
+      "A Captain":0,
+      "A 1":1,
+      "A 2":2,
       "A 3":3,
       "A 4":4,
-      "B 1":5,
-      "B 2":6,
-      "B Captain":7,
+      "B Captain":5,
+      "B 1":6,
+      "B 2":7,
       "B 3":8,
       "B 4":9
     };
@@ -173,9 +173,9 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
                 ),
               ],
             ),
-            playerRowWidget("1"),
-            playerRowWidget("2",),
             playerRowWidget("Captain"),
+            playerRowWidget("1",),
+            playerRowWidget("2"),
             playerRowWidget("3"),
             playerRowWidget("4"),
             Container(

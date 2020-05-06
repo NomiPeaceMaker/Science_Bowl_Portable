@@ -42,6 +42,7 @@ class _PinState extends State<Pin> {
     } if (msgJson["type"] == "pinState") {
       print("clinet recieved accept pin message");
       if (msgJson["pinState"] == "Accepted") {
+        game.moderatorName = msgJson["moderatorName"];
         client.write(json.encode({"type": "movingToWaitingRoom", "uniqueID": user.email}));
         Navigator.push(
           context,

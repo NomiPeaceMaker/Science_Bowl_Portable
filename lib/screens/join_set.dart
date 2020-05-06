@@ -1,14 +1,52 @@
+import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
+import 'package:sciencebowlportable/screens/player_buzzer_screen.dart';
+import 'package:sciencebowlportable/screens/home.dart';
+import 'package:sciencebowlportable/models/Client.dart';
+import 'package:sciencebowlportable/models/Player.dart';
+import 'package:sciencebowlportable/globals.dart';
 
 class JoinSet extends StatefulWidget {
+  Client client;
+  Player player;
+
+  JoinSet(this.client, this.player);
   @override
-  _JoinSetState createState() => _JoinSetState();
+  _JoinSetState createState() => _JoinSetState(this.client, this.player);
 }
 
 class _JoinSetState extends State<JoinSet> {
+  Client client;
+  Player player;
+
+  _JoinSetState(this.client, this.player);
+
+  StreamSubscription socketDataStreamSubscription;
+
+  @override
+  void initState() {
+
+    Stream socketDataStream = socketDataStreamController.stream;
+    socketDataStreamSubscription = socketDataStream.listen((data) {
+      if (data["type"] == "startGame") {
+        print("Moving on to game");
+        socketDataStreamSubscription.cancel();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PlayerBuzzer(this.client, this.player)),
+        );
+      } else if (data["type"] == "moderatorLeaving") {
+        client.disconnect();
+        _moderatorEndedGameDialog();
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -48,7 +86,7 @@ class _JoinSetState extends State<JoinSet> {
                       ),
                       children: <TextSpan>[
                         TextSpan( //ADD PLAYER PERSONA NAME HERE e.g A1
-                          text: "PLAYER!\n\n",
+                          text: "${player.playerID}!\n\n",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         TextSpan(
@@ -58,7 +96,7 @@ class _JoinSetState extends State<JoinSet> {
                               fontSize: 18
                             )),
                         TextSpan( //ADD HOSTNAME HERE
-                            text: " HOSTNAME\n",
+                            text: " ${game.moderatorName}\n",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -93,5 +131,30 @@ class _JoinSetState extends State<JoinSet> {
 
             )],
         )));
+  }
+
+  _moderatorEndedGameDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Moderator Ended Game"),
+            content: Text("The moderator has ended the game. Press Okay to go back to home screen."),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay", style: staystyle),
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),),
+                      ModalRoute.withName('/')
+                  );
+//                  Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+                },
+              ),
+            ],
+          );
+        });
   }
 }

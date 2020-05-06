@@ -7,28 +7,29 @@ import 'dart:async';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
 import 'package:sciencebowlportable/screens/result.dart';
+import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
 
-class Host extends StatefulWidget {
+class ModeratorQuestions extends StatefulWidget {
   Server server;
   Moderator moderator;
   List<Question> questionSet;
 
-  Host(this.server, this.moderator,this.questionSet);
+  ModeratorQuestions(this.server, this.moderator,this.questionSet);
 
   @override
-  _HostState createState() {
-    return _HostState(this.server, this.moderator,this.questionSet);
+  _ModeratorQuestionsState createState() {
+    return _ModeratorQuestionsState(this.server, this.moderator,this.questionSet);
   }
 }
 
-class _HostState extends State<Host> {
+class _ModeratorQuestionsState extends State<ModeratorQuestions> {
   Server server;
   Moderator moderator;
   List<Question> questionSet;
 
-  _HostState(this.server, this.moderator,this.questionSet);
+  _ModeratorQuestionsState(this.server, this.moderator,this.questionSet);
   bool paused = false;
   String roundName = "Toss-Up";
   String playerName= "A Captain"; //change according to player in focus
@@ -196,7 +197,11 @@ class _HostState extends State<Host> {
                     ),
                   ),
                   onTap: () {
-                    Navigator.popUntil(context, ModalRoute.withName('/home'));
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),),
+                        ModalRoute.withName('/')
+                    );
                   }),
               leading: Icon(
                 Icons.exit_to_app,

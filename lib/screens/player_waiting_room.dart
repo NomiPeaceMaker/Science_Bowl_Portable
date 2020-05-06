@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:sciencebowlportable/screens/player_buzzer.dart';
+import 'package:sciencebowlportable/screens/player_buzzer_screen.dart';
 import 'package:sciencebowlportable/screens/waiting_room.dart';
+import 'package:sciencebowlportable/screens/join_set.dart';
+import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
@@ -27,6 +29,8 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
 
   StreamSubscription socketDataStreamSubscription;
 
+  StreamController<bool> isPlayerSlotSelectedStream = StreamController();
+  bool isPlayerSlotSelected = false;
 
   @override
   void initState() {
@@ -41,6 +45,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       print(data);
       data = json.decode(data);
       if (data["type"] == "selectSlot") {
+        isPlayerSlotSelectedStream.add(true);
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String userName = data["userName"];
         String previousState = userSlotsDict[data["uniqueID"]];
@@ -58,19 +63,13 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         socketDataStreamSubscription.cancel();
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Game(this.client, this.player)),
+          MaterialPageRoute(builder: (context) => PlayerBuzzer(this.client, this.player)),
         );
       }
-//      else if (data["pin"] == "what_is_pin") {
-//        print("HOST ASKED: WHAT IS THE PIN??");
-//
-//      }
        else if (data["type"] == "waitingScreenState") {
         print("got waitingScreenState");
-        playerSlotIsTakenList =
-            (json.decode(data["playerSlotIsTakenList"]) as List).cast<bool>();
-        playerNamesList =
-            (json.decode(data["playerNamesList"]) as List).cast<String>();
+        playerSlotIsTakenList = (json.decode(data["playerSlotIsTakenList"]) as List).cast<bool>();
+        playerNamesList = (json.decode(data["playerNamesList"]) as List).cast<String>();
         playerSlotIsTakenList
             .asMap()
             .forEach(
@@ -106,13 +105,37 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   Align bottomScreenMessage() {
     return new Align(
       alignment: Alignment.bottomCenter,
-      child: new Text(
-        "Please wait for the Moderator\nto Start the Game",
-        textAlign: TextAlign.center,
-        style: new TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.blueGrey,
-            fontSize: 18),
+      child: new SizedBox(
+        width: 140.0,
+        height: 60.0,
+        child: new StreamBuilder(
+          stream: isPlayerSlotSelectedStream.stream,
+          builder: (context, snapshot) {
+            if (snapshot.data != null) {
+              isPlayerSlotSelected = snapshot.data;
+            }
+            return new FlatButton(
+              shape: new RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              child: new Text(
+                  "Start Game",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+              ),
+              color: isPlayerSlotSelected ? Colors.pink : Colors.grey,
+              textColor: Colors.white,
+              onPressed: () => {
+                if (player.playerID == "") {
+                  _selectAPlayerPosition(),
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => JoinSet(this.client, this.player)),
+                  ),
+                 },
+                }
+              );
+          }),
       ),
     );
   }
@@ -129,6 +152,26 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
     client.write(json.encode(message));
   }
 
+  _selectAPlayerPosition() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Select a Player Position"),
+            content: Text("You must select a player position to proceed."),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay", style: staystyle),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   _moderatorEndedGameDialog() {
     showDialog(
       context: context,
@@ -141,7 +184,12 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
             FlatButton(
               child: Text("Okay", style: staystyle),
               onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/home'));
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),),
+                    ModalRoute.withName('/')
+                );
+//                Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
               },
             ),
           ],

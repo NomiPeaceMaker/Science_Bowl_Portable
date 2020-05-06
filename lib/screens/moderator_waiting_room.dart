@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
-import 'package:sciencebowlportable/screens/moderator.dart';
+import 'package:sciencebowlportable/screens/moderator_game_screen.dart';
 import 'package:sciencebowlportable/screens/waiting_room.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Player.dart';
@@ -45,7 +45,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
         if (data["pin"] == pin) {
           print("moderator accepts pin");
           server.sockets[data["uniqueID"]].write(
-              json.encode({"type": "pinState", "pinState": "Accepted"})
+              json.encode({"type": "pinState", "pinState": "Accepted", "moderatorName": user.userName})
           );
         } else {
           server.sockets[data["uniqueID"]].write(
@@ -107,7 +107,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
               server.sendAll(json.encode({"type":"startGame"})),
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
+                MaterialPageRoute(builder: (context) => ModeratorQuestions(this.server, this.moderator, this.questionSet)),
               ),
             } else {
               _captainLeftDialog(),
@@ -117,7 +117,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
               server.sendAll(json.encode({"type":"startGame"})),
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Host(this.server, this.moderator, this.questionSet)),
+                MaterialPageRoute(builder: (context) => ModeratorQuestions(this.server, this.moderator, this.questionSet)),
               ),
               ////////////////////////////////////////////////////////
               ///////////////////////////////////////////////////////
