@@ -92,15 +92,15 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
     return new Align(
       alignment: Alignment.bottomCenter,
       child: new SizedBox(
-        width: 140.0,
+        width: 180.0,
         height: 60.0,
-        child: new FlatButton(
+        child: new RaisedButton(
           shape: new RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(11.0),
           ),
           child: new Text(
               "Start Game",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)
           ),
           color: Colors.pink,
           textColor: Colors.white,
