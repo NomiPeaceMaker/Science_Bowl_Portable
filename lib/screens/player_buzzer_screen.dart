@@ -9,7 +9,6 @@ import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/screens/result.dart';
 import 'dart:convert';
 
-
 class PlayerBuzzer extends StatefulWidget {
   Client client;
   Player player;
