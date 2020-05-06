@@ -8,7 +8,6 @@ import 'package:random_string/random_string.dart';
 import 'dart:convert';
 
 class Server {
-
   Server({this.onError, this.onData});
 
   Uint8ListCallback onData;
@@ -62,8 +61,7 @@ class Server {
     });
   }
 
-  String ip2key(String input)
-  {
+  String ip2key(String input) {
     input = fixip(input);
     String random_part = randomAlphaNumeric(3);
     String key;
