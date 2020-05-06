@@ -18,6 +18,25 @@ class Question {
   bool tossupIsShortAns, bonusIsShortAns;
   List<String> tossupMCQOptions = new List<String>(4);
   List<String> bonusMCQOptions = new List<String>(4);
+
+  String questionType(String roundName) {
+    if (roundName == "Toss-Up") {
+      bool isTossUpShortAns = this.tossupIsShortAns;
+      if (isTossUpShortAns) {
+        return "Short Answer";
+      } else {
+        return "MCQ";
+      }
+    }
+    if (roundName == "Bonus") {
+      bool isBonusIsShortAns = this.bonusIsShortAns;
+      if (isBonusIsShortAns) {
+        return "Short Answer";
+      } else {
+        return "MCQ";
+      }
+    }
+  }
 }
 
 Future<List<Question>> retrieveQuestions(
@@ -88,7 +107,6 @@ Future<List<Question>> retrieveQuestions(
     questions.add(temp);
     temp = new Question();
   }
-
 //  for (int i =0; i<questions.length; i++)
 //    {
 //      print(questions[i].bonusAnswer);
