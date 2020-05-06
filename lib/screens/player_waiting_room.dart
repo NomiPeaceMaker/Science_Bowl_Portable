@@ -92,7 +92,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
     print("Constructing message");
     var message = {
       "type": "selectSlot",
-      "userName": player.userName,
+      "userName": player.email,
       "playerID": playerID,
       "uniqueID": player.userName,
       "playerPositionIndex": playerPositionIndex.toString(),
@@ -121,6 +121,8 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
           color: isPlayerSlotSelected ? Colors.pink : Colors.grey,
           textColor: Colors.white,
           onPressed: () => {
+            print("YOU ARE CONNECTED IF NEXT LINE SAYS 1"),
+            print(client.connected),
             if (player.playerID == "") {
               _selectAPlayerPosition(),
             } else {
@@ -140,7 +142,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       "type": "playerLeaving",
       "userName": player.userName,
       "playerID": player.playerID,
-      "uniqueID": player.userName,
+      "uniqueID": player.email,
       "playerPositionIndex": playerPositionIndexDict[player.playerID].toString(),
     };
     client.write(json.encode(message));
