@@ -108,9 +108,9 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
     return new Align(
       alignment: Alignment.bottomCenter,
       child: new SizedBox(
-        width: 140.0,
+        width: 180.0,
         height: 60.0,
-        child: new FlatButton(
+        child: new RaisedButton(
           shape: new RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
