@@ -131,12 +131,12 @@ class _usernameState extends State<Username> {
                 user.userName = myController.text;
                 user.userName = temp_username;
                 changeUsername(user.userName);
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                username_set = temp_username;
-                print(temp_username);
-                await prefs.setString("username_set", temp_username);
-                user.userName = temp_username;
-                print(user.userName);
+//                SharedPreferences prefs = await SharedPreferences.getInstance();
+//                username_set = temp_username;
+//                print(temp_username);
+//                await prefs.setString("username_set", temp_username);
+//                user.userName = temp_username;
+//                print(user.userName);
                 Navigator.pushNamed(context, '/home');
               })),
     );

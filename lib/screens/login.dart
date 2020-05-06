@@ -209,11 +209,13 @@ class _LoginState extends State<Login> {
           } else {
             Map userMap = snapShot.data;
             user.userName = userMap['Username'];
+            print("${user.userName} is the username");
+
           }
 
           user_email = user.email;
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString("user_email", user_email);
+//          SharedPreferences prefs = await SharedPreferences.getInstance();
+//          await prefs.setString("user_email", user_email);
           print('The email address is: ${user.email}');
           return 1;
         } else
@@ -236,8 +238,8 @@ class _LoginState extends State<Login> {
           setState(() {
             user.email = Fire_user.email;
           });
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString("user_email", user.email);
+//          SharedPreferences prefs = await SharedPreferences.getInstance();
+//          await prefs.setString("user_email", user.email);
           print('The email address is: ${user.email}');
           final snapShot = await Firestore.instance
               .collection('User')
@@ -249,6 +251,7 @@ class _LoginState extends State<Login> {
           } else {
             Map userMap = snapShot.data;
             user.userName = userMap['Username'];
+            print("${user.userName} is the username");
           }
           return 1;
         } catch (error) {

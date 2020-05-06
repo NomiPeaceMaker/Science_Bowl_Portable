@@ -29,6 +29,7 @@ class _PinState extends State<Pin> {
     super.initState();
     print("START");
     print(user.email);
+    print(user.userName);
   }
 
   onData(Uint8List data) {
