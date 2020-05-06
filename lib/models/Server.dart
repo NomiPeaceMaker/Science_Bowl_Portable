@@ -42,48 +42,24 @@ class Server {
       print("SENDING $message TO $userID"),
       socket.write(message),
     });
-//    for (Socket socket in sockets) {
-//      print(message);
-//      print(socket.address);
-//      socket.write(message);
-//    }
   }
 
-//  broadCast(String message) {
-//    this.onData(Uint8List.fromList('Broadcasting : $message'.codeUnits));
-//    for (Socket socket in sockets) {
-//      socket.write( message );
-//    }
-//  }
-
   onRequest(Socket socket) {
-    
-    
-
     print("New User");
     print(socket);
     socket.write(json.encode({"type" : "Connected"}));
-//    print("Sending connect message to client.");
-//    if (!sockets.contains(socket)) {
-//      sockets.add(socket);
-//    }
     socket.listen((Uint8List data) {
       var msg = json.decode(String.fromCharCodes(data));
       if (msg["type"]=="uniqueID") {
-        print("GOT UNIQUE ID MESSAGE FROM client");
+        print("GOT UNIQUE ID MESSAGE FROM CLIENT");
+        print(msg["type"]);
         sockets[msg["ID"]] = socket;
         print(msg["ID"]);
         print(socket);
-//        socketDataStreamController.add(json.encode({"type" : "newUserConnected", "uniqueID":msg["ID"]}));
       } else {
         this.onData(data);
       }
     });
-// THIS IS WHERE YOU ASK THEM FOR PIN!!!!!
-//    socket.drain().then((_) {
-//      print('Player left');
-//      socket.close();
-//    });
   }
 
   String ip2key(String input)

@@ -59,13 +59,10 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
         waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
         print(waitingScreenState);
         server.sendAll(json.encode(waitingScreenState));
-      }
-      else if (data["type"] == "selectSlot") {
+      } else if (data["type"] == "selectSlot") {
         print(playerSlotIsTakenList);
-
         String previousState = userSlotsDict[data["uniqueID"]];
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
-//        String previousState = data["previousState"];
         if (!playerSlotIsTakenList[playerPositionIndex]) {
           server.sendAll(json.encode(data));
           if (previousState!=null) {
@@ -75,15 +72,6 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
           playerJoinStreamControllers[playerPositionIndex].add(player.userName);
           userSlotsDict[data["uniqueID"]] = data["playerID"];
         }
-//      else if (data["type"]=="newUserConnected") {
-//        userSlotsDict["email"] = data["email"];
-//        userSlotsDict["playerID"] = data["playerID"];
-//        userSlotsDict[data["uniqueID"]] = null;
-//        var waitingScreenState = {"type": "waitingScreenState"};
-//        waitingScreenState["playerSlotIsTakenList"] = json.encode(playerSlotIsTakenList);
-//        waitingScreenState["playerNamesList"] = json.encode(playerNamesList);
-//        print(waitingScreenState);
-//        server.sendAll(json.encode(waitingScreenState));
       } else if (data["type"] == "playerLeaving") {
         var uniqueID = data["uniqueID"];
         server.sockets[uniqueID].close();

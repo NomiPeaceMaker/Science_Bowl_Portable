@@ -53,12 +53,18 @@ class Client {
 
 String key2ip(String input, String subnet)
 {
-  String ip;
+  String ip = "";
   String second;
   
   //input[0]+input[1]+input[2] = string of 3 random letter/numbers
-  second = (HEX.decode(input[3]+input[4]))[0].toString();
-  ip = subnet + '.' + second;
+  try {
+    second = (HEX.decode(input[3]+input[4]))[0].toString();
+    ip = subnet + '.' + second;
+  } catch(e) {
+    print("key2ip error");
+  }
+//  second = (HEX.decode(input[3]+input[4]))[0].toString();
+//  ip = subnet + '.' + second;
 
   return ip;
 }
