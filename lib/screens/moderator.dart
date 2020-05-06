@@ -66,11 +66,11 @@ class _HostState extends State<Host> {
       print("DATA RECIEVED FROM PLAYER");
       print(data);
       data = json.decode(data);
-      if (data["type"] == "BuzzIn") {
-        ////////check time, wait for others to buzz in/////////////
-        server.sendAll(json.encode({"type": "Recognized"}));
-//        server.sendAll("Recognized");
-      }
+      if (data["type"] == "pin") {
+         server.sockets[data["uniqueID"]].write(
+            json.encode({"type": "pinState", "pinState": "gameInProgress"})
+         );
+       }
     });
   }
 

@@ -50,6 +50,8 @@ class _PinState extends State<Pin> {
         );
       } else if (msgJson["pinState"] == "Rejected") {
         _incorrectPinDialog();
+      } else if (msgJson["pinState"] == "gameInProgress") {
+        _gameInProgress();
       }
     } else {
       socketDataStreamController.add(msg);
@@ -60,16 +62,20 @@ class _PinState extends State<Pin> {
   onError(dynamic error) {
 //    SocketException
     print("error -> in OnError function: $error");
-//    print(error.runtimeType);
-    if (error.contains("errno = 7")) {
-      print("incorrect pin");
-      print("OS Error: No address associated with hostname, errno = 7");
-      _incorrectPinDialog();
-    } else if (error.contains("errno = 111")) {
-      print("incorrect pin");
-      print("OS Error: Connection refused, errno = 111");
+    if (error.contains("SocketException")) {
+      print("incorrect pin, socket exception");
       _incorrectPinDialog();
     }
+//    print(error.runtimeType);
+//    if (error.contains("errno = 7")) {
+//      print("incorrect pin");
+//      print("OS Error: No address associated with hostname, errno = 7");
+//      _incorrectPinDialog();
+//    } else if (error.contains("errno = 111")) {
+//      print("incorrect pin");
+//      print("OS Error: Connection refused, errno = 111");
+//      _incorrectPinDialog();
+//    }
   }
 
   @override
@@ -159,6 +165,26 @@ class _PinState extends State<Pin> {
           return AlertDialog (
             title: Text("Incorrect Pin"),
             content: Text("Your pin doesn't match any hosted game."),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay", style: staystyle),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  _gameInProgress() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog (
+            title: Text("Game in Progress"),
+            content: Text("Unfortunately this pin corresponds to a game that has already been started by the moderator."),
             actions: <Widget>[
               FlatButton(
                 child: Text("Okay", style: staystyle),
