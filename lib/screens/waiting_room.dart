@@ -50,6 +50,8 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
 
     SizedBox teamSlotWidget(String playerPosition, String team) {
     var color, buttonColor, buttonText;
+    double elevation = 2.0;
+
     String playerID = '$team $playerPosition';
     int playerPositionIndex = playerPositionIndexDict[playerID];
     if (team == "A") {
@@ -60,14 +62,16 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
     if (playerSlotIsTakenList[playerPositionIndex]) {
       buttonText = playerNamesList[playerPositionIndex];
       buttonColor = Colors.grey;
+      elevation = 0.0;
     } else {
       buttonText = playerID;
       buttonColor = color;
+      elevation = 2.0;
     }
 
     return new SizedBox(
         width: 140.0,
-        height: 50,
+        height: 55,
         child:
         new StreamBuilder(
             stream: playerJoinStreamControllers[playerPositionIndex].stream,
@@ -88,13 +92,14 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
                 buttonColor = Colors.grey;
                 buttonText = playerNamesList[playerPositionIndex];
               }
-              return new FlatButton (
+              return new RaisedButton (
+                elevation: elevation,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(9.0),
                 ),
                 child: Text(
                     buttonText,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                 ),
                 color: buttonColor,
                 textColor: Colors.white,
@@ -136,53 +141,61 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
           ),
           centerTitle: true,
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            pinBar(),
-            Container(
-              margin: EdgeInsets.only(top: 5.0),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Text(
-                  "Slots Available",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffCC0066),
-                      fontSize: 22),
+        body: Container(
+          decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/game_back.png',),
+              alignment: Alignment.bottomRight,
+              fit: BoxFit.scaleDown),
+        ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              pinBar(),
+              Container(
+                margin: EdgeInsets.only(top: 5.0),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    "Slots Available",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xffCC0066),
+                        fontSize: 22),
+                  ),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Text(
-                  "Team A",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                      fontSize: 18),
-                ),
-                Text(
-                  "Team B",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                      fontSize: 18),
-                ),
-              ],
-            ),
-            playerRowWidget("Captain"),
-            playerRowWidget("1",),
-            playerRowWidget("2"),
-            playerRowWidget("3"),
-            playerRowWidget("4"),
-            Container(
-              margin: EdgeInsets.only(bottom: 20.0),
-              child: bottomScreenMessage(),
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Text(
+                    "Team A",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                        fontSize: 18),
+                  ),
+                  Text(
+                    "Team B",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                        fontSize: 18),
+                  ),
+                ],
+              ),
+              playerRowWidget("Captain"),
+              playerRowWidget("1",),
+              playerRowWidget("2"),
+              playerRowWidget("3"),
+              playerRowWidget("4"),
+              Container(
+                margin: EdgeInsets.only(bottom: 20.0),
+                child: bottomScreenMessage(),
+              ),
+            ],
+          ),
         ),
       ),
     );
