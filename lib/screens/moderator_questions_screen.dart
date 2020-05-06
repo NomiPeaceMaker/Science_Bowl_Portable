@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
+import 'package:sciencebowlportable/models/Timer.dart';
 import 'package:sciencebowlportable/screens/result.dart';
 import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/models/Server.dart';
@@ -53,7 +54,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
   bool buzzedIn=false;
   int skipsLeft=5;
   initState() {
-    bonusTimer=game.bonusTime;
+    bonusTimer = game.bonusTime;
     tossUpTimer = game.tossUpTime; //5 secs for buzzer timer
     _minutes = game.gameTime; //customize match say aaye ga
     game.bTeam.score=0;
@@ -61,6 +62,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
     game.aTeam.canAnswer=true;
     game.bTeam.canAnswer=true;
     _startGameTimer();
+
     super.initState();
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data) {
@@ -475,8 +477,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                   textColor: Colors.white,
                   onPressed: (!doneReading && !paused && !buzzedIn && !decisionTime && !interrupt)?() {
                     setState(() {
-                        server.sendAll(json.encode({"type": "BuzzerAvailable"}));
-                        doneReading=true;
+                      server.sendAll(json.encode({"type": "BuzzerAvailable"}));
+                      doneReading=true;
                         _startBuzzTimer();
                     });
                   }: null,

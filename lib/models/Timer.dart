@@ -5,11 +5,21 @@ class myTimer extends CountdownTimer {
   int _start;
   void Function(String) onData;
   void Function() onDone;
+  var sub;
   myTimer(this._start) : super(Duration(seconds: _start), Duration(seconds: 1));
 
+  void pauseTimer() {
+    this.sub.cancel();
+  }
+
+
+  void resumeTimer() {
+
+  }
+
   void startTimer (bool isInMinutes) {
-    var sub = this.listen(null);
-    sub.onData((duration) {
+    this.sub = this.listen(null);
+    this.sub.onData((duration) {
       String timerText;
       int timeLeftInSeconds = this._start - duration.elapsed.inSeconds;
       if (isInMinutes) {
@@ -19,10 +29,10 @@ class myTimer extends CountdownTimer {
       }
       this.onData(timerText);
     });
-    sub.onDone(() {
+    this.sub.onDone(() {
       print("done");
       this.onDone();
-      sub.cancel();
+      this.sub.cancel();
     });
   }
 

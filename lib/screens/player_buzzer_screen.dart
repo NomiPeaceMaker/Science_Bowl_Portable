@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'dart:async'; //for timer
 import "dart:math";
+import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Client.dart';
 import 'package:sciencebowlportable/models/Player.dart';
@@ -209,8 +210,7 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
         {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => Result()),
+            MaterialPageRoute(builder: (context) => Result()),
           );
         }
       });

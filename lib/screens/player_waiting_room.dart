@@ -45,7 +45,9 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       print(data);
       data = json.decode(data);
       if (data["type"] == "selectSlot") {
-        isPlayerSlotSelectedStream.add(true);
+        setState(() {
+          isPlayerSlotSelected = true;
+        });
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String userName = data["userName"];
         String previousState = userSlotsDict[data["uniqueID"]];
@@ -108,33 +110,25 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       child: new SizedBox(
         width: 140.0,
         height: 60.0,
-        child: new StreamBuilder(
-          stream: isPlayerSlotSelectedStream.stream,
-          builder: (context, snapshot) {
-            if (snapshot.data != null) {
-              isPlayerSlotSelected = snapshot.data;
-            }
-            return new FlatButton(
-              shape: new RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
+        child: new FlatButton(
+          shape: new RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: new Text(
+              "Start Game",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
+          ),
+          color: isPlayerSlotSelected ? Colors.pink : Colors.grey,
+          textColor: Colors.white,
+          onPressed: () => {
+            if (player.playerID == "") {
+              _selectAPlayerPosition(),
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => JoinSet(this.client, this.player)),
               ),
-              child: new Text(
-                  "Start Game",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-              ),
-              color: isPlayerSlotSelected ? Colors.pink : Colors.grey,
-              textColor: Colors.white,
-              onPressed: () => {
-                if (player.playerID == "") {
-                  _selectAPlayerPosition(),
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => JoinSet(this.client, this.player)),
-                  ),
-                 },
-                }
-              );
+            },
           }),
       ),
     );

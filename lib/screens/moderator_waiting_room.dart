@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
-import 'package:sciencebowlportable/screens/moderator_game_screen.dart';
+import 'package:sciencebowlportable/screens/moderator_questions_screen.dart';
 import 'package:sciencebowlportable/screens/waiting_room.dart';
 import 'package:sciencebowlportable/models/Server.dart';
 import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
+
+// TODO:
+// make the back button work
 
 class ModeratorWaitingRoom extends waitingRoom {
   Server server;
@@ -93,7 +96,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
         height: 60.0,
         child: new FlatButton(
           shape: new RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(10.0),
           ),
           child: new Text(
               "Start Game",
@@ -111,16 +114,13 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
               ),
             } else {
               _captainLeftDialog(),
-              /////////// for testing /////////////////////////////////
-              ////////// comment this out for real game ///////////////
+              // TODO:
               socketDataStreamSubscription.cancel(),
               server.sendAll(json.encode({"type":"startGame"})),
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ModeratorQuestions(this.server, this.moderator, this.questionSet)),
               ),
-              ////////////////////////////////////////////////////////
-              ///////////////////////////////////////////////////////
             }
           },
         ),

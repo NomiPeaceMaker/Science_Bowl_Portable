@@ -214,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
             horizontal: SizeConfig.safeBlockHorizontal * 5),
         child: RaisedButton(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(45.0),
+              borderRadius: BorderRadius.circular(20.0),
             ),
             child: SizedBox(
               height: SizeConfig.blockSizeVertical * 21,
@@ -252,7 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
             horizontal: SizeConfig.safeBlockHorizontal * 5),
         child: RaisedButton(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(45.0),
+              borderRadius: BorderRadius.circular(20.0),
             ),
             child: SizedBox(
               height: SizeConfig.blockSizeVertical * 21,
