@@ -8,6 +8,9 @@ class First extends StatefulWidget {
 }
 
 class _FirstState extends State<First> {
+  final _paragraphMargin =
+      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0);
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -69,23 +72,23 @@ class _FirstState extends State<First> {
                       color: Colors.grey[600],
                     ),
                     children: <TextSpan>[
-                      TextSpan(
-                          text: "Swipe",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          )),
-                      TextSpan(
-                        text:
-                            " to the next sections to find out how these rules relate with the Science Bowl Portable's (SBP) interface.",
-                      )
-                    ])),
+                  TextSpan(
+                      text: "Swipe",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
+                  TextSpan(
+                    text:
+                        " to the next sections to find out how these rules relate with Science Bowl Portable's (SBP) interface.",
+                  )
+                ])),
           ],
         ));
   }
 
   Container introduction() {
     return Container(
-      margin: const EdgeInsets.all(20.0),
+      margin: _paragraphMargin,
       child: Column(
 //      mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +98,7 @@ class _FirstState extends State<First> {
           Text(
             "The Science Bowl is a science trivial game were players can play against each other in two team, usually team A and team B.\n\n"
             // "Each competing team consists of 4 or 5 student members\n\n"
-            "You can play either as moderator or as a player.",
+            "You can play either as moderator or as a player.\n",
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
           )
         ],
@@ -105,7 +108,7 @@ class _FirstState extends State<First> {
 
   Container questions() {
     return Container(
-      margin: const EdgeInsets.all(20),
+      margin: _paragraphMargin,
       child: Column(
 //        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +124,7 @@ class _FirstState extends State<First> {
               "A team that correctly answers a toss-up question will get an opportunity to answer a bonus question; the other team is ineligible to answer.\n\n"
               "Players cannot consult among team members on toss-up questions, however can and are encouraged to communicate on bonus questions.\n\n"
               "A toss-up question may be answered by any member of the eligible team(s). However, only the Team Captain must give the final answer in a bonus questions\n\n"
-              "Questions are either multiple-choice or short-answer.",
+              "Questions are either multiple-choice or short-answer.\n",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
         ],
       ),
@@ -130,30 +133,47 @@ class _FirstState extends State<First> {
 
   Container subjects() {
     return Container(
-        margin: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              "Subjects\n",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-            Text("The following are the subject options:\n",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
-            Text(
-                "• Biology\n"
-                "• Chemistry\n"
-                "• Earth and Space Science\n"
-                "• Mathematics\n"
-                "• Physics\n",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
-          ],
-        ));
+        margin: _paragraphMargin,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+            Widget>[
+          Text(
+            "Subjects\n",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          Text(
+              // "There are two levels at which the science bool is played. SBP currently  following currently\n",
+              "SBP currently supports playing the following subjects at the High School Level:\n",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
+          Text(
+              "• Biology\n"
+              "• Chemistry\n"
+              "• Earth and Space Science\n"
+              "• Mathematics\n"
+              "• Physics\n",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
+
+          // WILL ADD SUBJECT TO A TABLE LATER - DO NOT DELETE
+          // DataTable(
+          //   columns: [
+          //   DataColumn(label: Text("High School", textAlign: TextAlign.center,)),
+          //   // DataColumn(label: Text("Middle School")),
+          // ], rows: [
+          //   DataRow(cells: [DataCell(Text("Biology"))]),
+          //   DataRow(cells: [DataCell(Text("Chemistry"))]),
+          //   DataRow(cells: [DataCell(Text("Earth and Space"))]),
+          //   DataRow(cells: [DataCell(Text("Mathematics"))]),
+          //   DataRow(cells: [DataCell(Text("Physics"))]),
+          // style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)
+          // ]),
+          //   DataCell( Text(
+          // "Life Science \nPhysical Science \nEarth and Space Science \nEnergy \nMathematics",
+          // style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),),
+        ]));
   }
 
   Container timing() {
     return Container(
-        margin: const EdgeInsets.all(20),
+        margin: _paragraphMargin,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -177,7 +197,7 @@ class _FirstState extends State<First> {
 
   Container penalties() {
     return Container(
-        margin: const EdgeInsets.all(20),
+        margin: _paragraphMargin,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -190,12 +210,13 @@ class _FirstState extends State<First> {
             Text("1. Blurt\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             Text(
-                "If the student answers before they are recognized (called out) by the moderator a blurt penalty of 4 points isawarded to the other team.\n\n",
+                "If the student answers before they are recognized (called out) by the moderator a blurt penalty of 4 points isawarded to the other team.\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
             Text("2. Interrupt\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             Text(
-                "There is a 4 point penalty awarded to the other team for interrupting the moderator and giving an incorrect answer.\n",
+                "There is a 4 point penalty awarded to the other team for interrupting the moderator and giving an incorrect answer.\n\n"
+                "This penalty is automated i.e. does not require moderator input.\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
             Text("3. Consultation\n",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),

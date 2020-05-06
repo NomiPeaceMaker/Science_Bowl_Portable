@@ -1,3 +1,4 @@
+# Important note: to make this file run make sure to download the python-docx library
 import docx
 import time
 import math
@@ -7,15 +8,9 @@ from os import listdir
 from os.path import isfile, join
 from random import shuffle
 
-# to make this file run make sure to download the file dependencies (the imports)
-
 #initialize some important global variables that will be used for semantic analysis of the text
 subjectList = ['Biology','Math','Physics','Chemistry','Earth and Space']
 questionType = ['Multiple Choice', 'Short Answer']
-
-
-#Check cache in direcotory -> Save current indexes of files
-#G
 
 
 class qstruct:                          # Question Structure
@@ -34,9 +29,8 @@ class question:                         # A question has a TOSS-UP and a BONUS
         self.bonus = qstruct()
         self.bonusSwitch = False
 
-# input question and question number to convert to JSON obj -> Output JSON 
 ''' 
-Format:
+Format for JSON obj
 
 ID                      --> QuestionNumber
 difficultyLevel         --> 0 for middleSchool, 1 for highschool 
@@ -46,18 +40,19 @@ tossup_question         --> 'What is 2+2?'
 tossup_isShortAns       --> False
 tossup_MCQoptions       --> W) 1      X) 2        Y) 3        Z) 4 
 tossup_answer           --> Z) 4
-tossup_imageURL         --> None
+tossup_imageURL         --> None or URL
 
-bonus_question          
-bonus_isShortAns
-bonus_MCQoptions
-bonus_answer
-bonus_image
+bonus_question          --> Similar to tossup
+bonus_isShortAns        --> Similar to tossup
+bonus_MCQoptions        --> Similar to tossup
+bonus_answer            --> Similar to tossup
+bonus_image             --> Similar to tossup
 '''
 
+# Make JSON object out of question
 def outjson(question, QuestionNumber, directory, ErrorLog):
     jsonQuestion = {}
-    
+ 
     if question.tossUp.subtype == 'Earth and Space':
         question.tossUp.subtype = 'Earth_and_Space'
 
@@ -77,20 +72,19 @@ def outjson(question, QuestionNumber, directory, ErrorLog):
     jsonQuestion['bonus_answer']        = question.bonus.answer
     jsonQuestion['bonus_image']         = None
 
+    # Error Checking: Do not make objects with unpopulated fields 
     if 'none' in jsonQuestion.values() or '' in jsonQuestion.values():
         print("Error: 'none' or empty string detected. Skipping question with information\n\t", jsonQuestion)
         ErrorLog['None'].append(jsonQuestion)
         return False
 
+    # Error Checking: Check to make sure internal structure consistent
     if ((jsonQuestion['tossup_isShortAns'] == False) and (jsonQuestion['tossup_MCQoptions'] == None)) or ((jsonQuestion['bonus_isShortAns'] == False) and (jsonQuestion['bonus_MCQoptions'] == None)):
         print("Error: Internal Inconsistency detected. Question is MCQ but has no options in question\n\t", jsonQuestion)
         ErrorLog['noMCQoptions'].append(jsonQuestion)
         return False
-    
-    # if not os.path.isdir(directory):
-    #     print('Making directory ', directory)
-    #     os.makedirs(dir)
 
+    # Making of object    
     filename = question.tossUp.subtype + '_' + str(QuestionNumber) + '.json'
     with open(directory + '/' + filename,'w') as json_file:
         json.dump(jsonQuestion, json_file)
@@ -116,6 +110,7 @@ def sanitize_answer(ans):
     else:
         return ans
 
+# Function to parse DOCX file and make Question objects 
 def readDOCX(subjectArrays, input_filename,level, ErrorLog):
 
     global subjectList
@@ -129,77 +124,73 @@ def readDOCX(subjectArrays, input_filename,level, ErrorLog):
         txt = para.text
 
         if 'TOSS-UP' in txt:                #  signals the start of a new question
-            demo = question()
+            questionObj = question()
             tossUpEncounter = True           
-            demo.tossUp.qtype = txt
-            demo.tossUp.level = level
+            questionObj.tossUp.qtype = txt
+            questionObj.tossUp.level = level
 
         if tossUpEncounter == False:
             continue
         
         elif 'BONUS' in txt:                #   initiates making bonus
-            demo.bonusSwitch = True
-            demo.bonus.qtype = txt
-            demo.bonus.level = level
+            questionObj.bonusSwitch = True
+            questionObj.bonus.qtype = txt
+            questionObj.bonus.level = level
 
-        if not demo.bonusSwitch:            #  tossUp question
+        if not questionObj.bonusSwitch:            #  tossUp question
             
             if 'W)' in txt and 'X)' in txt:
-                demo.tossUp.ansOption = sanitize_ansOption(txt)
+                questionObj.tossUp.ansOption = sanitize_ansOption(txt)
                 #continue
             if 'ANSWER' in txt:
-                demo.tossUp.answer = sanitize_answer(txt)
+                questionObj.tossUp.answer = sanitize_answer(txt)
                 #continue
             for _, sub in enumerate(subjectList):
                 if sub.lower() in txt.lower():
-                    demo.tossUp.subtype = sub
+                    questionObj.tossUp.subtype = sub
                     break
             for _, ques in enumerate(questionType):
                 if ques.lower() in txt.lower():
-                    demo.tossUp.form = ques
+                    questionObj.tossUp.form = ques
 
                     body = txt
-                    body = body.replace(demo.tossUp.subtype,'', 1)
+                    body = body.replace(questionObj.tossUp.subtype,'', 1)
                     body = body.replace(ques,'',1)
 
-                    demo.tossUp.qbody = body
+                    questionObj.tossUp.qbody = body
                     break
 
         else:
             if 'W)' in txt and 'X)' in txt:
-                demo.bonus.ansOption = sanitize_ansOption(txt)
+                questionObj.bonus.ansOption = sanitize_ansOption(txt)
                 
             if 'ANSWER' in txt:
-                demo.bonus.answer = sanitize_answer(txt)
+                questionObj.bonus.answer = sanitize_answer(txt)
                 
                 #add question to appropriate Array
-                if (demo.tossUp.subtype != 'none'):
-                    subjectArrays[demo.tossUp.subtype].append(demo)
+                if (questionObj.tossUp.subtype != 'none'):
+                    subjectArrays[questionObj.tossUp.subtype].append(questionObj)
                 else:
                     ErrorLog['None_Subject'].append(input_filename)
                     print("ERROR: Cannot determine subject of file in:", input_filename)
                     print("Skipping Question")
 
-                #continue
             for _, sub in enumerate(subjectList):
                 if sub.lower() in txt.lower():
-                    demo.bonus.subtype = sub
-                    #print("subject found", sub)
+                    questionObj.bonus.subtype = sub
                     break
             for _, ques in enumerate(questionType):
                 if ques.lower() in txt.lower():
-                    demo.bonus.form = ques
-                    #print("form found", ques)
+                    questionObj.bonus.form = ques
 
                     body = txt
-                    body = body.replace(demo.bonus.subtype,'')
+                    body = body.replace(questionObj.bonus.subtype,'')
                     body = body.replace(ques,'')
 
-                    demo.bonus.qbody = body
-                    #print("body found", body)
+                    questionObj.bonus.qbody = body
                     break
 
-
+# Adding personality to Console Window with a chicken ASCII MASCOT on STARTUP
 def chicken():
     print("      __//")
     print("    /.__.\\")
@@ -210,6 +201,7 @@ def chicken():
     print("_____|_|____")
     print('     " "')
 
+# Adding personality to Console Window with a chicken ASCII MASCOT at THE END
 def byeChicken():
     print("\t\t      __// Bye Bye")
     print("\t\t    /.__.\\")
@@ -224,14 +216,13 @@ def main():
     os.system('cls')
     print("Please make sure any docx file that will be written to is closed before using this program.")
     chicken()
-    # Question list contains all the question objects
 
     # lists that help categorise questions
-
     global subjectList
     global questionType
 
     print("\n============Input Sequence============\n")
+    # Get questions level w/ Error Handing
     incorrectAns = True
     while incorrectAns:
         try:
@@ -255,12 +246,12 @@ def main():
         os.makedirs('./questionRepo')
         return
         
-    # Array to append all subjects questions
-
+    # Dictionary of array to append particular subjects questions
     subjectArrays = {}
     for subject in subjectList:
         subjectArrays[subject] = []
     
+    # Set-up Cache for file indexing
     Cache = {}
 
     directory = './jsonQuestions/' 
@@ -282,8 +273,9 @@ def main():
         for subject in subjectList:
             Cache[subject] = 0
 
+    # Create dictionary for error log
+    # Append to old dictionary if already found in dictionary, else create new
     ErrorLog = {}
-
     if os.path.exists(directory+'/1errorLog.json'):
         with open(directory+'/1errorLog.json') as f:
             ErrorLog = json.load(f)
@@ -304,24 +296,26 @@ def main():
 
 
     print("Gobble gobble. Here's what I've found in folder questionRepo:")
+
+    # Make list of files found in directory that have not already been read
     filesInDirectory = []
-
-
     for file in listdir('./questionRepo'):
         _, e = os.path.splitext(file)
         if e == ".docx" and file not in Cache['filesRead']:
             filesInDirectory.append(file)
     
-    
+    # Error Message if no files found
     if (len(filesInDirectory) == 0):
         print("No new questions found, files already read include:",Cache['filesRead'])
         print("If you think this is an error, please delete 0Cache.json")
         print("WARNING: Action will reset indexes")
         return
     
+    # List files found
     for i, file in enumerate(filesInDirectory):
         print(i,": ", file)
     
+    # Read documents
     allchoice = input('INPUT: Press "A" if you want to read all of these files. If NO, press any other key. \nHINT: Add only those files you want to read into "questionsRepo" and try again. \nInput:') 
     if (allchoice.lower() == 'a'):
         for file in filesInDirectory:
@@ -330,7 +324,7 @@ def main():
     else:
         return
 
-        
+    # Print state before output
     print("\nBefore Output")
     beforetotal = 0
     afterCount = {}
@@ -343,7 +337,6 @@ def main():
     print("Total found ", beforetotal)
 
     #output to JSON while any question remain
-    
     loop = True
     while loop:
         loop = False
@@ -360,7 +353,7 @@ def main():
             break
 
 
-
+    # Print Output State
     aftertotal = 0
     print("\nAfter Output: ")
     for subject in subjectList:
@@ -370,20 +363,21 @@ def main():
     print("Total used ", aftertotal)
     print("Questions skipped", beforetotal - aftertotal)
 
+    # Print Output Index
     print("\nSubject Indexes at: ")
     for subject in subjectList:
         numberofquestions = Cache[subject]
         print("\t",subject,"at", numberofquestions)
 
-
-    # Save for later 
+    # Save Meta data
     with open(directory+'/0cache.json','w') as json_file:
         print("Saving indexes in Cache")
         json.dump(Cache,json_file)
 
+    # Save Error log
     with open(directory+'/1errorlog.json','w') as json_file:
         print("Saving Error log")
         json.dump(ErrorLog,json_file)
         
-          
+# Driver of Program
 main()

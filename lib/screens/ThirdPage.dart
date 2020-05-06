@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 
 class Third extends StatefulWidget {
   @override
@@ -8,6 +9,7 @@ class Third extends StatefulWidget {
 class _ThirdState extends State<Third> {
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Container(
         margin: const EdgeInsets.all(20),
         child: Center(
