@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 
 int initScreen = 0;
 
-Future <void> main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -18,10 +18,10 @@ Future <void> main() async {
   print('initScreen $initScreen');
   print('user_email $user_email');
   SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-  
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   runApp(MyApp());
 }
 
@@ -36,26 +36,23 @@ class _MyApp extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    
-    if(initScreen == 1) { // IF THIS IS NOT THE FIRST TIME RUNNING
-      if (user_email == null)
-      {
-        route0 = <String, WidgetBuilder> {
-        '/': (context) => Login(),
-        '/home': (context) => MyHomePage(),
+    if (initScreen == 1) {
+      // IF THIS IS NOT THE FIRST TIME RUNNING
+      if (user_email == null) {
+        route0 = <String, WidgetBuilder>{
+          '/': (context) => Login(),
+          '/home': (context) => MyHomePage(),
+        };
+      } else {
+        route0 = <String, WidgetBuilder>{
+          '/': (context) => MyHomePage(),
+          '/home': (context) => MyHomePage(),
         };
       }
-      else{
-        route0 = <String, WidgetBuilder> {
+    } else {
+      // IF THIS IS THE FIRST TIME RUNNING
 
-        '/': (context) => MyHomePage(),
-        '/home': (context) => MyHomePage(),
-        };
-      }
-    }
-    else { // IF THIS IS THE FIRST TIME RUNNING
-
-      route0 = <String, WidgetBuilder> {
+      route0 = <String, WidgetBuilder>{
         '/': (context) => OnboardingScreen(),
         '/home': (context) => MyHomePage(),
       };
@@ -63,16 +60,15 @@ class _MyApp extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      
+
       initialRoute: '/',
-        routes: route0,
-        
-        // home: OnboardingScreen(),
-          // home: Result()
+      routes: route0,
+
+      // home: OnboardingScreen(),
+      // home: Result()
     );
   }
 }
-
 
 // void main() => runApp(MyApp());
 

@@ -26,7 +26,6 @@ class _MatchSettingState extends State<MatchSettings> {
   List<bool> isSelectedSubject_2;
   bool subject_selected;
 
-
   List<String> serverLogs = [];
   TextEditingController controller = TextEditingController();
 
@@ -156,9 +155,9 @@ class _MatchSettingState extends State<MatchSettings> {
                           textAlignVertical: TextAlignVertical.center,
                           textAlign: TextAlign.center,
                           onChanged: (text) {
-                            if(text=="")
-                              {game.gameTime=0;}
-                            else{
+                            if (text == "") {
+                              game.gameTime = 0;
+                            } else {
                               var value = int.tryParse(text);
                               if (value == null) {
                                 game.gameTime = 20;
@@ -219,14 +218,16 @@ class _MatchSettingState extends State<MatchSettings> {
                           textAlignVertical: TextAlignVertical.center,
                           textAlign: TextAlign.center,
                           onChanged: (text) {
-                            if(text==""){moderator.numberOfQuestion=0;}
-                           else{
-                          var value = int.tryParse(text);
-                          if (value == null) {
-                          moderator.numberOfQuestion = 25;
-                          setState(() {});
-                          _notIntDialog();
-                          }}
+                            if (text == "") {
+                              moderator.numberOfQuestion = 0;
+                            } else {
+                              var value = int.tryParse(text);
+                              if (value == null) {
+                                moderator.numberOfQuestion = 25;
+                                setState(() {});
+                                _notIntDialog();
+                              }
+                            }
                             moderator.numberOfQuestion = int.parse(text);
                             game.numberOfQuestion = int.parse(text);
 
@@ -413,14 +414,17 @@ class _MatchSettingState extends State<MatchSettings> {
                           textAlignVertical: TextAlignVertical.center,
                           textAlign: TextAlign.center,
                           onChanged: (text) {
-                            if (text == "") {game.tossUpTime=0;}else{
-                            var value = int.tryParse(text);
-                            if (value == null) {
-                            game.tossUpTime = 5;
-                            setState(() {});
-                            _notIntDialog();
-                            }}
-                           game.tossUpTime = int.parse(text);
+                            if (text == "") {
+                              game.tossUpTime = 0;
+                            } else {
+                              var value = int.tryParse(text);
+                              if (value == null) {
+                                game.tossUpTime = 5;
+                                setState(() {});
+                                _notIntDialog();
+                              }
+                            }
+                            game.tossUpTime = int.parse(text);
                             if (game.tossUpTime < 1) {
                               game.tossUpTime = 5;
                               setState(() {});
@@ -469,15 +473,18 @@ class _MatchSettingState extends State<MatchSettings> {
                           textAlignVertical: TextAlignVertical.center,
                           textAlign: TextAlign.center,
                           onChanged: (text) {
-                            if (text == "") {game.bonusTime=0;}else{
+                            if (text == "") {
+                              game.bonusTime = 0;
+                            } else {
                               var value = int.tryParse(text);
                               if (value == null) {
                                 game.bonusTime = 20;
                                 setState(() {});
                                 _notIntDialog();
-                              }}
+                              }
+                            }
                             game.bonusTime = int.parse(text);
-                               if (game.bonusTime < 1) {
+                            if (game.bonusTime < 1) {
                               game.bonusTime = 20;
                               setState(() {});
                               _lessThanOneDialog();
@@ -516,8 +523,7 @@ class _MatchSettingState extends State<MatchSettings> {
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                             color: Colors.pink),
-                          textAlign: TextAlign.left,
-
+                        textAlign: TextAlign.left,
                       ),
                       color: Colors.transparent,
                       textColor: Colors.pink,
@@ -525,33 +531,30 @@ class _MatchSettingState extends State<MatchSettings> {
 //                        (context as Element).reassemble();
                         reset();
                         setState(() {});
-
                       },
                     ),
                   ],
                 ),
               ),
               Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-                child:Align(
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+                child: Align(
                   alignment: Alignment.center,
-                  child:SizedBox(
+                  child: SizedBox(
                     width: 130.0,
                     height: 50.0,
-                  child: FlatButton(
+                    child: FlatButton(
                       shape: new RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      child: new Text(
-                          "Confirm",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
-                      ),
+                      child: new Text("Confirm",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 17)),
                       color: Colors.pink,
                       textColor: Colors.white,
-
                       onPressed: () async {
                         moderator.subjectsdict.forEach((key, value) {
-//                          print(key);
+//                        print(key);
                           if (value == true) {
                             if (key == 0)
                               moderator.subjects.add("Math");
@@ -586,7 +589,8 @@ class _MatchSettingState extends State<MatchSettings> {
                         setState(() {});
                       },
                     ),
-                ),),
+                  ),
+                ),
               ),
             ],
           ),
@@ -605,7 +609,7 @@ class _MatchSettingState extends State<MatchSettings> {
   bool validations() {
     if (game.bonusTime == 0 ||
         game.tossUpTime == 0 ||
-        game.gameTime== 0 ||
+        game.gameTime == 0 ||
         moderator.numberOfQuestion <= 0) {
       _emptyfield();
       return false;
@@ -722,7 +726,7 @@ class _MatchSettingState extends State<MatchSettings> {
         context: context,
         barrierDismissible: true,
         builder: (context) {
-          return AlertDialog( 
+          return AlertDialog(
             title: Text("Time Limit"),
             content: Text("Can not be a minute long"),
             actions: <Widget>[
@@ -756,7 +760,8 @@ class _MatchSettingState extends State<MatchSettings> {
           );
         });
   }
-  void reset(){
+
+  void reset() {
     game.gameTime = 20;
     moderator.numberOfQuestion = 25;
     moderator.subjects = [];

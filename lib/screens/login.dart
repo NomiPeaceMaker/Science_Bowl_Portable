@@ -79,7 +79,7 @@ class _LoginState extends State<Login> {
                                     isRepeatingAnimation: false,
                                     textStyle: TextStyle(
                                       // fontSize:
-                                          // SizeConfig.safeBlockVertical * 8.5,
+                                      // SizeConfig.safeBlockVertical * 8.5,
                                       fontSize: 60,
                                       fontWeight: FontWeight.bold,
                                       // color: themeColor,
@@ -210,7 +210,6 @@ class _LoginState extends State<Login> {
             Map userMap = snapShot.data;
             user.userName = userMap['Username'];
             print("${user.userName} is the username");
-
           }
 
           user_email = user.email;
