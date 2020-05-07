@@ -546,7 +546,7 @@ class _MatchSettingState extends State<MatchSettings> {
                           "Confirm",
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
                       ),
-                      color: Colors.green[600],
+                      color: Colors.pink,
                       textColor: Colors.white,
 
                       onPressed: () async {

@@ -78,9 +78,9 @@ class _LoginState extends State<Login> {
                                     text: ["Welcome to Science Bowl Portable"],
                                     isRepeatingAnimation: false,
                                     textStyle: TextStyle(
-                                      fontSize:
-                                          SizeConfig.safeBlockVertical * 8.5,
-                                      // fontSize: 60,
+                                      // fontSize:
+                                          // SizeConfig.safeBlockVertical * 8.5,
+                                      fontSize: 60,
                                       fontWeight: FontWeight.bold,
                                       // color: themeColor,
                                       color: Colors.white,
