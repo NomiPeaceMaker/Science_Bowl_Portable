@@ -156,6 +156,8 @@ class _LoginState extends State<Login> {
     );
   }
 
+  //sets logged in bool as true if login suceeds and continues to next page accordingly
+  //if user has signed in before then username is retrieved
   void initiateSignIn(String type) {
     _handleSignIn(type).then((result) {
       print("If there is a 0 in the next line then login was unsucessful = ");
@@ -186,6 +188,8 @@ class _LoginState extends State<Login> {
     });
   }
 
+  //Google or Facebook login API is called
+  //User is created in database if does not exist
   Future<int> _handleSignIn(String type) async {
     switch (type) {
       case "FB":
@@ -284,6 +288,7 @@ class _LoginState extends State<Login> {
     return googleSignInAccount;
   }
 
+  //creates User with email as primary identifier
   void createUser() async {
     await databaseReference.collection("User").document(user.email).setData({
       "Username": null,

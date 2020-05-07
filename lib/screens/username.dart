@@ -87,6 +87,7 @@ class _usernameState extends State<Username> {
         ));
   }
 
+  //Text field input for username
   Container _usernameText() {
     return Container(
         child: Center(
@@ -118,6 +119,7 @@ class _usernameState extends State<Username> {
                 ))));
   }
 
+  //sets username in User object
   Container _confirmbutton() {
     return Container(
       child: Center(
@@ -142,6 +144,7 @@ class _usernameState extends State<Username> {
     );
   }
 
+  //navigates to home screen
   Container _skipbutton() {
     return Container(
       child: Center(
@@ -158,6 +161,7 @@ class _usernameState extends State<Username> {
     );
   }
 
+  //changes username of already existing user in databse
   void changeUsername(name) async {
     await databaseReference.collection("User").document(user.email).setData({
       "Username": name,

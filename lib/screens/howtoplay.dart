@@ -4,10 +4,7 @@ import './SecondPage.dart' as second;
 import './ThirdPage.dart' as third;
 import 'package:sciencebowlportable/utilities/styles.dart';
 
-//void main() {
-//  runApp(new MaterialApp(home: new HowToPlay()));
-//}
-
+//Navigates between general, moderator and player tabs
 class HowToPlay extends StatefulWidget {
   @override
   HowToPlayState createState() => new HowToPlayState();

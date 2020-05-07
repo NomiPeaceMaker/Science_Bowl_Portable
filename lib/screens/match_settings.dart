@@ -597,6 +597,7 @@ class _MatchSettingState extends State<MatchSettings> {
         ));
   }
 
+  //returns true if atleast one subject has been selected
   void subjectValidation() {
     moderator.subjectsdict.forEach((key, value) {
       if (value == true) {
@@ -606,6 +607,7 @@ class _MatchSettingState extends State<MatchSettings> {
     });
   }
 
+  //returns true if all fields have been filled
   bool validations() {
     if (game.bonusTime == 0 ||
         game.tossUpTime == 0 ||
@@ -620,6 +622,7 @@ class _MatchSettingState extends State<MatchSettings> {
     return true;
   }
 
+  //outputs dialog box displaying error details
   _chooseSubjectDialog() {
     showDialog(
         context: context,
@@ -641,6 +644,7 @@ class _MatchSettingState extends State<MatchSettings> {
         });
   }
 
+  //outputs dialog box displaying error details
   _lessThanOneDialog() {
     showDialog(
         context: context,
@@ -661,6 +665,7 @@ class _MatchSettingState extends State<MatchSettings> {
         });
   }
 
+  //outputs dialog box displaying error details
   _gameTimeLimit() {
     showDialog(
         context: context,
@@ -680,6 +685,8 @@ class _MatchSettingState extends State<MatchSettings> {
           );
         });
   }
+
+  //outputs dialog box displaying error details
 
   _questionLimitDialog() {
     showDialog(
@@ -701,6 +708,7 @@ class _MatchSettingState extends State<MatchSettings> {
         });
   }
 
+  //outputs dialog box displaying error details
   _notIntDialog() {
     showDialog(
         context: context,
@@ -721,6 +729,7 @@ class _MatchSettingState extends State<MatchSettings> {
         });
   }
 
+  //outputs dialog box displaying error details
   _secondsLimit() {
     showDialog(
         context: context,
@@ -741,6 +750,7 @@ class _MatchSettingState extends State<MatchSettings> {
         });
   }
 
+  //outputs dialog box displaying error details
   _emptyfield() {
     showDialog(
         context: context,
@@ -761,6 +771,7 @@ class _MatchSettingState extends State<MatchSettings> {
         });
   }
 
+  //resets all the variables used as they are in initState
   void reset() {
     game.gameTime = 20;
     moderator.numberOfQuestion = 25;
