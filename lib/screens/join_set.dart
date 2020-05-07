@@ -34,6 +34,7 @@ class _JoinSetState extends State<JoinSet> {
     socketDataStreamSubscription = socketDataStream.listen((data) {
       if (data["type"] == "startGame") {
         print("Moving on to game");
+        game.gameTime = data["gameTimer"];
         socketDataStreamSubscription.cancel();
         Navigator.push(
           context,

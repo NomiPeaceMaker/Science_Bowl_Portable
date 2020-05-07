@@ -61,6 +61,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         // test this out it might cause async problems
         player.playerID = data["playerID"];
       } else if (data["type"] == "startGame") {
+        game.gameTime = data["gameTimer"];
         print("Moving on to game");
         socketDataStreamSubscription.cancel();
         Navigator.push(

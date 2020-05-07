@@ -107,7 +107,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
           onPressed: () => {
             if (playerSlotIsTakenList[2] && playerSlotIsTakenList[7]) {
               socketDataStreamSubscription.cancel(),
-              server.sendAll(json.encode({"type":"startGame"})),
+              server.sendAll(json.encode({"type":"startGame", "gameTimer":game.gameTime})),
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ModeratorQuestions(this.server, this.moderator, this.questionSet)),
