@@ -64,6 +64,8 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         player.playerID = data["playerID"];
       } else if (data["type"] == "startGame") {
         game.gameTime = data["gameTimer"];
+        print("GAME TIMER: ");
+        print(game.gameTime);
         print("Moving on to game");
         socketDataStreamSubscription.cancel();
         Navigator.push(
