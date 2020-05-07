@@ -162,7 +162,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
       builder: (context) {
         return AlertDialog (
           title: Text("Captains Need to Join"),
-          content: Text("Both team captians need to join before we can start the game. Please ask them to join before presseing start game."),
+          content: Text("Both team captians need to join before we can start the game. Please ask them to join before proceeding."),
           actions: <Widget>[
             FlatButton(
               child: Text("Okay", style: staystyle),
