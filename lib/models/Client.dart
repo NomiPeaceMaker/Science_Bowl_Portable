@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:sciencebowlportable/models/Models.dart';
@@ -17,7 +18,7 @@ class Client {
   Uint8ListCallback onData;
   DynamicCallback onError;
 
-  void Function(String) onTimeout;
+  void Function(EventSink<Uint8List>) onTimeout;
   bool connected = false;
 
   Socket socket;
@@ -33,7 +34,7 @@ class Client {
         onDone: disconnect,
         cancelOnError: false,
       );
-      socket.timeout(Duration(seconds: 4));
+      socket.timeout(Duration(seconds: 4), onTimeout: onTimeout);
       connected = true;
     } on Exception catch (exception) {
       onError(("Error : $exception"));

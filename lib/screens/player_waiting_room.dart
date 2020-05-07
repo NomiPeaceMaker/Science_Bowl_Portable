@@ -35,6 +35,8 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   @override
   void initState() {
     super.initState();
+    print("email ${user.email} name ${user.userName}");
+    client.onTimeout = (d) {print("TIMERD OUTTTT");};
     appBarText = "JOIN";
     player = Player("");
     player.userName = user.userName;
@@ -93,9 +95,9 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
     print("Constructing message");
     var message = {
       "type": "selectSlot",
-      "userName": user.email,
+      "userName": user.userName,
       "playerID": playerID,
-      "uniqueID": player.userName,
+      "uniqueID": player.email,
       "playerPositionIndex": playerPositionIndex.toString(),
 //      "previousState": player.playerID,
     };
