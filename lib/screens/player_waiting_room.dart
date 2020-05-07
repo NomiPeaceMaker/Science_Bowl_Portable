@@ -31,7 +31,6 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
 
   StreamController<bool> isPlayerSlotSelectedStream = StreamController();
   bool isPlayerSlotSelected = false;
-  int playerPositionIndex;
 
   @override
   void initState() {
@@ -50,7 +49,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         setState(() {
           isPlayerSlotSelected = true;
         });
-        playerPositionIndex = int.parse(data["playerPositionIndex"]);
+        int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String userName = data["userName"];
         String previousState = userSlotsDict[data["uniqueID"]];
 //        String previousState = data["previousState"];
@@ -61,7 +60,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         playerJoinStreamControllers[playerPositionIndex].add(userName);
         userSlotsDict[data["uniqueID"]] = data["playerID"];
         // test this out it might cause async problems
-        player.playerID = data["playerID"];
+//        player.playerID = data["playerID"];
       } else if (data["type"] == "startGame") {
         game.gameTime = data["gameTimer"];
         print("GAME TIMER: ");
@@ -93,8 +92,9 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   }
 
   @override
-  void onPressTeamSlot() {
+  void onPressTeamSlot(String playerID, int playerPositionIndex) {
     print("Constructing message");
+    player.playerID = playerID;
     var message = {
       "type": "selectSlot",
       "userName": user.userName,
