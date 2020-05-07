@@ -104,7 +104,7 @@ class _ModeratorWaitingRoomState extends waitingRoomState<ModeratorWaitingRoom> 
           color: Colors.pink,
           textColor: Colors.white,
           onPressed: () {
-            if (playerSlotIsTakenList[2] && playerSlotIsTakenList[7]) {
+            if (playerSlotIsTakenList[0] && playerSlotIsTakenList[5]) {
               socketDataStreamSubscription.cancel();
               server.sendAll(json.encode({"type":"startGame", "gameTimer":game.gameTime}));
               Navigator.push(
