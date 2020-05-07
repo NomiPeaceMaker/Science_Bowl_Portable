@@ -115,7 +115,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: new Text(
-              "Start Game",
+              "Join",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)
           ),
           color: isPlayerSlotSelected ? Colors.pink : Colors.grey,
