@@ -35,7 +35,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
   String roundName = "Toss-Up";
   String playerName= "A Captain"; //change according to player in focus
   double timeToAnswer = 2.113;
-  String team ="A"; //depends on who buzzed in
+//  String team ="A"; //depends on who buzzed in
   int index=0;
 //timer variables
   bool unavailable = false;
@@ -43,8 +43,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
   Timer _buzzTimer;
   Timer _gameTimer;
   bool doneReading=false;
-  bool interrupt=true;
-
+  bool interrupt=false;
+  String _gameTimeLeft;
   int bonusTimer;
   int tossUpTimer;
   int _minutes;
@@ -53,6 +53,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
   bool decisionTime=false;
   bool buzzedIn=false;
   int skipsLeft=5;
+  String element="";
+  StreamController<String> ModeratorStreamController = StreamController.broadcast();
   initState() {
     bonusTimer = game.bonusTime;
     tossUpTimer = game.tossUpTime; //5 secs for buzzer timer
@@ -62,24 +64,32 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
     game.aTeam.canAnswer=true;
     game.bTeam.canAnswer=true;
     _startGameTimer();
-
     super.initState();
-    Stream socketDataStream = socketDataStreamController.stream;
+    Stream socketDataStream = socketDataStreamController.stream; //.add
+    server.sendAll(json.encode({"type": "moderatorReading", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
     socketDataStreamSubscription = socketDataStream.listen((data) {
       print("DATA RECIEVED FROM PLAYER");
       print(data);
       data = json.decode(data);
+
       if (data["type"] == "pin") {
          server.sockets[data["uniqueID"]].write(
             json.encode({"type": "pinState", "pinState": "gameInProgress"})
          );
        }
+      else if(data["type"] == "BuzzIn")
+      {
+        print("sending to controller");
+        ModeratorStreamController.add(json.encode(data));
+      }
+      else
+        {
+          print("Nothing");
+        }
     });
   }
 
   void _startBuzzTimer() {
-//    bonusTimer=game.bonusTime;
-//    tossUpTimer = game.tossUpTime;
     if (_buzzTimer != null) {
       _buzzTimer.cancel();
     }
@@ -91,6 +101,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
           }
           else {
             _buzzTimer.cancel();
+            server.sendAll(json.encode({"type": "Unavailable", "round":"Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score})); //to all
             decisionTime=true;
             tossUpTimer = game.tossUpTime;
           }
@@ -111,6 +122,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                 );
               }
               else{
+                server.sendAll(json.encode({"type": "Unavailable", "round":"Bonus", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                 _buzzTimer.cancel();
                 bonusTimer=game.bonusTime;
                 decisionTime=true;
@@ -199,6 +211,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                     ),
                   ),
                   onTap: () {
+                    socketDataStreamSubscription.cancel();
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (BuildContext context) => MyHomePage(),),
@@ -216,7 +229,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
         backgroundColor: Colors.amber,
         title: Text(
           (!paused)? "Science Bowl Portable" : "Paused",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
         ),
         centerTitle: true,
         leading: Builder(
@@ -269,7 +282,41 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                       fit: BoxFit.scaleDown),),
         child: SingleChildScrollView(
           
-          child: Column(
+          child: StreamBuilder(
+                    stream: ModeratorStreamController.stream,
+                    builder: (context, snapshot) {
+//                    element=(snapshot.data==null) ? "" : snapshot.data;
+                    if(snapshot.data!=null)
+                    {
+                      print("In controller");
+                    var element=json.decode(snapshot.data);
+                    if(element["type"]=="BuzzIn")
+                      {
+//                        print("In controller");
+                        playerName=element["playerID"];
+//                        print("done reading");
+//                        print(doneReading);
+                      _buzzTimer.cancel();
+                        if(!doneReading)
+                          {
+                            server.sendAll(json.encode({"type": "Interrupt", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
+                            print("Interrupt");
+                            buzzedIn=false;
+                            interrupt=true;
+                          }
+                        else
+                          {
+                            server.sendAll(json.encode({"type": "Recognized","player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
+                            print("Valid Buzz");
+                            buzzedIn=true;
+                            interrupt=false;
+                          }
+                        decisionTime=false;
+                        doneReading = false;
+                      }
+                    }
+                    ModeratorStreamController.add(null);
+                    return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Row(
@@ -343,7 +390,18 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                   ),
                   margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
                   elevation: 10.0,
-                  child: Column(
+
+//                  child: StreamBuilder(
+//                    stream: ModeratorStreamController.stream,
+//                    builder: (context, snapshot) {
+//                    element=(snapshot.data==null) ? "" : snapshot.data;
+//                    if(snapshot.data!=null)
+//                    {
+//                    var element=json.decode(snapshot.data);
+//                    }
+//                    ModeratorStreamController.add(null);
+//                    return
+                    child: Column(
                     //              mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Padding(
@@ -423,7 +481,6 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                               onPressed: () {
                                 setState(() {
                                   if (!paused && skipsLeft>0 && roundName=="Toss-Up") {
-                                    server.sendAll(json.encode({"type": "moderatorReading"}));
                                     if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
                                       Navigator.push(
                                         context,
@@ -432,6 +489,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                        );
                                     }
                                     else {
+                                      server.sendAll(json.encode({"type": "Skip", "round": "Toss-Up"}));
                                       index += 1;
                                       skipsLeft-=1;
                                       buzzedIn=false;
@@ -449,49 +507,90 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                       )
                     ],
                   )),
-              Card(
-                margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-                color: doneReading ? Colors.grey : Colors.lightGreen,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: RaisedButton(
+                Card(
+                  margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                  color: doneReading ? Colors.grey : Colors.lightGreen,
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.white, width: 3.0),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  child: Text(
-                    (buzzedIn)? playerName + " buzzed in! \n   Decide what to do":
-                    (decisionTime)? "Decision Time!":
-                    (interrupt)? playerName + " interrupted! \n   Decide what to do":
-                    (doneReading && roundName=="Toss-Up")
-                        ? "Buzzer Open: " + tossUpTimer.toString():
-                    (doneReading && roundName=="Bonus")? "Buzzer Open: " + bonusTimer.toString():
-                    "Done Reading",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  ),
-                  padding: EdgeInsets.all(20.0),
-                  disabledTextColor: Colors.white,
-                  disabledColor: buzzedIn ? Colors.black :(decisionTime)? Colors.deepPurple :interrupt ? Colors.lightBlue : Colors.grey,
-                  color: Colors.lightGreen,
-                  textColor: Colors.white,
-                  onPressed: (!doneReading && !paused && !buzzedIn && !decisionTime && !interrupt)?() {
-                    setState(() {
-                      server.sendAll(json.encode({"type": "BuzzerAvailable"}));
-                      doneReading=true;
+                  child: RaisedButton(
+                    elevation: (decisionTime || (!doneReading && !paused && !buzzedIn && !interrupt))?10.0 :0,
+                    shape: RoundedRectangleBorder(
+//                    side: BorderSide(color: Colors.white, width: 3.0),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Text(
+                      (buzzedIn)? playerName + " buzzed in":
+                      (decisionTime)? "       TIME!\n Next Question":
+                      (interrupt)? playerName + " interrupted!":
+                      (doneReading && roundName=="Toss-Up")
+                          ? "Buzzer Open: " + tossUpTimer.toString():
+                      (doneReading && roundName=="Bonus")? "Buzzer Open: " + bonusTimer.toString():
+                      "Done Reading",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    padding: EdgeInsets.all(20.0),
+                    color: (decisionTime) ? Color(0xFF20BABA) : Colors.lightGreen,
+                    textColor: Colors.white,
+                    disabledTextColor: Colors.white,
+                    disabledColor: Colors.grey,
+                    onPressed: (!doneReading && !paused && !buzzedIn && !interrupt)?() {
+                      setState(() {
+                        //pressed done reading
+                        print("Not dec time");
+                        server.sendAll(json.encode({"type": "Available"}));
+                        doneReading=true;
                         _startBuzzTimer();
-                    });
-                  }: null,
+                      });
+                    }:(decisionTime) ? (){
+                      print("DECISION TIME");
+                      if(!paused){
+//                            server.sendAll(json.encode({"type": ""}));;
+                        game.aTeam.canAnswer=true;
+                        game.bTeam.canAnswer=true;
+                        if (roundName=="Toss-Up")
+                        {
+                          server.sendAll(json.encode({"type": "moderatorReading", "round": "Bonus", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
+                          buzzedIn=false;
+                          roundName="Bonus";
+                          decisionTime=false;
+                          interrupt=false;
+                          doneReading=false;
+
+                        }
+                        else
+                        {
+                          if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Result()),
+                            );
+                          }
+                          else{
+                            server.sendAll(json.encode({"type": "moderatorReading", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
+                            index+=1;
+                            buzzedIn=false;
+                            roundName="Toss-Up";
+                            decisionTime=false;
+                            interrupt=false;
+                            doneReading=false;
+                          }
+                        }
+                      }
+                    }: null,
+                  ),
                 ),
-              ),
+//              ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     RaisedButton(
+                      elevation: (decisionTime || interrupt || buzzedIn)?10.0: 0,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white, width: 3.0),
+//                        side: BorderSide(color: Colors.white, width: 3.0),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Text(
@@ -507,7 +606,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                       onPressed: (decisionTime || interrupt || buzzedIn) ? () {
                         setState(() {
                           if(!paused){
-                            server.sendAll(json.encode({"type": "Correct"}));;
+//                            server.sendAll(json.encode({"type": "Correct", r}));;
                             game.aTeam.canAnswer=true;
                             game.bTeam.canAnswer=true;
                             if (roundName=="Toss-Up")
@@ -517,7 +616,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                               decisionTime=false;
                               interrupt=false;
                               doneReading=false;
-                              if(team=="A")
+                              if(playerName[0]=="A")
                               {
                                 game.aTeam.score+=4;
                               }
@@ -525,6 +624,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                               {
                                 game.bTeam.score+=4;
                               }
+                              server.sendAll(json.encode({"type": "Correct",  "round": "Bonus", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                             }
                             else
                             {
@@ -536,13 +636,14 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 );
                                 }
                               else{
+                                 //next round
                                 index+=1;
                                 buzzedIn=false;
                                 roundName="Toss-Up";
                                 decisionTime=false;
                                 interrupt=false;
                                 doneReading=false;
-                                if(team=="A")
+                                if(playerName[0]=="A")
                                 {
                                   game.aTeam.score+=10;
                                 }
@@ -550,6 +651,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 {
                                   game.bTeam.score+=10;
                                 }
+                                server.sendAll(json.encode({"type": "Correct",  "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                               }
                             }
                           }
@@ -558,8 +660,9 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                       } : null,
                     ),
                     RaisedButton(
+                      elevation: (decisionTime || interrupt || buzzedIn)?10.0: 0,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white, width: 3.0),
+//                        side: BorderSide(color: Colors.white, width: 3.0),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Text("Incorrect",
@@ -573,9 +676,9 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                       onPressed: (decisionTime || interrupt || buzzedIn) ? () {
                         setState(() {
                           if(!paused) {
-                            server.sendAll(json.encode({"type": "Incorrect"}));; //should tell which team answered correctly? so incorrect team cant answer again
+//                            server.sendAll(json.encode({"type": "Incorrect"})); //should tell which team answered correctly? so incorrect team cant answer again
                             if (game.aTeam.canAnswer && game.bTeam.canAnswer && roundName=="Toss-Up") {
-                              if (team == "A") {
+                              if (playerName[0] == "A") {
                                 if (interrupt) {
                                   game.bTeam.score += 4;
                                 }
@@ -588,6 +691,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 }
                                 game.bTeam.canAnswer = false;
                               }
+                              server.sendAll(json.encode({"type": "Incorrect", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                               buzzedIn=false;
                               decisionTime=false;
                               interrupt=false;
@@ -618,6 +722,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                   );
                                 }
                                 else {
+                                  server.sendAll(json.encode({"type": "Incorrect", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                                   index += 1;
                                   buzzedIn=false;
                                   roundName = "Toss-Up";
@@ -638,6 +743,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 );
                               }
                               else {
+                                server.sendAll(json.encode({"type": "Incorrect", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
+//                                server.sendAll(json.encode({"type": "moderatorReading", "round": "Toss-Up"}));
                                 index += 1;
                                 buzzedIn=false;
                                 roundName = "Toss-Up";
@@ -654,8 +761,9 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                       }: null,
                     ),
                     RaisedButton(
+                      elevation: (decisionTime || interrupt || buzzedIn)?10.0: 0,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white, width: 3.0),
+//                        side: BorderSide(color: Colors.white, width: 3.0),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Text(
@@ -716,15 +824,16 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                               onPressed: () {
                                                 setState(() {
                                                   if (!paused) {
-                                                    server.sendAll(json.encode({"type": "Blurt"}));;
+//                                                    server.sendAll(json.encode({"type": "Blurt"}));;
                                                     //need to do more work here
-                                                    if (team == "A") {
+                                                    if (playerName[0] == "A") {
                                                       game.bTeam.score += 4;
                                                     }
                                                     else {
                                                       game.aTeam.score += 4;
                                                     }
                                                   }
+                                                  server.sendAll(json.encode({"type": "Blurt", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                                                 });
                                                 Navigator.of(context, rootNavigator: true).pop('dialog');
                                                 if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
@@ -735,6 +844,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                   );
                                                 }
                                                 else {
+                                                  server.sendAll(json.encode({"type": "Blurt", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                                                   index += 1;
                                                   buzzedIn=false;
                                                   roundName = "Toss-Up";
@@ -765,13 +875,13 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                               onPressed: () {
                                                 setState(() {
                                                   if (!paused) {
-                                                    server.sendAll(json.encode({"type": "Consultation"}));
-                                                    if (team == "A") {
+                                                    if (playerName[0] == "A") {
                                                       game.bTeam.score += 4;
                                                     }
                                                     else {
                                                       game.aTeam.score += 4;
                                                     }
+                                                    server.sendAll(json.encode({"type": "Consultation", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                                                   }
                                                 });
                                                 Navigator.of(context, rootNavigator: true).pop('dialog');
@@ -783,6 +893,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                   );
                                                 }
                                                 else {
+                                                  server.sendAll(json.encode({"type": "Consultation", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                                                   index += 1;
                                                   buzzedIn=false;
                                                   roundName = "Toss-Up";
@@ -814,15 +925,16 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                   if (!paused) {
                                                     //need to do more work here
                                                     if (game.aTeam.canAnswer && game.bTeam.canAnswer && roundName=="Toss-Up") {
-                                                      if (team == "A") {
-                                                        server.sendAll(json.encode({"type": "Disqualify", "team": "A"}));
+                                                      if (playerName[0] == "A") {
+//                                                        server.sendAll(json.encode({"type": "Disqualify", "team": "A"}));
                                                         game.aTeam.canAnswer = false;
                                                         //                              team="B";
                                                       }
                                                       else {
-                                                        server.sendAll(json.encode({"type": "Disqualify", "team": "B"}));
+//                                                        server.sendAll(json.encode({"type": "Disqualify", "team": "B"}));
                                                         game.bTeam.canAnswer = false;
                                                       }
+//                                                      server.sendAll(json.encode({"type": "Disqualify", "team":"B", "round": "Toss-Up"}));
                                                       buzzedIn=false;
                                                       decisionTime=false;
                                                       interrupt=false;
@@ -844,6 +956,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         }
                                                         print("Team B cannot answer now");
                                                       }
+                                                      server.sendAll(json.encode({"type": "Disqualify", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                                                       print("here");
                                                       if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
                                                         Navigator.push(
@@ -853,6 +966,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         );
                                                       }
                                                       else {
+                                                        server.sendAll(json.encode({"type": "Blurt", "Disqualify": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
+//                                                        server.sendAll(json.encode({"type": "moderatorReading", "round": "Toss-Up"}));
                                                         index += 1;
                                                         buzzedIn=false;
                                                         roundName = "Toss-Up";
@@ -873,6 +988,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         );
                                                       }
                                                       else {
+//                                                        server.sendAll(json.encode({"type": "Disqualify", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
+//                                                        server.sendAll(json.encode({"type": "moderatorReading", "round": "Toss-Up"}));
                                                         index += 1;
                                                         buzzedIn=false;
                                                         roundName = "Toss-Up";
@@ -906,9 +1023,10 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                               onPressed: () {
                                                 setState(() {
                                                   if(!paused){
-                                                    server.sendAll(json.encode({"type": "Distraction"}));
+//                                                    server.sendAll(json.encode({"type": "Distraction"}));
                                                     if (roundName=="Toss-Up")
                                                     {
+//                                                      server.sendAll(json.encode({"type": "moderatorReading", "round": "Bonus"}));
                                                       roundName="Bonus";
                                                       buzzedIn=false;
                                                       interrupt=false;
@@ -916,7 +1034,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                       doneReading=false;
                                                       game.aTeam.canAnswer=true;
                                                       game.bTeam.canAnswer=true;
-                                                      if(team=="A")
+                                                      if(playerName[0]=="A")
                                                       {
                                                         game.aTeam.score+=4;
                                                       }
@@ -924,6 +1042,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                       {
                                                         game.bTeam.score+=4;
                                                       }
+                                                      server.sendAll(json.encode({"type": "Distraction", "round": "Bonus", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                                                     }
                                                     else
                                                     {
@@ -935,6 +1054,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         );
                                                       }
                                                       else{
+//                                                        server.sendAll(json.encode({"type": "moderatorReading", "round": "Toss-Up"}));
                                                         index+=1;
                                                         roundName="Toss-Up";
                                                         buzzedIn=false;
@@ -943,7 +1063,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         doneReading=false;
                                                         game.aTeam.canAnswer=true;
                                                         game.bTeam.canAnswer=true;
-                                                        if(team=="A")
+                                                        if(playerName[0]=="A")
                                                         {
                                                           game.aTeam.score+=10;
                                                         }
@@ -951,6 +1071,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         {
                                                           game.bTeam.score+=10;
                                                         }
+                                                        server.sendAll(json.encode({"type": "Distraction", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
+
                                                       }
                                                     }
                                                   }
@@ -987,12 +1109,10 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                   ],
                 ),
               ),
-//          Text("Questions + buffer "+questionSet.length.toString()),
-//            Text("Index "+index.toString()),
-//            Text("Displayed "+(index+1-(5-skipsLeft)).toString()),
-//            Text("Skips used: "+(5-skipsLeft).toString()),
             ],
-          ),
+          );
+  },
+  ),
         ),
       ),
     );
