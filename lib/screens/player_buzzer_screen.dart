@@ -25,9 +25,7 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
   bool paused=false;
 //  double timeLeft = 300; //5 mins
   Color txtClr = Colors.white;
-//  int aScore = 0; //should be from player or team
   String gamePin=game.gamePin;
-//  int bScore = 0; //should be from player or team
   Color bzrBorder=Colors.white;
   Color buzzerClr=Color(0xFFf84b4b);
   String buzzerTxt="Buzz In!";
@@ -35,8 +33,6 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
   String playerName = "A Captain";
   bool isBuzzerActive=false;
   bool unavailable=true;
-  int aScore=0;
-  int bScore=0;
 //  String team="A"; //true for red, false for green
 //  int _counter = 5;
 //  Timer _buzzTimer;
@@ -74,59 +70,14 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
         });
   }
 
-//  void _startBuzzTimer() {
-////    bonusTimer=game.bonusTime;
-////    tossUpTimer = game.tossUpTime;
-//    if (_buzzTimer != null) {
-//      _buzzTimer.cancel();
-//    }
-//    _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-//      setState(() {
-//        if (roundName=="Toss-Up") {
-//          if (tossUpTimer > 0) {
-//            tossUpTimer--;
-//          }
-//          else {
-//            _buzzTimer.cancel();
-////            decisionTime=true;
-//            tossUpTimer = 5; //game.tossUpTime;
-//          }
-//        }
-//        else
-//        {
-//          if (bonusTimer > 0) {
-//            bonusTimer--;
-//          }
-//          else {
-//            _buzzTimer.cancel();
-//            setState(() {
-////              if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
-////                Navigator.push(
-////                  context,
-////                  MaterialPageRoute(
-////                      builder: (context) => Result()),
-////                );
-////              }
-////              else{
-//                _buzzTimer.cancel();
-//                bonusTimer=20;
-////                decisionTime=true;
-//                if (isBuzzerActive) {
-//                  unavailable = true;
-//                }
-////              }
-//            });
-//          }
-//        }
-//      });
-//    });
-//  }
 
   StreamController<String> BuzzerStreamController = StreamController.broadcast();
   StreamSubscription socketDataStreamSubscription;
 
   @override
   void initState() {
+    game.aTeam.score=0;
+    game.bTeam.score=0;
     super.initState();
 //    BuzzerStreamController.add("Blurt");
 //    BuzzerStreamController = StreamController.broadcast();
@@ -134,7 +85,7 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
     game.bTeam.score=0;
 //    bonusTimer=20;//game.bonusTime;
 //    tossUpTimer = 5;//game.tossUpTime; //5 secs for buzzer timer
-    _minutes = 15; //game.gameTime;
+    _minutes = game.gameTime;
     game.aTeam.canAnswer=true;
     game.bTeam.canAnswer=true;
     Stream socketDataStream = socketDataStreamController.stream;
@@ -247,7 +198,7 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
                 Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
-                      "Team A\n"+aScore.toString(),
+                      "Team A\n"+game.aTeam.score.toString(),
                       textAlign: TextAlign.center,
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
                     )
@@ -270,7 +221,7 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
                 Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
-                      "Team B\n"+bScore.toString(),
+                      "Team B\n"+game.bTeam.score.toString(),
                       textAlign: TextAlign.center,
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightGreen, fontSize: 18),
                     )
@@ -362,24 +313,12 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
                       else if (element["type"]=="Incorrect") {
                         print("Incorrect");
                         roundName=element["round"];
-                        aScore=element["Ascore"];
-                        bScore=element["Bscore"];
+                        game.aTeam.score=element["Ascore"];
+                        game.bTeam.score=element["Bscore"];
                         buzzerClr = Color(0xFFf84b4b);
                         buzzerTxt = "Moderator Reading...";
                         unavailable = false;
                         bzrBorder=Colors.white;
-//                  buzzerClr = Colors.red;
-//
-////                 buzzerTxt = "Incorrect";
-//
-//                        Scaffold.of(context).showSnackBar(
-//                          SnackBar(
-//                            content: Icon(Icons.not_interested),
-//                            backgroundColor: Colors.red,
-//                            //                                  animation: ,
-//                            duration: Duration(seconds: 2),
-//                          ),
-//                        );
                       }
 
                       else if (element["type"]=="Correct") {
@@ -388,20 +327,9 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
                         buzzerClr = Color(0xFFf84b4b);
                         buzzerTxt = "Moderator Reading...";
                         bzrBorder=Colors.white;
-//                        Scaffold.of(context).showSnackBar(
-//                          SnackBar(
-//                            content: Text("Correct Answer Given!",
-//                                textAlign: TextAlign.center,
-//                                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)),
-////                      Icon(Icons.done),
-//                            backgroundColor: Colors.lightGreen,
-////                                  animation: ,
-//                            duration: Duration(seconds: 2),
-//                          ),
-//                        );
                       if(roundName=="Bonus")
                         {
-                          if (playerName==element["player"][0]) //you are captain of correct answering team
+                          if (playerName==element["player"][0] && playerName.substring(2)=="Captain") //you are captain of correct answering team
                             {
                               unavailable = false;
                               buzzerClr = Color(0xFFf84b4b);
@@ -413,14 +341,13 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
                             {
                               unavailable = true;
                               bzrBorder=Colors.white;
-                              buzzerClr = Colors.grey[700];
+                              buzzerClr = Colors.grey;
                               buzzerTxt = "Unavailable";
                             }
-                          roundName=element["round"];
-                          aScore=element["Ascore"];
-                          bScore=element["Bscore"];
-
                         }
+                        roundName=element["round"];
+                        game.aTeam.score=element["Ascore"];
+                        game.bTeam.score=element["Bscore"];
                       }
                       else if (element["type"]=="Recognized") {
                         print("recognized");
@@ -433,7 +360,7 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
                           }
                         else
                           {
-                            buzzerClr = Colors.grey[700];
+                            buzzerClr = Colors.grey;
                             bzrBorder=Colors.white;
                             buzzerTxt = element["player"]+" Recognized!";
                           }
@@ -445,36 +372,58 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
                         if(element["player"]==player.playerID)
                         {
                           bzrBorder=Colors.white;
-                          buzzerClr = Colors.grey[700];
+                          buzzerClr = Colors.grey;
                           buzzerTxt = "You Interrupted!";
                         }
                         else
                         {
                           bzrBorder=Colors.white;
-                          buzzerClr = Colors.grey[900];
+                          buzzerClr = Colors.grey;
                           buzzerTxt = element["player"]+" Interrupted!";
                         }
                       }
                       else if (element["type"]=="Blurt") { //snackbar
                         unavailable = true;
                         roundName=element["round"];
-                        aScore=element["Ascore"];
-                        bScore=element["Bscore"];
+                        game.aTeam.score=element["Ascore"];
+                        game.bTeam.score=element["Bscore"];
+                        unavailable = false;
+                        buzzerClr = Color(0xFFf84b4b);
+                        buzzerTxt = "Moderator Reading...";
+                        bzrBorder=Colors.white;
                         print("Blurt");
                       }
                       else if (element["type"]=="Consultation") {
                         roundName=element["round"];
-                        aScore=element["Ascore"];
-                        bScore=element["Bscore"];
+                        game.aTeam.score=element["Ascore"];
+                        game.bTeam.score=element["Bscore"];
                         unavailable = true;
+                        unavailable = false;
+                        buzzerClr = Color(0xFFf84b4b);
+                        buzzerTxt = "Moderator Reading...";
+                        bzrBorder=Colors.white;
                         print("Consultation");
                       }
                       else if (element["type"]=="Disqualify") {
                         unavailable = true;
                         roundName=element["round"];
-                        aScore=element["Ascore"];
-                        bScore=element["Bscore"];
+                        game.aTeam.score=element["Ascore"];
+                        game.bTeam.score=element["Bscore"];
                         print("Disqualify");
+                        if(playerName==element["player"][0] &&roundName=="Toss-Up") //belogn to disqualified team
+                          {
+                          unavailable = true;
+                          bzrBorder=Colors.white;
+                          buzzerClr = Colors.grey;
+                          buzzerTxt = "Disqualified";
+                          }
+                        else
+                          {
+                            unavailable = false;
+                            buzzerClr = Color(0xFFf84b4b);
+                            buzzerTxt = "Moderator Reading...";
+                            bzrBorder=Colors.white;
+                          }
 //                  Scaffold.of(context).showSnackBar(
 //                    SnackBar(
 //                      content: Icon(Icons.pan_tool),
@@ -488,17 +437,13 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
                       else if (element["type"]=="Distraction") {
                         unavailable = true;
                         roundName=element["round"];
-                        aScore=element["Ascore"];
-                        bScore=element["Bscore"];
+                        game.aTeam.score=element["Ascore"];
+                        game.bTeam.score=element["Bscore"];
                         print("Distraction");
-//                  Scaffold.of(context).showSnackBar(
-//                    SnackBar(
-//                      content: Icon(Icons.pan_tool),
-//                      backgroundColor: Colors.grey[900],
-//                      //                                  animation: ,
-//                      duration: Duration(seconds: 2),
-//                    ),
-////                  );
+                        unavailable = false;
+                        buzzerClr = Color(0xFFf84b4b);
+                        buzzerTxt = "Moderator Reading...";
+                        bzrBorder=Colors.white;
                       }
                       else if (element["type"]=="moderatorReading") { //red no text
                         print("MOD READING");
@@ -510,31 +455,42 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
                       else if (element["type"]=="Unavailable") {
                         unavailable = true;
                         bzrBorder=Colors.white;
-                        buzzerClr = Colors.grey[700];
+                        buzzerClr = Colors.grey;
                         buzzerTxt = "Unavailable";
 //                        print("Pass for now"); //sync
                       }
                       else if (element["type"]=="Skip") {
 //                        print("Pass for now"); //sync
                         roundName=element["round"];
+                        unavailable = false;
+                        buzzerClr = Color(0xFFf84b4b);
+                        buzzerTxt = "Moderator Reading...";
+                        bzrBorder=Colors.white;
                       }
                       else if (element["type"]=="Pause") {
-                        print("Pass for now"); //sync
+                        _gameTimer.cancel();
                         paused=true;
+                        _minutes= element["minutes"];
+                        _seconds=  element["seconds"];
+
                       }
                       else if (element["type"]=="Resume") {
-                        print("Pass for now"); //sync
                         paused=false;
+                        _minutes= element["minutes"];
+                        _seconds = element["seconds"];
+                        _startGameTimer();
                       }
                       else if (element["type"]=="End Game") {
-                        print("Pass for now"); //sync
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Result()),
+                        );
                       }
                       else if (element["type"]=="moderatorLeaving") {
                         client.disconnect();
                         moderatorLeftGameDialog();
                       }
-
-
                     }
                   BuzzerStreamController.add(null);
 
@@ -552,7 +508,7 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
                       ],
                     ),
                     disabledColor: Colors.white,
-                    disabledTextColor: Colors.grey[700],
+                    disabledTextColor: Colors.grey,
                     color: buzzerClr,
                     onPressed: (){ //fix condition
                     if(!paused && !unavailable)

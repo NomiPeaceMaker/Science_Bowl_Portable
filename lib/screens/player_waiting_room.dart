@@ -31,6 +31,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
 
   StreamController<bool> isPlayerSlotSelectedStream = StreamController();
   bool isPlayerSlotSelected = false;
+  int playerPositionIndex;
 
   @override
   void initState() {
@@ -49,7 +50,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         setState(() {
           isPlayerSlotSelected = true;
         });
-        int playerPositionIndex = int.parse(data["playerPositionIndex"]);
+        playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String userName = data["userName"];
         String previousState = userSlotsDict[data["uniqueID"]];
 //        String previousState = data["previousState"];
@@ -63,6 +64,8 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         player.playerID = data["playerID"];
       } else if (data["type"] == "startGame") {
         game.gameTime = data["gameTimer"];
+        print("GAME TIMER: ");
+        print(game.gameTime);
         print("Moving on to game");
         socketDataStreamSubscription.cancel();
         Navigator.push(
@@ -90,7 +93,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   }
 
   @override
-  void onPressTeamSlot(String playerID, int playerPositionIndex) {
+  void onPressTeamSlot() {
     print("Constructing message");
     var message = {
       "type": "selectSlot",

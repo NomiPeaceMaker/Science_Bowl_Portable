@@ -89,10 +89,13 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
     });
   }
 
-  void _startBuzzTimer() {
-    if (_buzzTimer != null) {
-      _buzzTimer.cancel();
-    }
+  void _startBuzzTimer(bool fromStart) {
+//    _buzzTimer.cancel();
+    if(fromStart)
+      {
+        tossUpTimer=game.tossUpTime;
+        bonusTimer=game.bonusTime;
+      }
     _buzzTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         if (roundName=="Toss-Up") {
@@ -115,6 +118,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
             _buzzTimer.cancel();
             setState(() {
               if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                server.sendAll(json.encode({"type": "End Game"}));
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -162,6 +166,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
         }
         if(_seconds==0 && _minutes==0)
         {
+          server.sendAll(json.encode({"type": "End Game"}));
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -249,17 +254,19 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
               onPressed: () {
                 if (paused) {
                   setState(() {
+                    server.sendAll(json.encode({"type": "Resume", "player": playerName, "minutes":_minutes, "seconds":  _seconds}));
                     paused = false;
                     _startGameTimer();
                     if(doneReading)
                     {
-                      _startBuzzTimer();
+                      _startBuzzTimer(false);
                     }
                   });
                 }
                 else {
                   setState(() {
                     paused = true;
+                    server.sendAll(json.encode({"type": "Pause", "player": playerName, "minutes": _minutes, "seconds":  _seconds}));
                     _gameTimer.cancel();
                     if (doneReading)
                     {
@@ -438,11 +445,12 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 setState(() {
                                   if (!paused && skipsLeft>0 && roundName=="Toss-Up") {
                                     if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                      server.sendAll(json.encode({"type": "End Game"}));
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => Result()),
-                       );
+                                        );
                                     }
                                     else {
                                       server.sendAll(json.encode({"type": "Skip", "round": "Toss-Up"}));
@@ -496,7 +504,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                         print("Not dec time");
                         server.sendAll(json.encode({"type": "Available"}));
                         doneReading=true;
-                        _startBuzzTimer();
+                        _startBuzzTimer(true);
                       });
                     }:(decisionTime) ? (){
                       print("DECISION TIME");
@@ -517,6 +525,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                         else
                         {
                           if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                        server.sendAll(json.encode({"type": "End Game"}));
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -585,6 +594,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                             else
                             {
                               if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                            server.sendAll(json.encode({"type": "End Game"}));
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -631,8 +641,9 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                       onPressed: (decisionTime || interrupt || buzzedIn) ? () {
                         setState(() {
                           if(!paused) {
+
 //                            server.sendAll(json.encode({"type": "Incorrect"})); //should tell which team answered correctly? so incorrect team cant answer again
-                            if (game.aTeam.canAnswer && game.bTeam.canAnswer && roundName=="Toss-Up") {
+                            if (roundName=="Toss-Up") {
                               if (playerName[0] == "A") {
                                 if (interrupt) {
                                   game.bTeam.score += 4;
@@ -646,30 +657,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 }
                                 game.bTeam.canAnswer = false;
                               }
-                              server.sendAll(json.encode({"type": "Incorrect", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
-                              buzzedIn=false;
-                              decisionTime=false;
-                              interrupt=false;
-                              doneReading = false;
-                            }
-                            else if(((game.bTeam.canAnswer && !game.aTeam.canAnswer) ||(!game.bTeam.canAnswer && game.aTeam.canAnswer))&&roundName=="Toss-Up")
-                              {
-                                if (game.bTeam.canAnswer ) //notify mod?
-                                  {
-                                    if (interrupt) { //add team ="A"
-                                      game.bTeam.score += 4;
-                                    }
-                                    print("Team A cannot answer now");
-                                  }
-                                else
-                                  {
-                                    if (interrupt) {
-                                      game.aTeam.score += 4;
-                                    }
-                                    print("Team B cannot answer now");
-                                  }
-                                print("here");
-                                if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                              if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                  server.sendAll(json.encode({"type": "End Game"}));
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -687,10 +676,47 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                   game.aTeam.canAnswer=true;
                                   game.bTeam.canAnswer=true;
                                 }
-                              }
+                            }
+//                            else if(((game.bTeam.canAnswer && !game.aTeam.canAnswer) ||(!game.bTeam.canAnswer && game.aTeam.canAnswer))&&roundName=="Toss-Up")
+//                              {
+//                                if (game.bTeam.canAnswer ) //notify mod?
+//                                  {
+//                                    if (interrupt) { //add team ="A"
+//                                      game.bTeam.score += 4;
+//                                    }
+//                                    print("Team A cannot answer now");
+//                                  }
+//                                else
+//                                  {
+//                                    if (interrupt) {
+//                                      game.aTeam.score += 4;
+//                                    }
+//                                    print("Team B cannot answer now");
+//                                  }
+//                                print("here");
+//                                if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+//                                  Navigator.push(
+//                                    context,
+//                                    MaterialPageRoute(
+//                                        builder: (context) => Result()),
+//                                  );
+//                                }
+//                                else {
+//                                  server.sendAll(json.encode({"type": "Incorrect", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
+//                                  index += 1;
+//                                  buzzedIn=false;
+//                                  roundName = "Toss-Up";
+//                                  decisionTime=false;
+//                                  interrupt=false;
+//                                  doneReading = false;
+//                                  game.aTeam.canAnswer=true;
+//                                  game.bTeam.canAnswer=true;
+//                                }
+//                              }
                             if(roundName=="Bonus")
                             {
                               if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                            server.sendAll(json.encode({"type": "End Game"}));
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -791,6 +817,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                 });
                                                 Navigator.of(context, rootNavigator: true).pop('dialog');
                                                 if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                                  server.sendAll(json.encode({"type": "End Game"}));
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -840,6 +867,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                 });
                                                 Navigator.of(context, rootNavigator: true).pop('dialog');
                                                 if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                                                  server.sendAll(json.encode({"type": "End Game"}));
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -877,42 +905,10 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                               onPressed: () {
                                                 setState(() {
                                                   if (!paused) {
-                                                    //need to do more work here
-                                                    if (game.aTeam.canAnswer && game.bTeam.canAnswer && roundName=="Toss-Up") {
-                                                      if (playerName[0] == "A") {
-//                                                        server.sendAll(json.encode({"type": "Disqualify", "team": "A"}));
-                                                        game.aTeam.canAnswer = false;
-                                                        //                              team="B";
-                                                      }
-                                                      else {
-//                                                        server.sendAll(json.encode({"type": "Disqualify", "team": "B"}));
-                                                        game.bTeam.canAnswer = false;
-                                                      }
-//                                                      server.sendAll(json.encode({"type": "Disqualify", "team":"B", "round": "Toss-Up"}));
-                                                      buzzedIn=false;
-                                                      decisionTime=false;
-                                                      interrupt=false;
-                                                      doneReading = false;
-                                                    }
-                                                    else if(((game.bTeam.canAnswer && !game.aTeam.canAnswer) ||(!game.bTeam.canAnswer && game.aTeam.canAnswer))&&roundName=="Toss-Up")
-                                                    {
-                                                      if (game.bTeam.canAnswer ) //notify mod?
-                                                          {
-                                                        if (interrupt) { //add team ="A"
-                                                          game.bTeam.score += 4;
-                                                        }
-                                                        print("Team A cannot answer now");
-                                                      }
-                                                      else
-                                                      {
-                                                        if (interrupt) {
-                                                          game.aTeam.score += 4;
-                                                        }
-                                                        print("Team B cannot answer now");
-                                                      }
                                                       server.sendAll(json.encode({"type": "Disqualify", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
                                                       print("here");
                                                       if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                                        server.sendAll(json.encode({"type": "End Game"}));
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -928,13 +924,13 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         decisionTime=false;
                                                         interrupt=false;
                                                         doneReading = false;
-                                                        game.aTeam.canAnswer=true;
-                                                        game.bTeam.canAnswer=true;
+//                                                        game.aTeam.canAnswer=true;
+//                                                        game.bTeam.canAnswer=true;
                                                       }
-                                                    }
                                                     if(roundName=="Bonus")
                                                     {
                                                       if ((index+1-(5-skipsLeft)) == questionSet.length - 5) {
+                                                        server.sendAll(json.encode({"type": "End Game"}));
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -942,7 +938,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         );
                                                       }
                                                       else {
-//                                                        server.sendAll(json.encode({"type": "Disqualify", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
+                                                        server.sendAll(json.encode({"type": "Disqualify", "round": "Toss-Up", "player": playerName, "Ascore": game.aTeam.score, "Bscore":  game.bTeam.score}));
 //                                                        server.sendAll(json.encode({"type": "moderatorReading", "round": "Toss-Up"}));
                                                         index += 1;
                                                         buzzedIn=false;
@@ -950,8 +946,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         decisionTime=false;
                                                         interrupt=false;
                                                         doneReading = false;
-                                                        game.aTeam.canAnswer=true;
-                                                        game.bTeam.canAnswer=true;
+//                                                        game.aTeam.canAnswer=true;
+//                                                        game.bTeam.canAnswer=true;
                                                       }
                                                     }
                                                   }
@@ -986,8 +982,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                       interrupt=false;
                                                       decisionTime=false;
                                                       doneReading=false;
-                                                      game.aTeam.canAnswer=true;
-                                                      game.bTeam.canAnswer=true;
+//                                                      game.aTeam.canAnswer=true;
+//                                                      game.bTeam.canAnswer=true;
                                                       if(playerName[0]=="A")
                                                       {
                                                         game.aTeam.score+=4;
@@ -1001,6 +997,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                     else
                                                     {
                                                       if ((index+1-(5-skipsLeft))== questionSet.length - 5) {
+                                                    server.sendAll(json.encode({"type": "End Game"}));
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -1015,8 +1012,8 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                                         interrupt=false;
                                                         decisionTime=false;
                                                         doneReading=false;
-                                                        game.aTeam.canAnswer=true;
-                                                        game.bTeam.canAnswer=true;
+//                                                        game.aTeam.canAnswer=true;
+//                                                        game.bTeam.canAnswer=true;
                                                         if(playerName[0]=="A")
                                                         {
                                                           game.aTeam.score+=10;

@@ -10,7 +10,6 @@ import 'package:sciencebowlportable/models/Player.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 
-// TODO:
 // make the back button work
 
 class ModeratorWaitingRoom extends waitingRoom {
