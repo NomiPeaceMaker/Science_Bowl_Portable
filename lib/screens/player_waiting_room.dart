@@ -31,12 +31,12 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
 
   StreamController<bool> isPlayerSlotSelectedStream = StreamController();
   bool isPlayerSlotSelected = false;
+  int playerPositionIndex;
 
   @override
   void initState() {
     super.initState();
     print("email ${user.email} name ${user.userName}");
-    client.onTimeout = (d) {print("TIMERD OUTTTT");};
     appBarText = "JOIN";
     player = Player("");
     player.userName = user.userName;
@@ -50,7 +50,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         setState(() {
           isPlayerSlotSelected = true;
         });
-        int playerPositionIndex = int.parse(data["playerPositionIndex"]);
+        playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String userName = data["userName"];
         String previousState = userSlotsDict[data["uniqueID"]];
 //        String previousState = data["previousState"];
@@ -93,12 +93,12 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   }
 
   @override
-  void onPressTeamSlot(String playerID, int playerPositionIndex) {
+  void onPressTeamSlot() {
     print("Constructing message");
     var message = {
       "type": "selectSlot",
       "userName": user.userName,
-      "playerID": playerID,
+      "playerID": player.playerID,
       "uniqueID": player.email,
       "playerPositionIndex": playerPositionIndex.toString(),
 //      "previousState": player.playerID,

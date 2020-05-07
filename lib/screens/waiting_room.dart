@@ -42,7 +42,7 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
   }
 
     @required Align bottomScreenMessage() {}
-    void onPressTeamSlot(String playerID, int playerPositionIndex) {}
+    void onPressTeamSlot() {}
     void onExit() {}
     Container pinBar() {
       return new Container();
@@ -105,7 +105,7 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
                 textColor: Colors.white,
                 onPressed: () {
                   setState(() {
-                    onPressTeamSlot(playerID, playerPositionIndex);
+                    onPressTeamSlot();
                   });
                 },
               );
