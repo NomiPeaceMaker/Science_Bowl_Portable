@@ -16,6 +16,8 @@ class Client {
   int port;
   Uint8ListCallback onData;
   DynamicCallback onError;
+
+  void Function(String) onTimeout;
   bool connected = false;
 
   Socket socket;
@@ -31,6 +33,7 @@ class Client {
         onDone: disconnect,
         cancelOnError: false,
       );
+      socket.timeout(Duration(seconds: 4));
       connected = true;
     } on Exception catch (exception) {
       onError(("Error : $exception"));

@@ -43,7 +43,6 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
   Timer _gameTimer;
   var element="";
 
-
   int _minutes;
   int _seconds=0;
   String buf="0";
@@ -54,6 +53,7 @@ class _PlayerBuzzerState extends State<PlayerBuzzer> {
 //    _startBuzzTimer();
     _startGameTimer();
   }
+
   moderatorLeftGameDialog() {
     showDialog(
         context: context,

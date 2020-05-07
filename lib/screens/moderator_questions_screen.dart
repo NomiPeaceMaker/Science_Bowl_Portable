@@ -6,10 +6,10 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/models/Moderator.dart';
-import 'package:sciencebowlportable/models/Timer.dart';
 import 'package:sciencebowlportable/screens/result.dart';
 import 'package:sciencebowlportable/screens/home.dart';
 import 'package:sciencebowlportable/models/Server.dart';
+import 'package:sciencebowlportable/models/Team.dart';
 import 'package:sciencebowlportable/models/Questions.dart';
 
 class ModeratorQuestions extends StatefulWidget {
@@ -274,14 +274,12 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
       ),
       body: Container(
         decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(
-                        'assets/game_back.png',
-                      ),
-                      alignment: Alignment.bottomRight,
-                      fit: BoxFit.scaleDown),),
+          image: DecorationImage(
+              image: AssetImage('assets/game_back.png',),
+              alignment: Alignment.bottomRight,
+              fit: BoxFit.scaleDown),
+        ),
         child: SingleChildScrollView(
-          
           child: StreamBuilder(
                     stream: ModeratorStreamController.stream,
                     builder: (context, snapshot) {
@@ -322,34 +320,13 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Text(
-                          "Team A",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                              fontSize: 18)
-                      ),
-                      Text(
-                        game.aTeam.score.toString(),
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                            fontSize: 18),),
-                    ],
-                  ),
+                  teamScore(game.aTeam),
                   Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
                       margin: EdgeInsets.all(15),
                       elevation: 10.0,
                       child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 35.0, vertical: 10.0),
+                          padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 10.0),
                           child: Text(
                             "Time Left\n" +
                                 _minutes.toString() +
@@ -362,32 +339,12 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 color: Colors.purple,
                                 fontSize: 18),
                           ))),
-                  Column(
-                    children: <Widget>[
-                      Text(
-                          "Team B",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.lightGreen,
-                              fontSize: 18)
-                      ),
-                      Text(
-                        game.bTeam.score.toString(),
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.lightGreen,
-                            fontSize: 18),),
-                    ],
-                  ),
+                  teamScore(game.bTeam),
                 ],
               ),
               Card(
                   color: Colors.yellow[50],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
                   margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
                   elevation: 10.0,
 
@@ -421,8 +378,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           Text(
-                            (roundName=="Toss-Up" && questionSet[index].tossupIsShortAns) ? "Short Answer" : (roundName=="Toss-Up" && !questionSet[index].tossupIsShortAns)? "MCQ"
-                                : (roundName=="Bonus" && questionSet[index].bonusIsShortAns) ? "Short Answer": "MCQ",
+                            questionSet[index].questionType(roundName),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18),
                           ),
@@ -636,7 +592,6 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                                 );
                                 }
                               else{
-                                 //next round
                                 index+=1;
                                 buzzedIn=false;
                                 roundName="Toss-Up";
@@ -776,8 +731,7 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
                       disabledTextColor: Colors.white,
                       color: (decisionTime || interrupt || buzzedIn) ? Colors.red: Colors.grey,
                       textColor: Colors.white,
-                      onPressed: (decisionTime || interrupt || buzzedIn) ? ()
-                      {
+                      onPressed: (decisionTime || interrupt || buzzedIn) ? () {
                         if(!paused){
 //                        _buzzTimer.cancel();
                           showDialog(
@@ -1118,3 +1072,26 @@ class _ModeratorQuestionsState extends State<ModeratorQuestions> {
     );
   }
 }
+
+Column teamScore(Team team) {
+  return new Column(
+    children: <Widget>[
+      Text(
+        "Team ${team.teamName}",
+        textAlign: TextAlign.right,
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: (team.teamName == "A") ? Colors.red : Colors.green,
+            fontSize: 18)
+      ),
+      Text(
+        team.score.toString(),
+        textAlign: TextAlign.right,
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: (team.teamName == "A") ? Colors.red : Colors.green,
+            fontSize: 18),),
+    ],
+  );
+}
+

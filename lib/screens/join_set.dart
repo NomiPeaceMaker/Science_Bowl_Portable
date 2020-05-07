@@ -113,8 +113,8 @@ class _JoinSetState extends State<JoinSet> {
               padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 4.0),
               child: Image(
                 image: AssetImage('assets/join_wait.png'),
-                height: SizeConfig.safeBlockVertical * 10,
-                width: SizeConfig.safeBlockVertical * 10,
+                height: SizeConfig.safeBlockVertical * 9,
+                width: SizeConfig.safeBlockVertical * 9,
               ),
             ),
             FadeAnimatedTextKit(
@@ -136,7 +136,7 @@ class _JoinSetState extends State<JoinSet> {
   _moderatorEndedGameDialog() {
     showDialog(
         context: context,
-        barrierDismissible: true,
+        barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
             title: Text("Moderator Ended Game"),

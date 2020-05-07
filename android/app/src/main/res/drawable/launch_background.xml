@@ -6,7 +6,7 @@
     <!-- You can insert your own image assets here -->
     <item>
         <bitmap
-            android:scaleType="centerInside"
-            android:src="@drawable/sbp_splash_highres" />
+            android:gravity="center"
+            android:src="@drawable/sbp_logo" />
     </item>
 </layer-list>

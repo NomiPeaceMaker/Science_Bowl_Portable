@@ -8,7 +8,6 @@ import 'package:random_string/random_string.dart';
 import 'dart:convert';
 
 class Server {
-
   Server({this.onError, this.onData});
 
   Uint8ListCallback onData;
@@ -54,6 +53,7 @@ class Server {
         print("GOT UNIQUE ID MESSAGE FROM CLIENT");
         print(msg["type"]);
         sockets[msg["ID"]] = socket;
+        socket.write(json.encode({"type": "recieved"}));
         print(msg["ID"]);
         print(socket);
       } else {
@@ -62,8 +62,7 @@ class Server {
     });
   }
 
-  String ip2key(String input)
-  {
+  String ip2key(String input) {
     input = fixip(input);
     String random_part = randomAlphaNumeric(3);
     String key;
