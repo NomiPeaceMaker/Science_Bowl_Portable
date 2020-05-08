@@ -33,20 +33,31 @@ class _PinScreenState extends State<PinScreen> {
     print(user.userName);
   }
 
+  // callback function upon receiving data from websocket
   onData(Uint8List data) {
     var msg = String.fromCharCodes(data);
     var msgJson = json.decode(msg);
     print("Message Recieved from server in OnData $msg");
     if (msgJson["type"] == "Connected") {
       print("GOT CONNECTED MESSAGE FROM SERVER");
-      client.write(json.encode({"type":"uniqueID", "ID": user.email}));
+      client.write(json.encode({
+        "type":"uniqueID",
+        "ID": user.email
+      }));
     } else if (msgJson["type"] == "recieved") {
-      client.write(json.encode({"type":"pin", "pin": pin, "uniqueID": user.email}));
+      client.write(json.encode(
+          {"type":"pin",
+            "pin": pin,
+            "uniqueID": user.email
+          }));
     } else if (msgJson["type"] == "pinState") {
       print("clinet recieved accept pin message");
       if (msgJson["pinState"] == "Accepted") {
         game.moderatorName = msgJson["moderatorName"];
-        client.write(json.encode({"type": "movingToWaitingRoom", "uniqueID": user.email}));
+        client.write(json.encode({
+          "type": "movingToWaitingRoom",
+          "uniqueID": user.email
+        }));
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -64,22 +75,13 @@ class _PinScreenState extends State<PinScreen> {
   }
 
   onError(dynamic error) {
-//    SocketException
     print("error -> in OnError function: $error");
+
+    // SocketException caught
     if (error.contains("SocketException")) {
       print("incorrect pin, socket exception");
       _incorrectPinDialog();
     }
-//    print(error.runtimeType);
-//    if (error.contains("errno = 7")) {
-//      print("incorrect pin");
-//      print("OS Error: No address associated with hostname, errno = 7");
-//      _incorrectPinDialog();
-//    } else if (error.contains("errno = 111")) {
-//      print("incorrect pin");
-//      print("OS Error: Connection refused, errno = 111");
-//      _incorrectPinDialog();
-//    }
   }
 
   @override
