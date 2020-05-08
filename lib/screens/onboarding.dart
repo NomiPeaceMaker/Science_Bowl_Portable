@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:sciencebowlportable/screens/login.dart';
 import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:sciencebowlportable/main.dart';
+import 'package:sciencebowlportable/utilities/styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Code inspired by https://github.com/MarcusNg/flutter_onboarding_ui/blob/master/lib/screens/onboarding_screen.dart
@@ -17,7 +18,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final int _numPages = 3;
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
-
+ 
   final titleStyle = TextStyle(
     color: Colors.black,
     fontFamily: 'Roboto',
@@ -32,6 +33,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     height: 1.2,
   );
 
+  // Returns list of _indicator widgets that is placed at the bottom of screen 
+  // Determines active screen
   List<Widget> _buildPageIndicator() {
     print('initScreen $initScreen');
     List<Widget> list = [];
@@ -41,14 +44,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return list;
   }
 
+  // Returns a single oval shape at the bottom of the screen. 
+  // helper for _buildPageIndicator() method   
   Widget _indicator(bool isActive) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 150),
       margin: EdgeInsets.symmetric(horizontal: 8.0),
-      height: 8.0,
-      width: isActive ? 24.0 : 16.0,
+      height: 8.0, 
+      width: isActive ? 24.0 : 16.0,    // if current screen is active then return an elongated oval
       decoration: BoxDecoration(
-        color: isActive ? Color(0xFFF8B400) : Colors.grey[300],
+        color: isActive ? themeColor : Colors.grey[300],    // if current screen is active then color the oval orange else make it grey
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     );
@@ -61,13 +66,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
           child: Container(
+            // Make background of page
               decoration: BoxDecoration(
-                  color: const Color(0xFFF8B400),
+                  color: themeColor,
+
+                  // Background is orange and white in ratio 2 : 1 
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Color(0xFFF8B400), Colors.white],
-                    stops: [0.66, 0.66],
+                    colors: [themeColor, Colors.white],
+                    stops: [0.66, 0.66],     
                   )),
               child: Padding(
                   padding: EdgeInsets.symmetric(
@@ -97,6 +105,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                         ),
                       ),
+                      // Container that contains the swipeable onboarding objects
                       Container(
                         height: SizeConfig.safeBlockVertical * 80,
                         child: PageView(
@@ -107,7 +116,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               _currentPage = page;
                             });
                           },
+                          // Each child is a screen
+                          // Screen1 : Padding (...)
+                          // Screen2 : Padding (...) and so on
                           children: <Widget>[
+                            // Each screen contains text and image field
                             Padding(
                                 padding: EdgeInsets.symmetric(
                                     vertical: SizeConfig.safeBlockVertical * 3,
@@ -197,8 +210,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       child: Image(
                                         image: AssetImage(
                                             'assets/onboarding2.png'),
-                                        // height: 250,
-                                        // width: 250,
                                         height:
                                             SizeConfig.safeBlockVertical * 40,
                                         width:
@@ -210,10 +221,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     Center(
                                       child: ClipOval(
                                         child: RaisedButton(
-                                          // shape: RoundedRectangleBorder(
-                                          //   borderRadius:
-                                          //       BorderRadius.circular(500.0),
-                                          // ),
                                           elevation: 10.0,
                                           shape: StadiumBorder(),
                                           child: Icon(
@@ -221,12 +228,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             size: 40.0,
                                             color: const Color(0xFFF8B400),
                                           ),
-                                          // Text('▷',
-                                          //     style: TextStyle(
-                                          //         color:
-                                          //             const Color(0xFFF8B400),
-                                          //         fontSize: 30.0,
-                                          //         fontWeight: FontWeight.bold)),
                                           color: Colors.white,
                                           padding: new EdgeInsets.all(30.0),
                                           onPressed: () async {

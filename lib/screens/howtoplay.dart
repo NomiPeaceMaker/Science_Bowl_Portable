@@ -5,12 +5,12 @@ import './ThirdPage.dart' as third;
 import 'package:sciencebowlportable/utilities/styles.dart';
 
 //Navigates between general, moderator and player tabs
-class HowToPlay extends StatefulWidget {
+class HowToPlayScreen extends StatefulWidget {
   @override
-  HowToPlayState createState() => new HowToPlayState();
+  HowToPlayScreenState createState() => new HowToPlayScreenState();
 }
 
-class HowToPlayState extends State<HowToPlay>
+class HowToPlayScreenState extends State<HowToPlayScreen>
     with SingleTickerProviderStateMixin {
   TabController controller;
 
@@ -45,7 +45,6 @@ class HowToPlayState extends State<HowToPlay>
         body: new TabBarView(controller: controller, children: <Widget>[
           new first.First(),
           new second.Second(),
-          new third.Third()
-        ]));
+          new third.Third()]));
   }
 }

@@ -12,12 +12,12 @@ import 'package:sciencebowlportable/utilities/styles.dart';
 //Might need to tweak the colour scheme a bit + Red Team or Team A?
 //Needs validation based on valid pins + better styling possible
 
-class Pin extends StatefulWidget {
+class PinScreen extends StatefulWidget {
   @override
-  _PinState createState() => _PinState();
+  _PinScreenState createState() => _PinScreenState();
 }
 
-class _PinState extends State<Pin> {
+class _PinScreenState extends State<PinScreen> {
   String gamePin;
   Client client;
   bool connected = false;
