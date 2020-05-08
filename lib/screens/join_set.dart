@@ -30,10 +30,12 @@ class _JoinSetState extends State<JoinSet> {
   @override
   void initState() {
 
+    // stream recieving data from websockets
+    // accepts a json encoded string
+    // message responses based on if conditions on the "type" key
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data) {
       if (data["type"] == "startGame") {
-        print("Moving on to game");
         game.gameTime = data["gameTimer"];
         socketDataStreamSubscription.cancel();
         Navigator.push(

@@ -5,28 +5,30 @@ import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 import 'home.dart';
 
+// super class for moderator and player waiting rooms
+
 class waitingRoom extends StatefulWidget {
   @override
   waitingRoomState createState() => waitingRoomState();
 }
 
-List<bool> playerSlotIsTakenList = List.generate(10, (_) => false);
-List<String> playerNamesList = List.generate(10, (_) => "");
+List<bool> playerSlotIsOccupiedList = List.generate(10, (_) => false);
+List<String> playerSlotNamesList = List.generate(10, (_) => "");
 
 class waitingRoomState<T extends waitingRoom> extends State<T> {
   List<StreamController<String>> playerJoinStreamControllers = new List(10);
   StreamSubscription socketDataStreamSubscription;
-  String appBarText;
+  String appBarText; // JOIN or HOST depending on moderator or player
   var userSlotsDict = {};
 
-  var playerPositionIndexDict;
+  var retrievePlayerSlotIndexDict;
   @override
   void initState() {
     super.initState();
     for (var i = 0 ; i < 10; i++ ) {
       playerJoinStreamControllers[i] = StreamController.broadcast();
     }
-    playerPositionIndexDict =
+    retrievePlayerSlotIndexDict =
     {
       "A Captain":0,
       "A 1":1,
@@ -41,8 +43,12 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
     };
   }
 
-    @required Align bottomScreenMessage() {}
+    @required Align bottomScreenMessage() {} // Join or Start buttons
+
+    // function callback on pressing a waiting room slot
     void onPressTeamSlot(String playerID, int playerPositionIndex) {}
+
+    // function called when back button is pressed
     void onExit() {}
     Container pinBar() {
       return new Container();
@@ -53,14 +59,14 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
     double elevation = 2.0;
 
     String playerID = '$team $playerPosition';
-    int playerPositionIndex = playerPositionIndexDict[playerID];
+    int playerPositionIndex = retrievePlayerSlotIndexDict[playerID];
     if (team == "A") {
       color = Colors.red;
     }  else if (team == "B") {
       color = Colors.green;
     }
-    if (playerSlotIsTakenList[playerPositionIndex]) {
-      buttonText = playerNamesList[playerPositionIndex];
+    if (playerSlotIsOccupiedList[playerPositionIndex]) {
+      buttonText = playerSlotNamesList[playerPositionIndex];
       buttonColor = Colors.grey;
       elevation = 0.0;
     } else {
@@ -69,6 +75,8 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
       elevation = 2.0;
     }
 
+    // TODO
+    // back button should navigate to home
     return new SizedBox(
         width: 140.0,
         height: 55,
@@ -78,19 +86,19 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
             builder: (context, snapshot) {
               if (snapshot.data == "undoSelect") {
                 playerJoinStreamControllers[playerPositionIndex].add(null);
-                playerSlotIsTakenList[playerPositionIndex] = false;
-                playerNamesList[playerPositionIndex] = playerID;
+                playerSlotIsOccupiedList[playerPositionIndex] = false;
+                playerSlotNamesList[playerPositionIndex] = playerID;
                 buttonColor = Colors.grey;
-                buttonText = playerNamesList[playerPositionIndex];
+                buttonText = playerSlotNamesList[playerPositionIndex];
                 buttonColor = color;
                 buttonText = playerID;
               }
               else if (snapshot.data != null) {
                 playerJoinStreamControllers[playerPositionIndex].add(null);
-                playerSlotIsTakenList[playerPositionIndex] = true;
-                playerNamesList[playerPositionIndex] = snapshot.data;
+                playerSlotIsOccupiedList[playerPositionIndex] = true;
+                playerSlotNamesList[playerPositionIndex] = snapshot.data;
                 buttonColor = Colors.grey;
-                buttonText = playerNamesList[playerPositionIndex];
+                buttonText = playerSlotNamesList[playerPositionIndex];
               }
               return new RaisedButton (
                 elevation: elevation,
@@ -220,8 +228,8 @@ class waitingRoomState<T extends waitingRoom> extends State<T> {
                 child: Text("Exit", style: exitstyle),
                 onPressed: () {
                   setState(() {
-                    playerSlotIsTakenList = List.generate(10, (_) => false);
-                    playerNamesList = List.generate(10, (_) => "");
+                    playerSlotIsOccupiedList = List.generate(10, (_) => false);
+                    playerSlotNamesList = List.generate(10, (_) => "");
                   });
                   Navigator.pushAndRemoveUntil(
                     context,

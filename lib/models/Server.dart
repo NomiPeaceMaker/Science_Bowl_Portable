@@ -7,6 +7,9 @@ import 'package:sciencebowlportable/globals.dart';
 import 'package:random_string/random_string.dart';
 import 'dart:convert';
 
+// source:
+// https://stackoverflow.com/questions/60397701/using-flutter-app-to-run-socketserver-and-communicate-with-other-phone-via-socke
+
 class Server {
   Server({this.onError, this.onData});
 
@@ -15,10 +18,8 @@ class Server {
   ServerSocket server;
   bool running = false;
   var sockets = <String, Socket>{};
-//  List<Socket> sockets = [];
 
   start() async {
-    print("STARTIED LISTENING!");
     runZoned(() async {
       server = await ServerSocket.bind('0.0.0.0', PORT);
       this.running = true;
@@ -36,22 +37,17 @@ class Server {
   }
 
   sendAll(String message) {
-    print("SEND ALL CALLED");
     sockets.forEach((userID, socket) => {
-      print("SENDING $message TO $userID"),
       socket.write(message),
     });
   }
 
   onRequest(Socket socket) {
-    print("New User");
     print(socket);
     socket.write(json.encode({"type" : "Connected"}));
     socket.listen((Uint8List data) {
       var msg = json.decode(String.fromCharCodes(data));
       if (msg["type"]=="uniqueID") {
-        print("GOT UNIQUE ID MESSAGE FROM CLIENT");
-        print(msg["type"]);
         sockets[msg["ID"]] = socket;
         socket.write(json.encode({"type": "recieved"}));
         print(msg["ID"]);
@@ -73,46 +69,35 @@ class Server {
     return key;
   }
 
-  String fixip(String input)
-  {
+  String fixip(String input) {
     int i = 8;
     String a = '';
-    // int a1;
     String b = '';
-    // int b1;
 
-    while(input[i]!= '.')
-    {
+    while(input[i]!= '.') {
       a = a + input[i];
       i++;
     }
 
-    if(a.length ==1)
-    {
+    if(a.length ==1) {
       a = '00' + a;
-    }
-    if(a.length ==2)
-    {
+    } else if(a.length ==2) {
       a = '0' + a;
     }
 
     i++;
 
-    while(i< input.length)
-    {
+    while(i< input.length) {
       b = b + input[i];
       i++;
     }
 
-    if(b.length ==1)
-    {
+    if(b.length ==1) {
       b = '00' + b;
-    }
-    if(b.length ==2)
+    } else if(b.length ==2)
     {
       b = '0' + b;
     }
     return '192.168.'+a+'.'+b;
   }
-
 }
