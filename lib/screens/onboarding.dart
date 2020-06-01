@@ -14,7 +14,8 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final int _numPages = 2;
+  
+  final int _numPages = 3;
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
  
@@ -86,15 +87,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         alignment: Alignment.centerRight,
                         child: FlatButton(
                           onPressed: () async {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
                             initScreen = prefs.getInt("initScreen");
                             await prefs.setInt("initScreen", 1);
                             print('initScreen $initScreen');
                             Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Login()),
-                            );
+                            context,
+                            MaterialPageRoute(builder: (context) => Login()),
+                          );
                           },
                           child: Text(
                             'Skip',
@@ -161,46 +161,46 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     ),
                                   ],
                                 )),
-                            // Padding(
-                            //     padding: EdgeInsets.symmetric(
-                            //         vertical: SizeConfig.safeBlockVertical * 3,
-                            //         horizontal:
-                            //             SizeConfig.safeBlockHorizontal * 5),
-                            //     child: Column(
-                            //       crossAxisAlignment: CrossAxisAlignment.start,
-                            //       children: <Widget>[
-                            //         Center(
-                            //           child: Image(
-                            //             image: AssetImage(
-                            //                 'assets/onboarding1.png'),
-                            //             height:
-                            //                 SizeConfig.safeBlockVertical * 40,
-                            //             width:
-                            //                 SizeConfig.safeBlockHorizontal * 60,
-                            //           ),
-                            //         ),
-                            //         SizedBox(
-                            //             height:
-                            //                 SizeConfig.safeBlockVertical * 3),
-                            //         Center(
-                            //           child: Text(
-                            //             'SBP makes rich statistics to\nhelp you improve your game!',
-                            //             style: subtitleStyle,
-                            //             textAlign: TextAlign.center,
-                            //           ),
-                            //         ),
-                            //         SizedBox(
-                            //             height:
-                            //                 SizeConfig.safeBlockVertical * 14),
-                            //         Center(
-                            //           child: Text(
-                            //             'Improve Your Game!',
-                            //             style: titleStyle,
-                            //             textAlign: TextAlign.center,
-                            //           ),
-                            //         ),
-                            //       ],
-                            //     )),
+                            Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: SizeConfig.safeBlockVertical * 3,
+                                    horizontal:
+                                        SizeConfig.safeBlockHorizontal * 5),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Center(
+                                      child: Image(
+                                        image: AssetImage(
+                                            'assets/onboarding1.png'),
+                                        height:
+                                            SizeConfig.safeBlockVertical * 40,
+                                        width:
+                                            SizeConfig.safeBlockHorizontal * 60,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            SizeConfig.safeBlockVertical * 3),
+                                    Center(
+                                      child: Text(
+                                        'SBP makes rich statistics to\nhelp you improve your game!',
+                                        style: subtitleStyle,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            SizeConfig.safeBlockVertical * 14),
+                                    Center(
+                                      child: Text(
+                                        'Improve Your Game!',
+                                        style: titleStyle,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                )),
                             Padding(
                                 padding: EdgeInsets.all(40.0),
                                 child: Column(
@@ -217,9 +217,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       ),
                                     ),
 
-                                    SizedBox(
-                                        height: SizeConfig.safeBlockVertical *
-                                            2), // CHANGE THIS
+                                    SizedBox(height: SizeConfig.safeBlockVertical *2), // CHANGE THIS
                                     Center(
                                       child: ClipOval(
                                         child: RaisedButton(
@@ -233,11 +231,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           color: Colors.white,
                                           padding: new EdgeInsets.all(30.0),
                                           onPressed: () async {
-                                            SharedPreferences prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            initScreen =
-                                                prefs.getInt("initScreen");
+                                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            initScreen = prefs.getInt("initScreen");
                                             await prefs.setInt("initScreen", 1);
                                             print('initScreen $initScreen');
                                             Navigator.push(
@@ -250,9 +245,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
-                                        height:
-                                            SizeConfig.safeBlockVertical * 3),
+                                    SizedBox(height: SizeConfig.safeBlockVertical * 3),
                                     Center(
                                       child: Text(
                                         'Lets get Started!',
