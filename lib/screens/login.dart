@@ -12,7 +12,6 @@ import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:sciencebowlportable/utilities/styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// void main() => runApp(Login());
 final databaseReference = Firestore.instance;
 
 class Login extends StatefulWidget {
@@ -23,25 +22,24 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  // Vars to Animate
-
   var loggedIn = false;
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false, home: _buildSocialLogin(context));
   }
 
+  // Method that builds main scaffold of the screen
   _buildSocialLogin(context) {
-    SizeConfig().init(context);
+    SizeConfig().init(context);   
 
     return Scaffold(
       backgroundColor: themeColor,
       body: Container(
+        // Background image is an asset 
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(
@@ -51,13 +49,11 @@ class _LoginState extends State<Login> {
                 fit: BoxFit.scaleDown),
           ),
           child: Center(
+            // Display Text that says logged in if successful, otherwise show log-in options
             child: loggedIn
-                ? Text("Logged in")
+                ? Text("Logged in")   
                 : Stack(
                     children: <Widget>[
-                      // SizedBox.expand(
-                      //   child: _buildSignUpText(),
-                      // ),
                       Container(
                         margin: EdgeInsets.symmetric(
                             horizontal: SizeConfig.safeBlockHorizontal * 4,
@@ -99,13 +95,11 @@ class _LoginState extends State<Login> {
           )),
     );
   }
-
+  
   Container _buildGoogleLoginButton() {
     return Container(
-      // margin: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
       child: ButtonTheme(
         height: 80,
-//        minWidth: 275,
         child: RaisedButton.icon(
             onPressed: () {
               initiateSignIn("G");
@@ -122,10 +116,8 @@ class _LoginState extends State<Login> {
 
   Container _buildFacebookLoginButton() {
     return Container(
-      // margin: EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 0),
       child: ButtonTheme(
         height: 80,
-//        minWidth: 275,
         child: RaisedButton.icon(
             materialTapTargetSize: MaterialTapTargetSize.padded,
             onPressed: () {
@@ -144,18 +136,10 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Container _buildSignUpText() {
-    return Container(
-      margin: EdgeInsets.only(top: 64),
-      child: Text(
-        "SBP",
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: themeColor, fontSize: 42, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
 
+  // sets logged in bool as true if login suceeds and continues to next page accordingly
+  // if user is a returning user then user is taken to home page
+  // if user is a new user then user is directed to username page  
   void initiateSignIn(String type) {
     _handleSignIn(type).then((result) {
       print("If there is a 0 in the next line then login was unsucessful = ");
@@ -177,7 +161,7 @@ class _LoginState extends State<Login> {
           );
         }
       } else {
-        //Filed to log in HMake it work without loging in Hack
+        // Code for troubleshooting
         // Navigator.push(
         //   context,
         //   MaterialPageRoute(builder: (context) => Username()),
@@ -186,6 +170,8 @@ class _LoginState extends State<Login> {
     });
   }
 
+  // To log in with Google or Facebook login API - called based on user input
+  // User is created in database if does not exist
   Future<int> _handleSignIn(String type) async {
     switch (type) {
       case "FB":
@@ -284,6 +270,7 @@ class _LoginState extends State<Login> {
     return googleSignInAccount;
   }
 
+  //creates User with email as primary identifier
   void createUser() async {
     await databaseReference.collection("User").document(user.email).setData({
       "Username": null,

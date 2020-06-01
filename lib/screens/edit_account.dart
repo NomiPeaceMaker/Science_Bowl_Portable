@@ -3,14 +3,14 @@ import 'package:sciencebowlportable/utilities/sizeConfig.dart';
 import 'package:sciencebowlportable/globals.dart';
 import 'package:sciencebowlportable/screens/username.dart';
 
-class Edit_account extends StatefulWidget {
-  Edit_account({Key key, this.title}) : super(key: key);
+class EditAccountScreen extends StatefulWidget {
+  EditAccountScreen({Key key, this.title}) : super(key: key);
   final String title;
   @override
   _Edit_account createState() => _Edit_account();
 }
 
-class _Edit_account extends State<Edit_account> {
+class _Edit_account extends State<EditAccountScreen> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);

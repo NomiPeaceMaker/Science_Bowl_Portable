@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Edit_account()),
+                              builder: (context) => EditAccountScreen()),
                         );
                       },
                       child: Container(
@@ -192,10 +192,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ])),
                         ])),
                   ]),
-                  _button("HOST GAME", MatchSettings()),
-                  _button("JOIN GAME", Pin()),
-                  _noInternetbutton("HOW TO PLAY", HowToPlay())
-                  // This shouldn't need internet but it doesnt work without so ig
+                  _buildButton("HOST GAME", MatchSettings()),
+                  _buildButton("JOIN GAME", PinScreen()),
+                  _buildNoInternetbutton("HOW TO PLAY", HowToPlayScreen())
                 ])),
           ),
         ),
@@ -207,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  _button(String title, landingPage) {
+  _buildButton(String title, landingPage) {
     return Padding(
         padding: EdgeInsets.symmetric(
             vertical: SizeConfig.safeBlockVertical * 3.5,
@@ -225,6 +224,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             color: buttonColor,
+
+            // Change button color and behaviour based on internet connectivity
             onPressed: () async {
               await _checkWifiConnectivity();
               setState(() {
@@ -240,12 +241,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   MaterialPageRoute(builder: (context) => landingPage),
                 );
               } else {
-                _noInternetDialog();
+                _showNoInternetDialog();
               }
             }));
   }
 
-  _noInternetbutton(String title, landingPage) {
+  _buildNoInternetbutton(String title, landingPage) {
     return Padding(
         padding: EdgeInsets.symmetric(
             vertical: SizeConfig.safeBlockVertical * 3.5,
@@ -271,7 +272,7 @@ class _MyHomePageState extends State<MyHomePage> {
             }));
   }
 
-  _noInternetDialog() {
+  _showNoInternetDialog() {
     showDialog(
         context: context,
         barrierDismissible: false,

@@ -35,15 +35,16 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
   @override
   void initState() {
     super.initState();
-    print("email ${user.email} name ${user.userName}");
     appBarText = "JOIN";
     player = Player("");
     player.userName = user.userName;
     player.email = user.email;
+
+    // stream recieving data from websockets
+    // accepts a json encoded string
+    // message responses based on if conditions on the "type" key
     Stream socketDataStream = socketDataStreamController.stream;
     socketDataStreamSubscription = socketDataStream.listen((data) {
-      print("player waiting room");
-      print(data);
       data = json.decode(data);
       if (data["type"] == "selectSlot") {
         setState(() {
@@ -52,36 +53,28 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
         int playerPositionIndex = int.parse(data["playerPositionIndex"]);
         String userName = data["userName"];
         String previousState = userSlotsDict[data["uniqueID"]];
-//        String previousState = data["previousState"];
         if (previousState != null) {
-          int previousStateIndex = playerPositionIndexDict[previousState];
+          int previousStateIndex = retrievePlayerSlotIndexDict[previousState];
           playerJoinStreamControllers[previousStateIndex].add("undoSelect");
         }
         playerJoinStreamControllers[playerPositionIndex].add(userName);
         userSlotsDict[data["uniqueID"]] = data["playerID"];
-        // test this out it might cause async problems
-//        player.playerID = data["playerID"];
       } else if (data["type"] == "startGame") {
         game.gameTime = data["gameTimer"];
-        print("GAME TIMER: ");
-        print(game.gameTime);
-        print("Moving on to game");
         socketDataStreamSubscription.cancel();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PlayerBuzzer(this.client, this.player)),
         );
-      }
-       else if (data["type"] == "waitingScreenState") {
-        print("got waitingScreenState");
-        playerSlotIsTakenList = (json.decode(data["playerSlotIsTakenList"]) as List).cast<bool>();
-        playerNamesList = (json.decode(data["playerNamesList"]) as List).cast<String>();
-        playerSlotIsTakenList
+      } else if (data["type"] == "waitingScreenState") {
+        playerSlotIsOccupiedList = (json.decode(data["playerSlotIsTakenList"]) as List).cast<bool>();
+        playerSlotNamesList = (json.decode(data["playerNamesList"]) as List).cast<String>();
+        playerSlotIsOccupiedList
             .asMap()
             .forEach(
                 (index, value) =>
             (value) ? playerJoinStreamControllers[index].add(
-                playerNamesList[index]) : playerJoinStreamControllers[index]
+                playerSlotNamesList[index]) : playerJoinStreamControllers[index]
                 .add("undoSelect")
         );
       } else if (data["type"] == "moderatorLeaving") {
@@ -93,7 +86,6 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
 
   @override
   void onPressTeamSlot(String playerID, int playerPositionIndex) {
-    print("Constructing message");
     player.playerID = playerID;
     var message = {
       "type": "selectSlot",
@@ -103,7 +95,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       "playerPositionIndex": playerPositionIndex.toString(),
 //      "previousState": player.playerID,
     };
-    if (!playerSlotIsTakenList[playerPositionIndex]) {
+    if (!playerSlotIsOccupiedList[playerPositionIndex]) {
       client.write(json.encode(message));
     }
   }
@@ -126,8 +118,6 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
           color: isPlayerSlotSelected ? Colors.pink : Colors.grey,
           textColor: Colors.white,
           onPressed: () => {
-            print("YOU ARE CONNECTED IF NEXT LINE SAYS 1"),
-            print(client.connected),
             if (player.playerID == "") {
               _selectAPlayerPosition(),
             } else {
@@ -148,7 +138,7 @@ class _PlayerWaitingRoomState extends waitingRoomState<PlayerWaitingRoom> {
       "userName": player.userName,
       "playerID": player.playerID,
       "uniqueID": user.email,
-      "playerPositionIndex": playerPositionIndexDict[player.playerID].toString(),
+      "playerPositionIndex": retrievePlayerSlotIndexDict[player.playerID].toString(),
     };
     client.write(json.encode(message));
   }
